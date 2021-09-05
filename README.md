@@ -3,7 +3,7 @@
 
 オリジナル　http://www.catch22.net/tuts/neatpad/neatpad-overview  
 
-<br>
+<br><br>
 
 DeepLで翻訳した物です。  
 日本語の自作テキストエディタのドキュメントが少ないのでUPしておきます。
