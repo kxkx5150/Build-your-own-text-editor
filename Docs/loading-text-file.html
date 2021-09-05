@@ -1,0 +1,735 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Loading a text file - Catch22</title>
+<meta name="description" content="Introduction">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Loading a text file">
+<meta property="og:url" content="loading-text-file">
+
+
+  <meta property="og:description" content="Introduction">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2005-02-18T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="loading-text-file.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--tutorial wide">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Loading a text file</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad2.zip">neatpad2.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="active">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Loading a text file">
+    <meta itemprop="description" content="Introduction">
+    <meta itemprop="datePublished" content="February 18, 2005">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Loading a text file
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Loading a text file</h1-->
+<!--h3>Loading and displaying a text file</h3-->
+
+<h2 id="introduction">Introduction</h2>
+
+<p>本記事は、「Design and Implementation of a Win32 Text Editor」シリーズの第2弾です。まだパート1をお読みでない方は、今すぐお読みください。</p>
+
+<p>さて、公開されているソースコードをダウンロードして同化し、コンパイルしたと仮定すると、まだ何もできない基本的なスケルトンのテキストエディタができあがっているはずです。パート2のミッションは、テキストファイルをメモリに読み込み、TextViewコントロールに表示することです。しかし、夢中になってはいけません。今のところ、テキストファイルを読み込んで、非常に基本的な表示をすることだけが目的で、スクロールやキーボード・マウスのサポートはまだできていません。
+
+</p>
+
+<h2 id="text-documents">Text Documents</h2>
+
+<p>テキストファイルには、印刷不可能な文字（ASCII制御文字）を含めてはならず、テキストの行は共通の行末区切り記号（キャリッジリターン／ラインフィードのペアなど）で区切られるという、一般的に理解されている慣習がありますが、テキスト文書は基本的なバイナリファイルにすぎません。</p>
+
+<p>テキストエディタは、テキストファイルのバイナリコンテンツを解釈し、そのコンテンツを行指向の方法でユーザに表示することが仕事です。このチュートリアルシリーズのパート1では、テキストエディタの構造について、TextViewとTextDocumentオブジェクトについて説明しました。そこで、最初に取り上げるのは、C++のクラスとして表現されるTextDocumentオブジェクトです。<code class="highlighter-rouge">TextDocument</code> object - which we will represent as a C++ class:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">TextDocument</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="kt">bool</span> <span class="n">init</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">filename</span><span class="p">);</span>
+
+    <span class="n">ULONG</span> <span class="n">getline</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">lineno</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">);</span>
+    <span class="n">ULONG</span> <span class="n">linecount</span><span class="p">();</span>
+
+<span class="k">private</span><span class="o">:</span>
+    <span class="kt">bool</span> <span class="n">init_linebuffer</span><span class="p">();</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">length</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>基本的なC++インターフェースは非常にシンプルです。ファイルをTextDocumentに読み込むには、initクラスのメンバーを使います。行番号と行の内容を格納するバッファを指定する getline メソッドを使って、テキストの行を取得することができます。</p>
+
+<p>TextDocumentクラスは、現時点では完全にASCIIで運用されていることに注意してください。つまり、Unicodeには対応していません。C++のテンプレートを使って、さまざまなタイプをサポートすることもできました。しかし、現時点では、この問題にどのようにアプローチするのがベストなのか、まだ決めかねているので、インターフェイスはできるだけシンプルにしておきます。結局のところ、これはTextDocumentの「捨て身」の実装であり、後ほどシリーズの中で完全に書き直すことになります。</p>
+
+<h2 id="loading-a-text-file">Loading a text file</h2>
+
+<p>テキストファイルを読み込むための最初の試みは、できるだけシンプルなものにしたいと思います。以下のTextDocument::init関数は、TextDocumentのメインインターフェイスです。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">bool</span> <span class="n">TextDocument</span><span class="o">::</span><span class="n">init</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">filename</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">HANDLE</span> <span class="n">hFile</span><span class="p">;</span>
+    <span class="n">hFile</span> <span class="o">=</span> <span class="n">CreateFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">GENERIC_READ</span><span class="p">,</span> <span class="n">FILE_SHARE_READ</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">OPEN_EXISTING</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">hFile</span> <span class="o">==</span> <span class="n">INVALID_HANDLE_VALUE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">init</span><span class="p">(</span><span class="n">hFile</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>TextDocument::initは、単にwin32標準のCreateFile APIを使ってファイルを開き、CreateFileが返したHANDLEを使ってファイルの内容を読み込むヘルパー関数に制御を渡します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">bool</span> <span class="n">TextDocument</span><span class="o">::</span><span class="n">init</span><span class="p">(</span><span class="n">HANDLE</span> <span class="n">hFile</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ULONG</span> <span class="n">numread</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">((</span><span class="n">length</span> <span class="o">=</span> <span class="n">GetFileSize</span><span class="p">(</span><span class="n">hFile</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+    <span class="c1">// allocate new file-buffer
+</span>    <span class="k">if</span><span class="p">((</span><span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="p">[</span><span class="n">length</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+    <span class="c1">// read entire file into memory
+</span>    <span class="n">ReadFile</span><span class="p">(</span><span class="n">hFile</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">numread</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="c1">// work out where each line of text starts
+</span>    <span class="n">init_linebuffer</span><span class="p">();</span>
+
+    <span class="n">CloseHandle</span><span class="p">(</span><span class="n">hFile</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ご覧のように、ファイルの読み込みはとても簡単です。ファイルの大きさを計算し、テキストを格納するためのバッファを確保して、ファイルをメモリに読み込みます。大きなファイルの場合、読み込みに非常に時間がかかったり、十分なメモリがないと完全に読み込めなかったりするので、これはあまり賢いやり方ではありません。</p>
+
+<p>これは「捨てられた」TextDocumentクラスであることをご理解ください。あらゆるサイズのファイルをサポートするTextDocumentクラスを書くのは非常に難しいので、このバージョンのTextDocumentは意図的にできるだけシンプルなものにしています。このシリーズの後半では、ファイルローディングについて再考し、このクラスを適切に書く予定です。</p>
+
+<h2 id="carriage-returns-and-linefeeds">Carriage-returns and Linefeeds</h2>
+
+<p>テキスト文書は何行で構成されていますか？ファイルを一行ごとに読むには？その答えは、「テキストの行」をどのように定義するかにかかっています。最も簡単に言えば、テキストの行とは、ファイル内の一連の文字で、明確に定義された行末マーカーを持つものです。各行の文字数はあまり気にしませんが、各行の開始点と終了点を特定する方法を知っておく必要があります。</p>
+
+<p>テキストの行を区切るには、主に3つの規則があります。DOSやWindowsでは、キャリッジリターンとラインフィードのペアを使用します。UNIXやLinuxではラインフィード1文字、Macintoshではキャリッジリターン1文字が使われます。これらすべてのケースに対処しようとすると、いくつかの問題が明らかになりますが、ここではDOS/Windowsのケースに集中します。将来のチュートリアルでは、最後の2つのオプション（および、ラインセパレータのすべての組み合わせを持つファイルに遭遇することができる別のケース）について説明します。</p>
+
+<p>TextViewコントロールは、ドキュメントの長さを反映してスクロールバーを設定できなければならないので、ドキュメントにあるテキストの行数を知る必要があります。また、テキストドキュメントを一行ごとに描画するため、個々のテキスト行をランダムな順序で配置できる必要があります。</p>
+
+<p>この問題を解決する最も一般的な方法は、「ラインバッファ」と呼ばれるものを実装することです。概念的には、ラインバッファは非常にシンプルで、ドキュメント内の各テキスト行の開始位置を指定する整数オフセットの配列に過ぎません。</p>
+
+<p><img src="assets/img/editor09.gif" alt="<>"></p>
+
+<p>上の図は、左手にラインバッファを示しています。バッファは右のテキストブロックで初期化されています。テキストを処理し、キャリッジリターン/ラインフィードシーケンスを検索し、各行のオフセットを記録しています。配列の各項目（0-6番）には、テキストの各行を開始する文字のオフセットが含まれています。</p>
+
+<p>ファイルの読み込みと同じ場所でラインパーシングを行うのは自然な選択だと思われるので、TextDocumentではラインバッファを実装します。以下のTextDocument::init_linebuffer関数は、新しいファイルが読み込まれたときに呼び出されます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">bool</span> <span class="n">TextDocument</span><span class="o">::</span><span class="n">init_linebuffer</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">ULONG</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">linestart</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="c1">// allocate the line-buffer
+</span>    <span class="k">if</span><span class="p">((</span><span class="n">linebuffer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ULONG</span><span class="p">[</span><span class="n">length</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+    <span class="n">numlines</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="c1">// loop through every byte in the file
+</span>    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">;</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">buffer</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'\r'</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="c1">// carriage-return / line-feed combination
+</span>            <span class="k">if</span><span class="p">(</span><span class="n">buffer</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'\n'</span><span class="p">)</span>
+                <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+
+            <span class="c1">// record where the line starts
+</span>            <span class="n">linebuffer</span><span class="p">[</span><span class="n">numlines</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">linestart</span><span class="p">;</span>
+            <span class="n">linestart</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">linebuf</span><span class="p">[</span><span class="n">numlines</span><span class="p">]</span> <span class="o">=</span> <span class="n">length</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>init_linebuffer関数は、ラインバッファのスペースを確保してから、ファイルを処理するという2つのことを行っています。ファイル全体を処理するまでテキストが何行あるかわからないので、ラインバッファの大きさをどうやって知ることができるでしょうか？簡単に言うと、それはわからないということです。本物のTextDocumentクラスは、行数が増えると動的にラインバッファを再配置するか、ラインバッファが消費するメモリ量を制限する巧妙なアルゴリズムを使用します。</p>
+
+<p>ここでは、ラインバッファをファイルと同じサイズにすることで、スペースが不足しないようにします。ファイルを処理するには、ファイルの各バイトをループして、キャリッジリターン文字を探す必要があります。</p>
+
+<p>アルゴリズム自体は簡単です。キャリッジリターン（オプションのラインフィードが続く）が発生するたびに、新しいエントリがラインバッファの最後に追加され、現在の行頭が記録されます。linestart変数は、キャリッジリターンの後の文字、つまり次の行の開始点を「指し示す」ようになります。これは、ファイルに文字がなくなるまで続きます。処理された行の数は numlines 変数で更新されます。</p>
+
+<h2 id="retrieving-lines-of-text">Retrieving lines of text</h2>
+
+<p>このTextDocumentには初歩的なラインバッファが実装されているので、行ベースの検索は非常に高速になります。次の TextDocument::getline 関数は、TextDocument からテキストの各行にアクセスする方法を示しています。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ULONG</span> <span class="n">TextDocument</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">lineno</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">lineptr</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">linelen</span><span class="p">;</span>
+
+    <span class="c1">// find the start of the specified line
+</span>    <span class="n">lineptr</span> <span class="o">=</span> <span class="n">buffer</span> <span class="o">+</span> <span class="n">linebuffer</span><span class="p">[</span><span class="n">lineno</span><span class="p">];</span>
+
+    <span class="c1">// work out how long it is, by looking at the next line's starting point
+</span>    <span class="n">linelen</span> <span class="o">=</span> <span class="n">linebuffer</span><span class="p">[</span><span class="n">lineno</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">linebuffer</span><span class="p">[</span><span class="n">lineno</span><span class="p">];</span>
+
+    <span class="c1">// make sure we don't overflow caller's buffer
+</span>    <span class="n">linelen</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">len</span><span class="p">,</span> <span class="n">linelen</span><span class="p">);</span>
+
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">lineptr</span><span class="p">,</span> <span class="n">linelen</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">linelen</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>この関数は， lineno パラメータを linebuffer 配列への直接のインデックスとして使用して動作します。linebuffer[lineno]に格納されたオフセットは，テキストの実バッファに追加され，結果として行頭へのポインタとなります。行の長さ（文字数）は、現在の行のオフセットから次の行のオフセットを差し引くことで計算されます。正しいオフセットと長さが計算されると、生の行の内容が呼び出し側が提供したバッファにコピーされます。シンプルですが、機能しています。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">200</span><span class="p">];</span>
+<span class="n">m_pTextDocument</span><span class="o">-&gt;</span><span class="n">getline</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>上の例では、行番号5のテキストのバッファを取得する方法を示しています。</p>
+
+<h2 id="drawing-the-lines-of-text">Drawing the lines of text</h2>
+
+<p>TextDocumentに一行ごとにアクセスするのは、TextViewコントロールにテキストを描画する際の作業を簡単にするためです。</p>
+
+<p>TextViewの描画とペイントのロジックは、WM_PAINTメッセージを中心にしています。実際、WM_PAINTハンドラは、プログラム全体の中で唯一、ペイントが行われる場所です。他のWin32プログラムと同様に、ペイントフレームワークは基本的なBeginPaint / EndPaintシーケンスとして始まります。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnPaint</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">PAINTSTRUCT</span> <span class="n">ps</span><span class="p">;</span>
+
+    <span class="n">BeginPaint</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ps</span><span class="p">);</span>
+
+    <span class="c1">// do painting
+</span>    <span class="n">EndPaint</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ps</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上の関数は、単にデバイスコンテキストを検証して返します。TextViewのウィンドウクラスでは、背景ブラシがないことが指定されているので、1ピクセルも表示されません。</p>
+
+<p>この時点では、PAINTSTRUCT::rcPaint RECT構造体で更新領域を指定するという、基本的な描画フレームワークしかありません。下図では、この更新領域を赤で示しています。</p>
+
+<p><img src="assets/img/editor05.gif" alt="<>"></p>
+
+<p>私たちの仕事は、この1つの任意の長方形の領域を、テキストの行で埋められる一連の水平方向のスパンに変換することです。上の図では、更新領域が3つのスパンに分割されています。変数 first と last は、更新が必要な最初の行と最後の行を表しています。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnPaint</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">PAINTSTRUCT</span> <span class="n">ps</span><span class="p">;</span>
+
+    <span class="n">BeginPaint</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ps</span><span class="p">);</span>
+
+    <span class="n">ULONG</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">i</span><span class="p">;</span>
+
+    <span class="c1">// figure out which lines to draw
+</span>    <span class="n">first</span> <span class="o">=</span> <span class="n">ps</span><span class="p">.</span><span class="n">rcPaint</span><span class="p">.</span><span class="n">top</span> <span class="o">/</span> <span class="n">m_nFontHeight</span><span class="p">;</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">ps</span><span class="p">.</span><span class="n">rcPaint</span><span class="p">.</span><span class="n">bottom</span> <span class="o">/</span> <span class="n">m_nFontHeight</span><span class="p">;</span>
+
+    <span class="c1">// draw the display line-by-line
+</span>    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">PaintLine</span><span class="p">(</span><span class="n">ps</span><span class="p">.</span><span class="n">hdc</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">EndPaint</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ps</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上のOnPaintのコードはシンプルですが効果的です。最初に追加したのは「first = " 」と「last = " 」の2行です。これらの行は、更新領域を含む開始行と終了行を計算するために使用されます。ピクセルから論理行に変換したいので、現在のfont-heightで割ります。</p>
+
+<p>更新領域の水平方向の長さを考慮していないことに注意してください。これは意図的なもので、この段階では各線を全体的に描き、描きすぎた場合にはデバイスコンテキストの更新領域が出力を切り取るようにした方が簡単だからです。</p>
+
+<p>個々の線画は別の機能に延期しました。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">PaintLine</span><span class="p">(</span><span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">TCHAR</span> <span class="n">buf</span><span class="p">[</span><span class="n">LONGEST_LINE</span><span class="p">];</span>
+    <span class="n">ULONG</span> <span class="n">len</span><span class="p">;</span>
+
+    <span class="n">RECT</span> <span class="n">rect</span><span class="p">;</span>
+    <span class="n">GetClientRect</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rect</span><span class="p">);</span>
+
+    <span class="c1">// work out where the line should be drawn
+</span>    <span class="n">rect</span><span class="p">.</span><span class="n">top</span> <span class="o">=</span> <span class="n">nLineNo</span> <span class="o">*</span> <span class="n">m_nFontHeight</span><span class="p">;</span>
+    <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">top</span> <span class="o">+</span> <span class="n">m_nFontHeight</span><span class="p">;</span>
+
+    <span class="c1">// get the data for this single line of text
+</span>    <span class="n">len</span> <span class="o">=</span> <span class="n">m_pTextDocument</span><span class="o">-&gt;</span><span class="n">getline</span><span class="p">(</span><span class="n">nLineNo</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">LONGEST_LINE</span><span class="p">);</span>
+
+    <span class="c1">// draw text and erase the entire line background at the same time
+</span>    <span class="n">TabbedExtTextOut</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rect</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ご覧のように、テキストの線を描くのは比較的簡単です。まず最初に行うことは、線を引く場所のピクセル座標を計算することです。ウィンドウのクライアント領域を出発点とし、上下を調整して線を単純な長方形の領域としてピクセルベースの座標で表現します。</p>
+
+<p>線の外接矩形が得られたら、さらにヘルパー関数を使用してテキストを描画します - TabbedExtTextOut。TabbedExtTextOutは、TabbedTextOut APIのシンプルなラッパー関数で、ExtTextOut APIと同様に、実際のテキストで占められていない背景領域を消去する機能が追加されています。</p>
+
+<p>描きたいテキストの実際の行は、先に開発したgetlineメソッドを使ってTextDocumentオブジェクトから取得します。TextDocumentの中にテキストファイルを格納する方法を変更しても、"getline "インターフェースを保持している限り、TextViewとTextDocumentは完全に別のエンティティにすることができるのです。</p>
+
+<p>なお、この段階でのシンプルなテキスト出力は、まさにその通りで、制御文字やシンタックスカラー、スクロールなどは扱っていません。一度に一歩ずつ...</p>
+
+<h2 id="coming-up-in-part-3">Coming up in Part 3</h2>
+
+<p>この時点で、私たちは非常にシンプルなテキスト表示機能を持っていますが、できることはかなり限られています。スクロールも、キーボードやマウスでの入力も、選択や強調表示も、色付けも、編集もできません。しかし、これでがっかりすることはありません。最初にシンプルなデザインを用意することは非常に重要です。</p>
+
+<p>このチュートリアルシリーズをご覧になっている方は、実際のテキストストレージコンポーネントがどのように実装されているかを知りたいのではないでしょうか。これについては、近々チュートリアルで説明する予定ですが、今はまず基本的なグラフィカル・インターフェースを動作させたいと思います。</p>
+
+<p>そのため、次のチュートリアルでは、少なくともテキスト文書全体を表示できるように、スクロールサポートを追加します。それが終わったら、マウスの入力に注目します。これは最も実装が難しい分野の一つです。カーソルの配置と選択範囲の強調表示を同時に処理しなければならないため、マウスと描画の両方のルーチンに慎重なコーディングが必要になります。</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad2.zip">neatpad2.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2005-02-18T00:00:00+00:00">February 18, 2005</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="index.html" class="pagination--pager" title="Neatpad Overview
+">Previous</a>
+    
+    
+      <a href="scrollbars-scrolling.html" class="pagination--pager" title="Scrollbars &amp; Scrolling
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

@@ -1,0 +1,990 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    
+    <title>Neatpad Overview - Catch22</title>
+    <meta name="description" content="Introduction" />
+    <meta property="og:type" content="article" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Catch22" />
+    <meta property="og:title" content="Neatpad Overview" />
+    <meta property="og:url" content="neatpad-overview" />
+    <meta property="og:description" content="Introduction" />
+    <meta property="article:published_time" content="2005-01-29T00:00:00+00:00" />
+    <style type="text/css">
+      svg:not(:root).svg-inline--fa {
+        overflow: visible;
+      }
+      .svg-inline--fa {
+        display: inline-block;
+        font-size: inherit;
+        height: 1em;
+        overflow: visible;
+        vertical-align: -0.125em;
+      }
+      .svg-inline--fa.fa-lg {
+        vertical-align: -0.225em;
+      }
+      .svg-inline--fa.fa-w-1 {
+        width: 0.0625em;
+      }
+      .svg-inline--fa.fa-w-2 {
+        width: 0.125em;
+      }
+      .svg-inline--fa.fa-w-3 {
+        width: 0.1875em;
+      }
+      .svg-inline--fa.fa-w-4 {
+        width: 0.25em;
+      }
+      .svg-inline--fa.fa-w-5 {
+        width: 0.3125em;
+      }
+      .svg-inline--fa.fa-w-6 {
+        width: 0.375em;
+      }
+      .svg-inline--fa.fa-w-7 {
+        width: 0.4375em;
+      }
+      .svg-inline--fa.fa-w-8 {
+        width: 0.5em;
+      }
+      .svg-inline--fa.fa-w-9 {
+        width: 0.5625em;
+      }
+      .svg-inline--fa.fa-w-10 {
+        width: 0.625em;
+      }
+      .svg-inline--fa.fa-w-11 {
+        width: 0.6875em;
+      }
+      .svg-inline--fa.fa-w-12 {
+        width: 0.75em;
+      }
+      .svg-inline--fa.fa-w-13 {
+        width: 0.8125em;
+      }
+      .svg-inline--fa.fa-w-14 {
+        width: 0.875em;
+      }
+      .svg-inline--fa.fa-w-15 {
+        width: 0.9375em;
+      }
+      .svg-inline--fa.fa-w-16 {
+        width: 1em;
+      }
+      .svg-inline--fa.fa-w-17 {
+        width: 1.0625em;
+      }
+      .svg-inline--fa.fa-w-18 {
+        width: 1.125em;
+      }
+      .svg-inline--fa.fa-w-19 {
+        width: 1.1875em;
+      }
+      .svg-inline--fa.fa-w-20 {
+        width: 1.25em;
+      }
+      .svg-inline--fa.fa-pull-left {
+        margin-right: 0.3em;
+        width: auto;
+      }
+      .svg-inline--fa.fa-pull-right {
+        margin-left: 0.3em;
+        width: auto;
+      }
+      .svg-inline--fa.fa-border {
+        height: 1.5em;
+      }
+      .svg-inline--fa.fa-li {
+        width: 2em;
+      }
+      .svg-inline--fa.fa-fw {
+        width: 1.25em;
+      }
+      .fa-layers svg.svg-inline--fa {
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+      .fa-layers {
+        display: inline-block;
+        height: 1em;
+        position: relative;
+        text-align: center;
+        vertical-align: -0.125em;
+        width: 1em;
+      }
+      .fa-layers svg.svg-inline--fa {
+        -webkit-transform-origin: center center;
+        transform-origin: center center;
+      }
+      .fa-layers-counter,
+      .fa-layers-text {
+        display: inline-block;
+        position: absolute;
+        text-align: center;
+      }
+      .fa-layers-text {
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        -webkit-transform-origin: center center;
+        transform-origin: center center;
+      }
+      .fa-layers-counter {
+        background-color: #ff253a;
+        border-radius: 1em;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        color: #fff;
+        height: 1.5em;
+        line-height: 1;
+        max-width: 5em;
+        min-width: 1.5em;
+        overflow: hidden;
+        padding: 0.25em;
+        right: 0;
+        text-overflow: ellipsis;
+        top: 0;
+        -webkit-transform: scale(0.25);
+        transform: scale(0.25);
+        -webkit-transform-origin: top right;
+        transform-origin: top right;
+      }
+      .fa-layers-bottom-right {
+        bottom: 0;
+        right: 0;
+        top: auto;
+        -webkit-transform: scale(0.25);
+        transform: scale(0.25);
+        -webkit-transform-origin: bottom right;
+        transform-origin: bottom right;
+      }
+      .fa-layers-bottom-left {
+        bottom: 0;
+        left: 0;
+        right: auto;
+        top: auto;
+        -webkit-transform: scale(0.25);
+        transform: scale(0.25);
+        -webkit-transform-origin: bottom left;
+        transform-origin: bottom left;
+      }
+      .fa-layers-top-right {
+        right: 0;
+        top: 0;
+        -webkit-transform: scale(0.25);
+        transform: scale(0.25);
+        -webkit-transform-origin: top right;
+        transform-origin: top right;
+      }
+      .fa-layers-top-left {
+        left: 0;
+        right: auto;
+        top: 0;
+        -webkit-transform: scale(0.25);
+        transform: scale(0.25);
+        -webkit-transform-origin: top left;
+        transform-origin: top left;
+      }
+      .fa-lg {
+        font-size: 1.3333333333em;
+        line-height: 0.75em;
+        vertical-align: -0.0667em;
+      }
+      .fa-xs {
+        font-size: 0.75em;
+      }
+      .fa-sm {
+        font-size: 0.875em;
+      }
+      .fa-1x {
+        font-size: 1em;
+      }
+      .fa-2x {
+        font-size: 2em;
+      }
+      .fa-3x {
+        font-size: 3em;
+      }
+      .fa-4x {
+        font-size: 4em;
+      }
+      .fa-5x {
+        font-size: 5em;
+      }
+      .fa-6x {
+        font-size: 6em;
+      }
+      .fa-7x {
+        font-size: 7em;
+      }
+      .fa-8x {
+        font-size: 8em;
+      }
+      .fa-9x {
+        font-size: 9em;
+      }
+      .fa-10x {
+        font-size: 10em;
+      }
+      .fa-fw {
+        text-align: center;
+        width: 1.25em;
+      }
+      .fa-ul {
+        list-style-type: none;
+        margin-left: 2.5em;
+        padding-left: 0;
+      }
+      .fa-ul > li {
+        position: relative;
+      }
+      .fa-li {
+        left: -2em;
+        position: absolute;
+        text-align: center;
+        width: 2em;
+        line-height: inherit;
+      }
+      .fa-border {
+        border: solid 0.08em #eee;
+        border-radius: 0.1em;
+        padding: 0.2em 0.25em 0.15em;
+      }
+      .fa-pull-left {
+        float: left;
+      }
+      .fa-pull-right {
+        float: right;
+      }
+      .fa.fa-pull-left,
+      .fab.fa-pull-left,
+      .fal.fa-pull-left,
+      .far.fa-pull-left,
+      .fas.fa-pull-left {
+        margin-right: 0.3em;
+      }
+      .fa.fa-pull-right,
+      .fab.fa-pull-right,
+      .fal.fa-pull-right,
+      .far.fa-pull-right,
+      .fas.fa-pull-right {
+        margin-left: 0.3em;
+      }
+      .fa-spin {
+        -webkit-animation: fa-spin 2s infinite linear;
+        animation: fa-spin 2s infinite linear;
+      }
+      .fa-pulse {
+        -webkit-animation: fa-spin 1s infinite steps(8);
+        animation: fa-spin 1s infinite steps(8);
+      }
+      @-webkit-keyframes fa-spin {
+        0% {
+          -webkit-transform: rotate(0);
+          transform: rotate(0);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes fa-spin {
+        0% {
+          -webkit-transform: rotate(0);
+          transform: rotate(0);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+      .fa-rotate-90 {
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+      }
+      .fa-rotate-180 {
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+      }
+      .fa-rotate-270 {
+        -webkit-transform: rotate(270deg);
+        transform: rotate(270deg);
+      }
+      .fa-flip-horizontal {
+        -webkit-transform: scale(-1, 1);
+        transform: scale(-1, 1);
+      }
+      .fa-flip-vertical {
+        -webkit-transform: scale(1, -1);
+        transform: scale(1, -1);
+      }
+      .fa-flip-horizontal.fa-flip-vertical {
+        -webkit-transform: scale(-1, -1);
+        transform: scale(-1, -1);
+      }
+      :root .fa-flip-horizontal,
+      :root .fa-flip-vertical,
+      :root .fa-rotate-180,
+      :root .fa-rotate-270,
+      :root .fa-rotate-90 {
+        -webkit-filter: none;
+        filter: none;
+      }
+      .fa-stack {
+        display: inline-block;
+        height: 2em;
+        position: relative;
+        width: 2.5em;
+      }
+      .fa-stack-1x,
+      .fa-stack-2x {
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+      .svg-inline--fa.fa-stack-1x {
+        height: 1em;
+        width: 1.25em;
+      }
+      .svg-inline--fa.fa-stack-2x {
+        height: 2em;
+        width: 2.5em;
+      }
+      .fa-inverse {
+        color: #fff;
+      }
+      .sr-only {
+        border: 0;
+        clip: rect(0, 0, 0, 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+      }
+      .sr-only-focusable:active,
+      .sr-only-focusable:focus {
+        clip: auto;
+        height: auto;
+        margin: 0;
+        overflow: visible;
+        position: static;
+        width: auto;
+      }
+    </style>
+    <link rel="canonical" href="index.html" />
+
+    <!-- end _includes/seo.html -->
+
+    <link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed" />
+
+    <!-- https://t.co/dKP3o1e -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script>
+      document.documentElement.className =
+        document.documentElement.className.replace(/\bno-js\b/g, "") + " js ";
+    </script>
+
+    <!-- For all browsers -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+
+    <!--[if IE]>
+      <style>
+        /* old IE unsupported flexbox fixes */
+        .greedy-nav .site-title {
+          padding-right: 3em;
+        }
+        .greedy-nav button {
+          position: absolute;
+          top: 0;
+          right: 0;
+          height: 100%;
+        }
+      </style>
+    <![endif]-->
+
+    <!-- start custom head snippets -->
+
+    <!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+    <!-- end custom head snippets -->
+  </head>
+
+  <body class="layout--tutorial wide">
+    <!--[if lt IE 9]>
+      <div class="notice--danger align-center" style="margin: 0">
+        You are using an <strong>outdated</strong> browser. Please
+        <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.
+      </div>
+    <![endif]-->
+
+    <div class="masthead">
+      <div class="masthead__inner-wrap">
+        <div class="masthead__menu">
+          <nav id="site-nav" class="greedy-nav">
+            <a class="site-title" href="../../index.html">Catch22</a>
+            <ul class="visible-links">
+              <li class="masthead__menu-item">
+                <a href="../../blog/index.html">Blog</a>
+              </li>
+              <li class="masthead__menu-item">
+                <a href="../../software/index.html">Software</a>
+              </li>
+              <li class="masthead__menu-item">
+                <a href="../../tuts/index.html">Tutorials</a>
+              </li>
+              <li class="masthead__menu-item">
+                <a href="../../about/index.html">About</a>
+              </li>
+            </ul>
+
+            <button class="greedy-nav__toggle hidden" type="button">
+              <span class="visually-hidden">Toggle menu</span>
+              <div class="navicon"></div>
+            </button>
+            <ul class="hidden-links hidden"></ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="initial-content">
+      <nav class="breadcrumbs">
+        <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+          <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+            <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+            <meta itemprop="position" content="1" />
+          </li>
+          <span class="sep">/</span>
+
+          <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+            <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+            <meta itemprop="position" content="2" />
+          </li>
+          <span class="sep">/</span>
+
+          <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+            <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+            <meta itemprop="position" content="3" />
+          </li>
+          <span class="sep">/</span>
+
+          <li class="current">Neatpad Overview</li>
+        </ol>
+      </nav>
+
+      <div id="main" role="main">
+        <div class="sidebar sticky">
+          <div class="file-attachments">
+            <h4>DOWNLOADS</h4>
+
+            <a href="assets/files/neatpad1.zip">neatpad1.zip</a>
+          </div>
+
+          <nav class="nav__list">
+            <input id="ac-toc" name="accordion-toc" type="checkbox" />
+            <label for="ac-toc">Toggle Menu</label>
+            <ul class="nav__items">
+              <li>
+                <span class="nav__sub-title">Neatpad</span>
+
+                <ul>
+                  <li><a href="" class=""></a></li>
+
+                  <li><a href="index.html" class="active">Neatpad Overview</a></li>
+
+                  <li>
+                    <a href="loading-text-file.html" class="">Loading a text file</a>
+                  </li>
+
+                  <li>
+                    <a href="scrollbars-scrolling.html" class=""
+                      >Scrollbars &amp; Scrolling</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="enhanced-drawing-painting.html" class=""
+                      >Enhanced Drawing &amp; Painting</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="mouse-selection-highlighting.html" class=""
+                      >Mouse Selection &amp; Highlighting</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="scrolling-mouse.html" class=""
+                      >Scrolling with the Mouse</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="margins-and-long-lines.html" class=""
+                      >Margins and Long Lines</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="introduction-unicode.html" class=""
+                      >Introduction to Unicode</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="unicode-text-processing.html" class=""
+                      >Unicode Text Processing</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="transparent-text.html" class="">Transparent Text</a>
+                  </li>
+
+                  <li>
+                    <a href="introduction-uniscribe.html" class=""
+                      >Introduction to Uniscribe</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="uniscribe-mysteries.html" class=""
+                      >Uniscribe Mysteries</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="more-uniscribe-mysteries.html" class=""
+                      >More Uniscribe Mysteries</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="drawing-styled-text-uniscribe.html" class=""
+                      >Drawing styled text with Uniscribe</a
+                    >
+                  </li>
+
+                  <li>
+                    <a href="integrating-usplib.html" class="">Integrating UspLib</a>
+                  </li>
+
+                  <li>
+                    <a href="keyboard-navigation.html" class=""
+                      >Keyboard Navigation</a
+                    >
+                  </li>
+
+                  <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+
+                  <li>
+                    <a href="unicode-text-editing.html" class=""
+                      >Unicode Text Editing</a
+                    >
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+          <meta itemprop="headline" content="Neatpad Overview" />
+          <meta itemprop="description" content="Introduction" />
+          <meta itemprop="datePublished" content="January 29, 2005" />
+
+          <div class="page__inner-wrap">
+            <header>
+              <h1 id="page-title" class="page__title" itemprop="headline">Neatpad Overview</h1>
+            </header>
+
+            <section class="page__content" itemprop="text">
+              <!--h1>Neatpad Overview</h1-->
+              <!--h3>Introduction to the Win32 Text Editor series</h3-->
+
+              <h2 id="introduction">Introduction</h2>
+
+              新しいチュートリアルシリーズ、"Design and Implementation of a Win32 Text Editor!"
+              へようこそ。このチュートリアルの目的は、コードネーム「Neatpad」と呼ばれるWin32テキストエディタの開発をフォローすることです。それぞれのチュートリアルでは、主要なコンポーネントと設計上の決定事項を段階的に説明します。
+
+              <p><img src="assets/img/editor08.gif" alt="<>" /></p>
+
+              さて、タイトルに「テキストエディタ」とありますが、このチュートリアルシリーズの本当の目的はそこではありません。むしろ、テキストエディタの中核となる編集フロントエンドを提供できる、完全なエディットコントロールを書くことが目的です。もちろん、コードをテストするために小さなテストアプリケーション(Neatpad)を作らなければなりませんが、Windows標準のメモ帳以上のことはしません。
+
+              <h2 id="alternative-win32-solutions">Alternative Win32 Solutions</h2>
+
+              始める前に、以下の3つのwin32オープンソース・エディター・コンポーネントもチェックしてみてください。
+
+              <p>
+                <a href="../../../www.scintilla.org/index.html">Scintilla</a>,
+                <a href="../../../www.codeproject.com/editctrl/brainchild.asp">Brainchild</a> and
+                <a href="../../../www.codeproject.com/editctrl/crysedit.asp">CrystalEdit</a>.
+              </p>
+
+              特にScintillaは非常に優れた機能を持っていますが、この3つのエディタはいずれもコードベースが大きく扱いにくいという問題を抱えており、またメモリ管理の仕組みにも限界があるため、大きなファイルは特にスマートに処理できません。
+
+              <h2 id="text-editor-resources">Text Editor Resources</h2>
+
+              以下のリソースは、個々のアプリケーションではなく、テキストエディタのデザインについて説明していますので、リンク先に目を通し、そこにあるものを読んでみるのも有益な練習になるでしょう。
+
+              <p>
+                <a href="../../../www.cs.unm.edu/~crowley/papers/sds/sds.html"
+                  >Data Structures For Text Sequences</a
+                >
+              </p>
+
+              様々なテキストエディタのデータ構造を比較、解説しています。サンプルコードはありませんが、著者(Charles
+              Crowley)は非常に良い仕事をしています。目立つのは「ピーステーブル」方式で、これは私のHexEditのデザインの元になったアイデアでもあります。これは、私たちが独自のテキストエディタに使用する方法になります。上のリンクはかなり古いもので、メインページからはもうアクセスできません。また、画像も失われています。しかし、完全なPostScript版はここからダウンロードできます。また、PDFバージョンもありますので、直接ダウンロードすることもできます。
+
+              <p><a href="../../../www.finseth.com/craft/index.html">The Craft of Text Editing</a></p>
+
+              EMACSテキストエディタの設計に関する問題を議論しています。非常に有名なエディタですが
+              (主にそのユーザインタフェースのために)、
+              「バッファギャップ」方式を採用しているようで、おそらく EMACS
+              は大きなファイルには向いていないでしょう。
+
+              <p>
+                <a href="../../../www.canberra.edu.au/~scott/C=Hacking/C-Hacking11/zedace.html"
+                  >Design and Implementation of an Advanced Text Editor</a
+                >
+              </p>
+
+              説明されているテキストエディタは決して高度なものではありませんが（「ベーシック」と言っても過言ではありません）、この文書にはテキストエディタとユーザーインターフェースに関する興味深いアイデアが含まれています。
+
+              <p><a href="../../../ned.rubyforge.org/index.html">ned.rubyforge.org</a></p>
+
+              他のテキスト編集関連の文書やウェブサイトへのリンクも充実しています。
+
+              <h2 id="edit-control-requirements">Edit-control requirements</h2>
+
+              まず最初にしなければならないことは、この仕事を完璧にこなせるテキストコントロールがすでに存在しないかどうかを確認することです。これを読んでいる人は、私と同じ結論に達しているのではないでしょうか。Windows標準のエディットコントロールやリッチエディットコントロールは、速度が遅く、大きなファイルを扱えず、まず第一にフリックの問題があり、私はフリックするアプリが嫌いなのです。)
+
+              <p>
+                このプロジェクトを始めようと思った一番の理由は、私にとっても、このシリーズを読んでいる人にとっても、勉強になるということです。さて、独自のエディットコントロールを作ることが決まったところで、次のステップは、エディットコントロールにどんな機能を持たせるかを決めることです。この最初の設計案は、最終的な実装に大きな影響を与える可能性があるため、重要です。では、順不同で、私がエディットコントロールに求める機能を紹介しましょう。
+              </p>
+
+              <ul>
+                <li>
+                  無制限のファイルサイズと行数の編集が可能で、ファイルサイズが大きくなってもパフォーマンスの低下はほとんど（あるいは全く）ありません。
+                </li>
+                <li>
+                  高速で滑らかなグラフィック表示。これには、テキストの選択や、アーティファクトやグリッチのないスムーズなスクロールが含まれます。
+                </li>
+                <li>
+                  シンタックスカラーリング。私たちはプログラマーですから、ソースコードにシンタックスカラーを付けられないエディットコントロールに何の意味があるのでしょうか
+                  :-)
+                </li>
+                <li>クリップボードとドラッグ＆ドロップに完全対応。</li>
+                <li>
+                  シングルフォントのみ。まずは固定幅のフォントに限定しますが、難しそうでなければ可変幅のフォントを扱うことも視野に入れています
+                  :-)
+                </li>
+                <li>完全なUndoとRedoのサポート。</li>
+                <li>ASCII、Unicode、UTF-8に対応しています。</li>
+              </ul>
+
+              <p>
+                この記事のシリーズを進めていく中で、さらなる機能を夢見ていくことになると思いますが、今はこれで十分だと思います。)
+              </p>
+
+              <h2 id="choice-of-language">Choice of language</h2>
+
+              <p>
+                これは難しい問題ですね。現実的には、CとC++のどちらかを選ぶことになります。Cは、誰でもコンパイルできるという点で優れていますが、C++は、この種の制御を書くのが容易であるという利点があります。このチュートリアルでは、CとC++の混合言語を使用します。テキストエディタコントロールはC++を使って書きますが、メインアプリケーション（Neatpad）は「純粋なwin32」Cで書かれているので、コントロールには「C」のインターフェースを提供します。
+              </p>
+
+              <p>
+                このコントロールは、.NETやVisual
+                Basicなどの高級言語では使用できません。本連載の最終回では、エディタコントロールを外部DLLに入れて他の言語でも使用できるようにすることを検討するかもしれませんが、今のところ、これはサードパーティのライブラリを使用しない純粋なC/C++ソリューションです。
+              </p>
+
+              <h2 id="design-of-a-text-editor">Design of a Text Editor</h2>
+
+              <p>
+                テキストエディタは概念的にはとてもシンプルです。メモ帳を見てみましょう。メインウィンドウと、その中にある「編集」コントロールだけがあります。テキストエディタを実装する際には、このようなデザインを採用しています。
+              </p>
+
+              <p>
+                下の図は、テキストエディタの主要な構成要素を示しています。まず最初に、トップレベルのメインウィンドウがあります。これは、タイトルバー、メニューバー、ステータスバーを含むウィンドウです。メインウィンドウは、テキストファイルを編集する方法を知らず、ユーザーにインターフェースを提供することだけが目的です。このコンポーネントは純粋なwin32
+                Cで書かれています。
+              </p>
+
+              <p><img src="assets/img/editor01.gif" alt="<>" /></p>
+
+              <p>
+                最も重要なコンポーネントは、「TextView」です。これは、メイン（親）ウィンドウの子となる別ウィンドウです。TextViewは、テキストエディタのビジュアルコンポーネントです。このコントロールの主な目的は、テキストの表示と編集ですが、これ以外にも、スクロールバーの表示、マウスやキーボードの入力の処理、ドラッグ＆ドロップのサポートなど、他の機能も必要となります。
+              </p>
+
+              <p>
+                TextDocument」コンポーネントは目に見えるものではありませんが、メモリに読み込まれたテキストファイルを保存したり操作したりするために使用されます。テキストオブジェクトには、ウィンドウ、マウス、描画、ペイントなどの概念はありません。テキストを操作したり、何かを描きたいときにエディットコントロールにテキストを渡したりすることしかできません。
+              </p>
+
+              <p>
+                最後のコンポーネントは、実際にはテキストエディタの一部ではありませんが、重要な役割を果たしています。それは、編集したいテキストを保存するディスクファイルです。TextDocumentは、このテキストファイルと直接インターフェースをとり、新しいドキュメントを読み込んだり保存したりするときに、このテキストファイルに読み書きします。
+              </p>
+
+              <p>
+                TextViewとそれを格納するデータ(TextDocument)を分離することが重要です。これには2つの大きなメリットがあります。1つは、1つのテキストオブジェクトに複数のエディットコントロールをアタッチすることができること。最大の利点は、ビジュアルコンポーネントのデザインに影響を与えることなく、テキストファイルの保存と表現方法をいつでも変更できることです。
+              </p>
+
+              <p>
+                コンポーネントの設計で注意しなければならないのは、各コンポーネント間の「インターフェイス」です。TextViewは、線を中心としたグラフィカルな存在です。エディットウィンドウで行われる作業のほとんどは、ディスプレイの更新です。そのためには、TextDocumentから行ごとにデータを取得する必要があります。
+              </p>
+
+              <p>
+                一方で、TextDocument とディスクファイルの間のインターフェースもあります。TextDocument
+                は、行ごとの戦略ではなく、ファイル全体を一度にメモリに読み込むか、管理可能なチャンクでファイルにアクセスします。いずれにしても、私たちは興味深い設計上の決断を迫られています。)
+              </p>
+
+              <h2 id="neatpad---a-win32-text-editor">Neatpad - a Win32 Text Editor</h2>
+
+              <p>
+                このチュートリアルの一番上には、スケルトンのテキストエディタのソースコードが入ったZIPファイルへのリンクがあります。私はこのプロジェクトをWindows標準のメモ帳を参考にして「Neatpad」と名付けました
+                :-)
+              </p>
+
+              <p>
+                When you unzip the download, there will be a single Visual C++ project workspace (
+                <strong>neatpad.dsw</strong> ) and two subdirectories ( <strong>Neatpad</strong> and
+                <strong>TextView</strong> ). The Neatpad directory contains several files, the important
+                ones listed below:
+              </p>
+
+              <ul>
+                <li>
+                  <code class="highlighter-rouge">neatpad.c</code> - the main Neatpad application source
+                  file.
+                </li>
+                <li><code class="highlighter-rouge">resource.rc/h</code> - Neatpad’s resources.</li>
+                <li><code class="highlighter-rouge">neatpad.dsp</code> - the Visual Studio project.</li>
+              </ul>
+
+              <p>
+                トップレベルのディレクトリにあるメインの neatpad.dsw
+                ワークスペースを使って作業することを意図しています。このワークスペースでは、プロジェクト全体(Neatpad
+                と TextView)を構築することができます。ワークスペースとプロジェクトは Visual Studio 6.0
+                形式ですが、他の IDE に変換するのは難しくありません。
+              </p>
+
+              <h2 id="textview---a-win32-custom-control">TextView - a Win32 Custom Control</h2>
+
+              <p>
+                TextViewディレクトリには、C++で実装されたWin32カスタムコントロールのスケルトンのソースコードが含まれています。このコントロールは、ウィンドウに
+                "Hello World
+                "を表示する以外には何もしません。実際、ほとんどのコードは、空のTextViewウィンドウを登録・作成するのに必要なものだけです。
+              </p>
+
+              <p>
+                There are four files in the TextView directory - TextView.dsp, TextView.c, TextView.h and
+                TextViewInternal.h:
+              </p>
+
+              <ul>
+                <li>
+                  <code class="highlighter-rouge">TextView.h</code> - the “public interface” to the
+                  TextView control.
+                </li>
+                <li>
+                  <code class="highlighter-rouge">TextView.c</code> - the main implementation of the
+                  TextView window.
+                </li>
+                <li>
+                  <code class="highlighter-rouge">TextViewInternal.h</code> - the private header file
+                  used by TextView.c, and contains the TextView C++ class definition.
+                </li>
+                <li><code class="highlighter-rouge">TextView.dsp</code> - the Visual Studio project.</li>
+              </ul>
+
+              <p>
+                Most of the future tutorials will concentrate on adding functionality to the TextView
+                project.
+              </p>
+
+              <h2 id="public-interface-to-the-textview">Public Interface to the TextView</h2>
+
+              <p>
+                TextViewをコントロールする基本的な方法は、標準的なEditコントロールで使用するのと同様に、SendMessage
+                APIを使用したWindowsメッセージです。これを実現するためには、使用できるメッセージ値の範囲を定義する必要があります。これらのメッセージ値は、"パブリック
+                "なTextView.hで定義されますので、プロジェクトでTextViewコントロールを使用したいときは、単に#include
+                TextView.hを実行してください。
+              </p>
+
+              <div class="language-cpp highlighter-rouge">
+                <div class="highlight">
+                  <pre class="highlight"><code><span class="cp">#define TEXTVIEW_CLASS "TextView32"
+</span>
+<span class="cp">#define TXM_BASE (WM_USER)
+#define TXM_OPENFILE (TXM_BASE + 0)#define TextView_OpenFile(hwndTV, szFile) \
+                  SendMessage((hwndTV), TXM_OPENFILE, 0, (LPARAM)(szFile))
+</span></code></pre>
+                </div>
+              </div>
+
+              <p>
+                ご覧の通り、これまでに定義されたメッセージはTXM_OPENFILEの1つだけです。このチュートリアルを進めて、TextViewにもっと機能を追加していくと、もっと多くのメッセージを追加していくことになるでしょう。私は、このTextViewが、標準的なEM_xxxエディットコントロールのメッセージもサポートしていると想像しています。
+              </p>
+
+              <p>
+                上で定義したマクロ（TextView_OpenFile）は、コントロールの代替インターフェースを提供します。基本的にはSendMessageコールのラッパーであり、より使いやすくなっています。ファイルを開く例を以下に示します。
+              </p>
+
+              <div class="language-cpp highlighter-rouge">
+                <div class="highlight">
+                  <pre
+                    class="highlight"
+                  ><code><span class="n">TextView_OpenFile</span><span class="p">(</span><span class="n">hwndTextView</span><span class="p">,</span> <span class="s">"C:</span><span class="se">\\</span><span class="s">SRC</span><span class="se">\\</span><span class="s">TEXTVIEW</span><span class="se">\\</span><span class="s">README.TXT"</span><span class="p">);</span>
+</code></pre>
+                </div>
+              </div>
+
+              <h2 id="coming-up-in-part-2">Coming up in Part 2</h2>
+
+              <p>
+                このチュートリアルシリーズの最初の部分は、私たちが何を達成しようとしているかを紹介するものでした。ここでは、読者（あなた）が少なくともC言語とWin32の知識を持っていることを前提としています。なぜなら、これらのチュートリアルから利益を得ようとするなら、相応のプログラミング経験が必要だからです。コードは非常にシンプルですが、様々なコンポーネントがどのように組み合わされているかを理解することが重要です。
+              </p>
+
+              <p>
+                今後のチュートリアルでは、テキストビューコントロールの機能の詳細を説明していきます。テキストエディタを試しているうちに、必要と思われる手順のリストを作成しました。以下のリストをご覧になれば、このチュートリアルシリーズの流れがお分かりになると思います。
+              </p>
+
+              <ul>
+                <li>Drawing lines of text</li>
+                <li>Scrolling and scrollbars</li>
+                <li>Selection and highlighting using the mouse</li>
+                <li>Syntax colouring</li>
+                <li>Ascii, Unicode and UTF-8</li>
+                <li>Keyboard and Mouse input</li>
+                <li>Highlighting and text-selection.</li>
+                <li>Selection margin and borders.</li>
+                <li>Loading large files</li>
+                <li>Editing large files</li>
+                <li>Undo and Redo</li>
+                <li>Clipboard and Drag+Drop</li>
+                <li>Scrolling with the mouse</li>
+                <li>Searching for data</li>
+                <li>Folding editors</li>
+              </ul>
+
+              <p>
+                I will try and stick to the above topics as closely as possible, but bear in mind that I
+                don’t have a fixed project plan, so we will see this text editor evolve incrementally
+                over the next few weeks.
+              </p>
+
+              <div class="file-attachments">
+                <h4>DOWNLOADS</h4>
+
+                <a href="assets/files/neatpad1.zip">neatpad1.zip</a>
+              </div>
+            </section>
+
+            <footer class="page__meta">
+              <p class="page__date">
+                <strong
+                  ><svg
+                    class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw"
+                    aria-hidden="true"
+                    data-prefix="fas"
+                    data-icon="calendar-alt"
+                    role="img"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                    data-fa-i2svg=""
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"
+                    ></path></svg
+                  ><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> -->
+                  Updated:</strong
+                >
+                <time datetime="2005-01-29T00:00:00+00:00">January 29, 2005</time>
+              </p>
+            </footer>
+
+            <nav class="pagination">
+              <a
+                href="../../tuts/neatpad.html"
+                class="pagination--pager"
+                title="Design &amp; Implementation of a Win32 Text Editor
+"
+                >Previous</a
+              >
+
+              <a
+                href="loading-text-file.html"
+                class="pagination--pager"
+                title="Loading a text file
+"
+                >Next</a
+              >
+            </nav>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+        <!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+          <ul class="social-icons">
+            <li>
+              <a href="../../feed.xml"
+                ><svg
+                  class="svg-inline--fa fa-rss-square fa-w-14 fa-fw"
+                  aria-hidden="true"
+                  data-prefix="fas"
+                  data-icon="rss-square"
+                  role="img"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  data-fa-i2svg=""
+                >
+                  <path
+                    fill="currentColor"
+                    d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"
+                  ></path></svg
+                ><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> -->
+                Feed</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="page__footer-copyright">
+          © 2019 Catch22. Powered by
+          <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp;
+          <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow"
+            >Minimal Mistakes</a
+          >.
+        </div>
+      </footer>
+    </div>
+
+    <script src="assets/js/main.min.js"></script>
+    <script
+      defer=""
+      src="https://use.fontawesome.com/releases/v5.6.0/js/all.js"
+      integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

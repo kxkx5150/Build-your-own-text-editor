@@ -1,0 +1,755 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Introduction to Uniscribe - Catch22</title>
+<meta name="description" content="Uniscribe is a low-level Win32 API that provides a high degree of control over the processing and display of Unicode text. The API is designed to provide a generic interface to all forms of Unicode text (complex or otherwise), and transparently handles properties such as bi-directional text and combining characters sequences.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Introduction to Uniscribe">
+<meta property="og:url" content="introduction-uniscribe">
+
+
+  <meta property="og:description" content="Uniscribe is a low-level Win32 API that provides a high degree of control over the processing and display of Unicode text. The API is designed to provide a generic interface to all forms of Unicode text (complex or otherwise), and transparently handles properties such as bi-directional text and combining characters sequences.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2006-02-27T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="introduction-uniscribe.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></head>
+
+  <body class="layout--tutorial wide" style="margin-bottom: 171.375px;">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button" count="0" style="">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Introduction to Uniscribe</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/scriptstring.zip">scriptstring.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="active">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Introduction to Uniscribe">
+    <meta itemprop="description" content="Uniscribe is a low-level Win32 API that provides a high degree of control over the processing and display of Unicode text. The API is designed to provide a generic interface to all forms of Unicode text (complex or otherwise), and transparently handles properties such as bi-directional text and combining characters sequences.">
+    <meta itemprop="datePublished" content="February 27, 2006">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Introduction to Uniscribe
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Introduction to Uniscribe</h1-->
+<!--h3>Introducing Uniscribe</h3-->
+
+<p>Uniscribe は、Unicode テキストの処理と表示を高度に制御する、低レベルの Win32 API です。このAPIは、あらゆる形式のUnicodeテキスト（複雑なものでもそうでなくても）に対する汎用的なインターフェースを提供するように設計されており、双方向テキストや結合文字列などのプロパティを透過的に処理します。
+
+</p>
+
+<p>Uniscribeは、USP10.DLLという単一のDLLで、UniscribeのすべてのAPIを含んでいます。このDLLは、Windows 2000以上、またはInternet Explorer 5.0（またはそれ以上）がインストールされたコンピューターに存在します。2つのプラットフォームSDKファイル（USP10.HおよびUSP10.LIB）は、アプリケーションがこの複雑なスクリプトのサポートを利用できるようにするために、マイクロソフトによって提供されます。Uniscribeの重要な点は、複雑なスクリプトを処理するだけではなく、すべてのUnicodeテキストを処理して表示することができるということです。
+
+</p>
+
+<p>Uniscribe API は、2 つのカテゴリに分かれています - 低レベル API 自体と、Uniscribe を直接扱う際の複雑さの多くを隠す ScriptString と呼ばれるラッパーライブラリです。このチュートリアルの目的は、本格的な作業に入る前に、Uniscribe の世界を簡単に紹介することです。
+
+</p>
+
+<h2 id="uniscribe-in-windows">Uniscribe in Windows</h2>
+
+<p>Neatpadを始めたばかりの頃、私はUniscribeが何を必要としているのかよく知りませんでしたし、Unicodeを調べて初めて、Unicodeテキストの表示をめぐる問題を完全に理解しました。Uniscribeは、MSDNドキュメントの中で独自のセクションを占めていますが（ここ）、時折言及される以外は、その存在をすでに知っていない限り、非常に見落としやすいものです。
+
+</p>
+
+<p>MSDNによると、Windows 2000以降、複雑なスクリプトをサポートするためにExtTextOut関数（およびTextOut、DrawTextなどの他の関数）が拡張されました。これは事実ですが、アプリケーションがUTF-16テキストのバッファを持っていつでもExtTextOutW（Unicodeバージョン）を呼び出すことができ、それが常に正しく表示されるという印象を与えます。
+
+</p>
+
+<p><img src="assets/img/editor1003.gif" alt=""></p>
+
+<p>Windowsが設定されていない限り、ExtTextOutなどの関数は自動的に複雑なスクリプトをサポートしません。上の図は、「地域と言語のオプション」ダイアログです。ハイライトされている2つの設定は、デフォルトでインストールされているアメリカ/イギリスのWindowsでは通常有効になっていません。
+
+</p>
+
+<p>複雑なスクリプトのサポートを有効にすると、いくつかの追加ライブラリがインストールされます。その後、ExtTextOutは複雑なスクリプトを表示するために必要なときにUniscribeを使用します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="n">ExtTextOut</span> <span class="p">(</span>
+  <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> <span class="c1">// handle to DC
+</span>  <span class="kt">int</span> <span class="n">X</span><span class="p">,</span> <span class="c1">// x-coordinate of reference point
+</span>  <span class="kt">int</span> <span class="n">Y</span><span class="p">,</span> <span class="c1">// y-coordinate of reference point
+</span>  <span class="n">UINT</span> <span class="n">fuOptions</span><span class="p">,</span> <span class="c1">// text-output options (ETO_GLYPH_INDEX etc)
+</span>  <span class="n">RECT</span> <span class="o">*</span> <span class="n">lprc</span><span class="p">,</span> <span class="c1">// optional dimensions
+</span>  <span class="n">LPCTSTR</span> <span class="n">lpString</span><span class="p">,</span> <span class="c1">// string
+</span>  <span class="n">UINT</span> <span class="n">cbCount</span><span class="p">,</span> <span class="c1">// number of characters in string
+</span>  <span class="n">INT</span> <span class="o">*</span> <span class="n">lpDx</span> <span class="c1">// array of spacing values
+</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>ExtTextOutは、文字列の表示に最もよく使われます。しかし、それ以上のことができます。ETO_GLYPH_INDEXおよびETO_PDYオプションを指定すると、ExtTextOutを使用して、文字ではなくグリフのバッファを表示できます。ExtTextOutのこの機能は、下の図のように、複雑なスクリプトを含む文字列を表示するときに使用します。
+
+</p>
+
+<p><img src="assets/img/editor1101.gif" alt=""></p>
+
+<p>Text drawing in Windows 2000 and above</p>
+
+<p>複雑なスクリプトを含む複雑な文字列の場合、ExtTextOutはUniscribeを利用して表示します。Uniscribeは、文字列をグリフのグループに分解してから、今度はETO_GLYPH_INDEXオプションを指定して、元の文字値の代わりにグリフインデックスのバッファを指定して、ExtTextOutを再呼び出しします。特別な処理を必要としない通常のUnicodeテキストについては、ExtTextOutは以前のWindowsバージョンでの動作とまったく同じです。
+
+</p>
+
+<p>DrawTextやTextOutのようなルーチンが複雑なスクリプトのレンダリングをほとんど成功させることができるのに、なぜUniscribeが必要なのかと思われるかもしれません。単一のテキスト文字列を出力するだけのアプリケーションでは、Uniscribe は必要ありません。
+
+</p>
+
+<p>Uniscribe が必要になるのは、文字列を（スタイリングやフォーマットのために）分割しなければならないときだけです。これまでのNeatpadのように、Unicode文字列をセクションに分割することはできません。そうすると、文脈に応じたシェーピング動作や双方向のサポートなど、あらゆるものが壊れてしまいます。現代のテキストエディタは、Unicodeとそれに付随する様々なスクリプトをサポートしなければなりません。私たちは、Uniscribeに移行する以外の選択肢はありません。
+
+</p>
+
+<h2 id="the-scriptstring-api">The ScriptString API</h2>
+
+<p>ScriptString APIは、単一のフォントと色でテキストを表示したいアプリケーションのために設計されています。メモ帳(およびWindows標準のEDITコントロール)は、ScriptString APIの代表的な例です。このAPIの優れた機能のひとつに、文字列を表示する際に、その文字列の一部を「選択済み」として表示することができます。これは、非常に手間を省くことができる、非常に優れた機能です。</p>
+
+<p>ScriptStringAnalyze関数は、Uniscribeの出発点となる関数です。見た目にはかなり威圧感のある関数です。しかし、その目的は、Unicodeテキストの任意の文字列に対してシェーピングとグリフ生成を行うことであり、完了するとSCRIPT_STRING_ANALYSIS構造体を返します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRESULT</span> <span class="n">WINAPI</span> <span class="n">ScriptStringAnalyse</span> <span class="p">(</span>
+  <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span>
+  <span class="kt">void</span> <span class="o">*</span> <span class="n">pString</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">cString</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">cGlyphs</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">iCharset</span><span class="p">,</span>
+  <span class="n">DWORD</span> <span class="n">dwFlags</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">iReqWidth</span><span class="p">,</span>
+  <span class="n">SCRIPT_CONTROL</span> <span class="o">*</span> <span class="n">psControl</span><span class="p">,</span>
+  <span class="n">SCRIPT_STATE</span> <span class="o">*</span> <span class="n">psState</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="o">*</span> <span class="n">piDx</span><span class="p">,</span>
+  <span class="n">SCRIPT_TABDEF</span> <span class="o">*</span> <span class="n">pTabdef</span><span class="p">,</span>
+  <span class="n">BYTE</span> <span class="o">*</span> <span class="n">pbInClass</span><span class="p">,</span>
+  <span class="n">SCRIPT_STRING_ANALYSIS</span> <span class="o">*</span> <span class="n">pssa</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>SCRIPT_STRING_ANALYSISは不透明な構造体であり、この構造体に何が含まれているかを詳細に説明する文書はありません。しかし、これは重要ではありません。というのも、この構造体は ScriptString API の残りの部分に渡されるだけで、それ以上の知識は必要ないからです。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRESULT</span> <span class="n">WINAPI</span> <span class="n">ScriptStringOut</span> <span class="p">(</span>
+  <span class="n">SCRIPT_STRING_ANALYSIS</span> <span class="n">ssa</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="n">iX</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="n">iY</span><span class="p">,</span> 
+  <span class="n">UINT</span> <span class="n">uOptions</span><span class="p">,</span> 
+  <span class="n">RECT</span> <span class="o">*</span> <span class="n">prc</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="n">iMinSel</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="n">iMaxSel</span><span class="p">,</span> 
+  <span class="n">BOOL</span> <span class="n">fDisabled</span> 
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>ScriptStringOutは、以前に解析されたテキストの文字列を表示するために使用されます。SCRIPT_STRING_ANALYSIS構造体のみが渡され、これには元の文字列を表示するために必要なすべての情報が含まれています。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRESULT</span> <span class="n">WINAPI</span> <span class="n">ScriptStringXtoCP</span> <span class="p">(</span>
+  <span class="n">SCRIPT_STRING_ANALYSIS</span> <span class="n">ssa</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="n">iX</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="o">*</span> <span class="n">piCh</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="o">*</span> <span class="n">piTrailing</span> 
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>ScriptStringXtoCPは面白い関数です。これは、Unicodeテキストの文字列の中で、キャレットやマウスの位置を決めるためのメカニズムを提供します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRESULT</span> <span class="n">WINAPI</span> <span class="n">ScriptStringCPtoX</span> <span class="p">(</span>
+  <span class="n">SCRIPT_STRING_ANALYSIS</span> <span class="n">ssa</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="n">icp</span><span class="p">,</span> 
+  <span class="n">BOOL</span> <span class="n">fTrailing</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="o">*</span> <span class="n">pX</span> 
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>ScriptStringCPtoX は ScriptXtoCP と対をなすものです。これは文字列の位置を表示座標に変換するという逆の作業を行います。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRESULT</span> <span class="n">WINAPI</span> <span class="n">ScriptStringFree</span><span class="p">(</span>
+  <span class="n">SCRIPT_STRING_ANALYSIS</span> <span class="o">*</span> <span class="n">pssa</span>  
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>アプリケーションが文字列の表示を終えたら、ScriptStringFree関数を使って後始末をします。ここで紹介した以外にも、さまざまなScriptString関数がありますが、これら5つの関数を使うだけで、アプリケーションは最小限の労力で、完全な機能を持つテキストエディタのフロントエンドを実装することができます。
+
+</p>
+
+<p><img src="assets/img/editor1102.gif" alt=""></p>
+
+<p>上の画像は、私が書いた ScriptString API を使った簡単なアプリケーションです。ソースコードとデモ用の実行ファイルは、この記事のトップからダウンロードできます。
+
+</p>
+
+<p>ScriptStringの奇妙な点はこれです。ScriptStringOutは、レンダリングに使われたデバイスコンテキストが、ScriptAnalyzeで文字列を分析したときに使われたものと同じでない場合、失敗します。
+
+</p>
+
+<h2 id="introducing-usplib">Introducing UspLib</h2>
+
+<p>ScriptString API の主な問題点は、複数のフォントや色でテキストを表示できないことです。このため、今回の Neatpad の用途には特に適していません。唯一の選択肢は、低レベルの Uniscribe 関数を直接使用することです。
+
+</p>
+
+<p>USPLibは、ScriptStringが提供できる機能よりもはるかに豊富な機能を提供するために私が書いたライブラリです。この新しいライブラリは、今後数回のチュートリアルで説明する低レベルのUniscribe APIのラッパーを提供します。UspLibは、ScriptStringのUniscribeラッパーと非常に似たアプローチをとっていますが、テキストの色付けやフォーマットに関しては、さらに進んでいます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">USPDATA</span> <span class="o">*</span> <span class="n">USP_Allocate</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>最初のAPIはUSP_Allocateです。この関数は、その後のUspLibの操作に使用しなければならないUSPDATAオブジェクトへのポインタを返します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="n">USP_Analyze</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>
+  <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span>
+  <span class="n">WCHAR</span> <span class="o">*</span> <span class="n">wstr</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">wlen</span><span class="p">,</span>
+  <span class="n">ATTR</span> <span class="o">*</span> <span class="n">attrRunList</span><span class="p">,</span>
+  <span class="n">UINT</span> <span class="n">flags</span><span class="p">,</span>
+  <span class="n">USPFONT</span> <span class="o">*</span> <span class="n">uspFont</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>USP_Analyze は ScriptStringAnalyze に似ています。違いは、既存のUSPDATAオブジェクトを使って、テキストの文字列を再分析できることです。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">USP_ApplyAttributes</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>
+  <span class="n">ATTR</span> <span class="o">*</span> <span class="n">attrRunList</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>文字列が分析された後（つまり、項目化され、形が整えられた後）、USP_ApplyAttributesを使用して、いつでも色属性を再適用することができます。ATTRランリストに格納されているフォント情報は無視されます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">USP_ApplySelection</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">selStart</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">selEnd</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>USP_ApplySelection は USP_ApplyAttributes と同様のタスクを実行します。しかし、今回はUSPDATAオブジェクト内の選択フラグのみが変更されます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">USP_TextOut</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>
+  <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">xpos</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">ypos</span><span class="p">,</span>
+  <span class="n">RECT</span> <span class="o">*</span> <span class="n">rect</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>USP_TextOutは、ScriptStringOutと対をなすものです。前に解析されたUSPDATAオブジェクトを入力として受け取り、指定された場所にテキストを描画します。描画されたテキストには、フォント、色、選択ハイライトが適用されます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">USP_Free</span><span class="p">(</span><span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>USPDATAオブジェクトが不要になった時点で、USP_Freeを呼び出す必要があります。次の2、3回のチュートリアルでは、私がどのようにしてUspLibを実装したかを詳しく説明し、Uniscribeを直接使用する場合の詳細と例を示す予定です。
+
+</p>
+
+<p>私はUspLibをNeatpadとは切り離して設計しました。私の意図は、それが完全に独立したライブラリであり、複雑なスクリプトのサポートを追加するためにどんなアプリケーションでも使用できることです。UspLibは、Uniscribe DLL以外の依存関係がないため、プロジェクトにインポートしてすぐに使用することができるはずです。
+
+</p>
+
+<h2 id="further-reading">Further Reading</h2>
+
+<p>Uniscribeについては、MSDNで公開されている以外の情報はほとんどありません。
+
+</p>
+
+<p><a href="../../../msdn.microsoft.com/library/default.asp_url=/library/en-us/intl/uniscrib_35k5.asp">Uniscribe Platform SDK Reference</a></p>
+
+<p><a href="../../../www.microsoft.com/msj/1198/multilang/multilang.aspx">Supporting Multilanguage Text Layout and Complex Scripts with Windows NT 5.0</a></p>
+
+<p><a href="../../../www.microsoft.com/globaldev/getWR/steps/wrg_cscripts.mspx">Globalization Step-by-Step - Complex Scripts Awareness</a></p>
+
+<p><a href="../../../www.microsoft.com/typography/Glyph%20Processing/intro.mspx">Windows Glyph Processing</a></p>
+
+<p>There is also the CSSamp example program from Platform SDK, in the Samples sub-directory:<code class="highlighter-rouge">\PlatformSDK\Samples\winui\globaldev\CSSamp</code></p>
+
+<h2 id="alternatives-to-uniscribe">Alternatives to Uniscribe</h2>
+
+<p>すべてのエディターがUniscribeを使用しているわけではありません。もしオープンソースがお好みであれば、現在、Uniscribeに代わる非常に強力な選択肢を提供する、2つの素晴らしい取り組みがあります。ATSUIと呼ばれる、AppleのOSXで利用可能なUniscribeの同等のバージョンもあります。
+
+</p>
+
+<p>International Components for Unicode (ICU)は、IBMが開発したオープンソースのUnicodeサポートライブラリです。文字変換、解析、検索、レイアウトなど、さまざまな機能を備えています。
+
+</p>
+
+<p>Pangoは、Unicodeテキストをレイアウト、レンダリングするためのオープンソースのライブラリです。GTKディスプレイライブラリの上に配置されており、CairoまたはWin32（Uniscribe）のレンダリングバックエンドを指定できます。Uniscribeよりも完全なソリューションを提供しており、非常によく設計・実装されていると思われます。ただし、PangoはUTF-8ベースなので、アプリケーションの他の部分がUTF-16の場合は、この点が考慮されるかもしれません。
+
+</p>
+
+<p>Apple Type Services For Unicode Imaging (ATSUI) は、Apple 独自の Uniscribe バージョンですが、Microsoft の取り組みよりも高レベルであるように見えます。ATSUIのドキュメントを簡単に見てみると、MicrosoftがUniscribeのために管理していたものよりも、はるかに使いやすいデザインで、実質的に優れたドキュメントであることがわかりました。
+
+</p>
+
+<h2 id="coming-up-in-part-12">Coming up in Part 12</h2>
+
+<p>ここでは、Uniscribeの簡単な紹介をしましたが、Uniscribeの機能を少しでも理解していただき、ScriptStringサンプルプログラムをダウンロードしてテストしていただければ幸いです。
+
+</p>
+
+<p>第12回は、最初の2つのUniscribe関数を取り上げます。ScriptItemizeとScriptLayoutです。この2つのAPIだけでもかなりの内容をカバーしており、Neatpadを使ってこの方法でテキストが描画されるのを見るのは第13回以降になるでしょう。
+
+</p>
+
+<p>最後に、ここ数ヶ月、Neatpadに関するフィードバックがあまりありませんでしたが、このチュートリアルを読んで役に立ったでしょうか？
+
+</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/scriptstring.zip">scriptstring.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2006-02-27T00:00:00+00:00">February 27, 2006</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="transparent-text.html" class="pagination--pager" title="Transparent Text
+">Previous</a>
+    
+    
+      <a href="uniscribe-mysteries.html" class="pagination--pager" title="Uniscribe Mysteries
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer" style="">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

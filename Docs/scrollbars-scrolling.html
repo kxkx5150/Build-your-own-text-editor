@@ -1,0 +1,878 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Scrollbars &amp; Scrolling - Catch22</title>
+<meta name="description" content="Welcome to the third installment of the “Design and Implementation of a Win32 Text Editor” article series! In this part we will look at adding scrollbars and scrolling to our TextView control.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Scrollbars &amp; Scrolling">
+<meta property="og:url" content="scrollbars-scrolling">
+
+
+  <meta property="og:description" content="Welcome to the third installment of the “Design and Implementation of a Win32 Text Editor” article series! In this part we will look at adding scrollbars and scrolling to our TextView control.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2005-02-20T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="scrollbars-scrolling.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--tutorial wide">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Scrollbars &amp; Scrolling</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad3.zip">neatpad3.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="active">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Scrollbars &amp; Scrolling">
+    <meta itemprop="description" content="Welcome to the third installment of the “Design and Implementation of a Win32 Text Editor” article series! In this part we will look at adding scrollbars and scrolling to our TextView control.">
+    <meta itemprop="datePublished" content="February 20, 2005">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Scrollbars &amp; Scrolling
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Scrollbars & Scrolling</h1-->
+<!--h3>Adding scrollbars and scrolling to the TextView</h3-->
+
+<p>シリーズ「Win32テキストエディタの設計と実装」の第3回目にようこそ! 今回は、TextViewコントロールにスクロールバーとスクロール機能を追加する方法をご紹介します。</p>
+
+<h2 id="scrolling-in-win32">Scrolling in Win32</h2>
+
+<p>Windowsでは、スクロールは3つの領域に分かれています。1つ目は物理的なスクロールバーで、ウィンドウに組み込まれたスクロールバーであれ、個別のスクロールバーコントロールであれ、どちらでも構いません。GetScrollPos、SetScrollInfoなど、スクロールバーによって記述される位置情報を設定および取得するための完全なスクロールバーAPIがあります。</p>
+
+<p>次の領域は、スクロールバーがユーザーによって操作されたときに、その親ウィンドウに送信するウィンドウ・メッセージ、すなわちWM_VSCROLLおよびWM_HSCROLLメッセージです。これらの特別なスクロールメッセージは、アプリケーションがユーザーの操作に応じてユーザーインターフェースを更新するために使用することができます。</p>
+
+<p>最後のカテゴリは、GDIスクロールAPI、すなわちScrollWindowとScrollWindowExです。Platform SDKでは「通常の」スクロールバーAPIと同じカテゴリに分類されていますが、これら2つのGDIルーチンはスクロールバーとは関係ありません。代わりに、ウィンドウ内のビットマップ領域を移動/オフセットし、スクロールしているように見せるために使用されます。</p>
+
+<p>TextViewコントロールに完全なスクロールサポートを実装するためには、これらの分野をすべてまとめなければなりません。</p>
+
+<h2 id="scrollbars---built-in-or-separate">Scrollbars - built in or separate?</h2>
+
+<p>まず始めに、どのようなタイプのスクロールバーを使用するかについて説明します。TextViewの非クライアントウィンドウ領域の一部である「ビルトイン」スクロールバーか、個別のスクロールバーコントロールの2つの選択肢があります。</p>
+
+<p>この2つのタイプに大きな違いはありません。内蔵スクロールバーの場合、WM_xSCROLLメッセージは、スクロールバーが属する同じウィンドウに送信されます。独立したスクロールバー・コントロールでは、スクロールバー・メッセージはコントロールの親ウィンドウに送られます。しかし、親ウィンドウのスクロールバーメッセージを実際のTextViewウィンドウに転送するのは非常に簡単なので、これは何の障害にもなりません。</p>
+
+<p>実際の違いは、TextViewコントロールを配置しなければならないときに現れます。なぜなら、スクロールバーコントロールは、TextViewの下端や右端に正しく配置されていることを確認するために、同時に慎重に配置しなければならないからです。このタスクは、1つのTextViewとそれに関連するスクロールバーのレイアウトを管理する「コンテナ」ウィンドウに任せることになるでしょう。</p>
+
+<p>独立したスクロールバーコントロールは、柔軟性を高めることができますが（スクロールバーと一緒にグリッパーやボタンなどを追加することができます）、余分な作業が必要となるため、目の前の作業から遠ざかってしまいます。しかし、このチュートリアルシリーズの後半では、個別のコントロールを利用する方法を見ていきます。なぜなら、実際にはとても簡単なことなのですが、今のところ気にするのは少し面倒だからです。</p>
+
+<h2 id="scrollbar-settings">Scrollbar settings</h2>
+
+<p>スクロールバーの状態（範囲や現在のサムの位置など）は、SetScrollInfo APIを使って、SCROLLINFO構造体を使って各属性を指定します。この構造を以下に示します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">SCROLLINFO</span>
+<span class="p">{</span>    
+    <span class="n">UINT</span> <span class="n">cbSize</span><span class="p">;</span>
+    <span class="n">UINT</span> <span class="n">fMask</span><span class="p">;</span>
+
+    <span class="kt">int</span> <span class="n">nMin</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">nMax</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">nPage</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">nPos</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>下の図は、これらの4つのスクロールバーのプロパティと、それらがどのように関連しているかを示しています。この小さな例では、スクロールバーが表すデータ範囲は100行です。ここでは水平方向のスクロールバーの図を使用しましたが、垂直方向のスクロールバーも動作に違いはありません。</p>
+
+<p><img src="assets/img/editor07.gif" alt="<>"></p>
+
+<p>nMinとnMaxの値は、スクロールバーに含まれる「スクロールユニット」（または行）の総数を表します。今回のTextViewでは、負の行数までスクロールさせても意味がないので、nMinを0に設定します。 nMaxは、テキスト文書の総行数から1を引いた値でなければなりません。「100行のファイル」の場合、nMaxは99でなければなりません。</p>
+
+<p>nPos値は、現在のスクロールバーの位置を「スクロール単位」で表します。これはピクセルや座標に基づいた値ではなく、nMin...nMaxの範囲内で任意の値を指定します。</p>
+
+<p>その結果、「奇数」であるnPageが残ります。この値は、スクロール範囲やファイルの行数、現在のスクロールバーの位置とは関係ありません。純粋に、現在のウィンドウのクライアント領域内にあるスクロールユニットの数を指定するために使用されます。例えば、ウィンドウが15行のテキストを格納できる大きさであれば、nPageを15に設定します。内蔵スクロールバーは、この値を使ってスクロールバーのサムの大きさを計算しますので、サムの大きさを計算するために複雑なことをする必要はありません。</p>
+
+<p>親指の最大位置は、親指の幅によってそこまで届かないため、nMaxにはならないことに注意してください。したがって、スクロールバーに関連する2つの「最大」値があります。スクロールバーがsi.nMax値として必要とするものと、サム位置の最大値として得られるもので、これは常にスクロールバーのnMaxよりもnPage単位小さい値です。</p>
+
+<h2 id="adding-scrollbars-to-a-window">Adding scrollbars to a Window</h2>
+
+<p>ウィンドウにスクロールバーを追加するのは、とても簡単です。ウィンドウを作成するときに、WS_HSCROLLとWS_VSCROLLのウィンドウスタイルを追加すればよいのです。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">CreateWindowEx</span><span class="p">(</span><span class="n">WS_EX_CLIENTEDGE</span><span class="p">,</span> <span class="n">TEXTVIEW_CLASS</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">WS_VSCROLL</span> <span class="o">|</span> <span class="n">WS_HSCROLL</span> <span class="p">...</span>
+</code></pre></div></div>
+
+<p>スクロールバーで何か便利なことをする前に、TextView C++クラスの「スクロールバーの状態」を表す変数をいくつか作成しなければなりません。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">TextView</span>
+<span class="p">{</span>
+<span class="p">...</span>
+    <span class="n">ULONG</span> <span class="n">m_nVScrollPos</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">m_nHScrollPos</span><span class="p">;</span>
+
+    <span class="n">ULONG</span> <span class="n">m_nVScrollMax</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">m_nHScrollMax</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">m_nWindowLines</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">m_nWindowColumns</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">m_nLongestLine</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">m_nLineCount</span><span class="p">;</span>  
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>これらの変数は（初期化されると）、テキストの行をディスプレイに描画する際に、現在のスクロールバーの位置を考慮に入れることができます。</p>
+
+<ul>
+  <li><code class="highlighter-rouge">m_nVScrollPos</code> and <code class="highlighter-rouge">m_nHScrollPos</code></li>
+</ul>
+
+<p>垂直および水平方向のスクロールバーのサムポジションを表す。</p>
+<ul>
+  <li><code class="highlighter-rouge">m_nVScrollMax</code> and <code class="highlighter-rouge">m_nHScrollMax</code></li>
+</ul>
+
+<p>スクロールバーのサムポジションが到達できる最大値を表す（ファイルの最大列数/行数ではない）。</p>
+<ul>
+  <li><code class="highlighter-rouge">m_nWindowColumns</code> and <code class="highlighter-rouge">m_nWindowLines</code></li>
+</ul>
+
+<p>クライアント領域の幅と高さ（それぞれ）を格納します。</p>
+<ul>
+  <li><code class="highlighter-rouge">m_nLongestLine</code> and <code class="highlighter-rouge">m_nLineCount</code></li>
+</ul>
+
+<p>Hold the real text-file “dimensions”.</p>
+
+<p>m_nLongestLineという変数が導入されていることに注意してください。これは、水平スクロールの最大範囲を表すために使用されます。この水平方向のスクロール範囲を決めるのに、任意の固定値ではなく、テキストドキュメントの最長行を使う必要がある理由は明らかでしょう。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ULONG</span> <span class="n">TextDocument</span><span class="o">::</span><span class="n">longestline</span><span class="p">(</span><span class="kt">int</span> <span class="n">tabwidth</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>TextDocument には、最長の行の幅（論理的なテキスト単位）を計算するというタスクが与えられています。タブ文字を考慮できるように、現在のタブ幅の設定を指定する必要があります。このタスクを実行するのに必要なコードはここでは紹介しませんが、ソースコードをダウンロードしてご覧ください。</p>
+
+<h2 id="configuring-the-scrollbars">Configuring the scrollbars</h2>
+
+<p>Win32プロジェクトを繰り返しているうちに、スクロールバーの設定が必要なのは、プログラム内の一箇所、つまりウィンドウサイズ変更時だけだということを学びました。1つの関数で、水平方向と垂直方向のスクロールバーを同時に設定することができます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">VOID</span> <span class="n">TextView</span><span class="o">::</span><span class="n">SetupScrollbars</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>まず、垂直スクロールバーのプロパティを設定するために、SCROLLINFO構造が構成されています。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">VOID</span> <span class="n">TextView</span><span class="o">::</span><span class="n">SetupScrollbars</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">SCROLLINFO</span> <span class="n">si</span> <span class="o">=</span> <span class="p">{</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">si</span><span class="p">)</span> <span class="p">};</span>
+
+    <span class="n">si</span><span class="p">.</span><span class="n">fMask</span> <span class="o">=</span> <span class="n">SIF_POS</span> <span class="o">|</span> <span class="n">SIF_PAGE</span> <span class="o">|</span> <span class="n">SIF_RANGE</span> <span class="o">|</span> <span class="n">SIF_DISABLENOSCROLL</span><span class="p">;</span>
+    <span class="n">si</span><span class="p">.</span><span class="n">nPos</span> <span class="o">=</span> <span class="n">m_nVScrollPos</span><span class="p">;</span> <span class="c1">// scrollbar thumb position
+</span>    <span class="n">si</span><span class="p">.</span><span class="n">nPage</span> <span class="o">=</span> <span class="n">m_nWindowLines</span><span class="p">;</span> <span class="c1">// number of lines in a page (i.e. rows of text in window)
+</span>    <span class="n">si</span><span class="p">.</span><span class="n">nMin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">si</span><span class="p">.</span><span class="n">nMax</span> <span class="o">=</span> <span class="n">m_nLineCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// total number of lines in file (i.e. total scroll range)
+</span>
+    <span class="n">SetScrollInfo</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="n">SB_VERT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">si</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">);</span>
+<span class="p">...</span>
+</code></pre></div></div>
+
+<p>水平方向のスクロールバーも同様の方法で設定します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>  
+    <span class="n">si</span><span class="p">.</span><span class="n">nPos</span> <span class="o">=</span> <span class="n">m_nHScrollPos</span><span class="p">;</span> <span class="c1">// scrollbar thumb position
+</span>    <span class="n">si</span><span class="p">.</span><span class="n">nPage</span> <span class="o">=</span> <span class="n">m_nWindowColumns</span><span class="p">;</span> <span class="c1">// number of columns in the window
+</span>    <span class="n">si</span><span class="p">.</span><span class="n">nMin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">si</span><span class="p">.</span><span class="n">nMax</span> <span class="o">=</span> <span class="n">m_nLongestLine</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// width of longest line (i.e. total scroll range)
+</span>
+    <span class="n">SetScrollInfo</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="n">SB_HORZ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">si</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">);</span>
+
+<span class="p">...</span>
+</code></pre></div></div>
+
+<p>最後にすることは、スクロールバーの親指の最大位置を計算することです。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+    <span class="n">m_nVScrollMax</span> <span class="o">=</span> <span class="n">m_nLineCount</span> <span class="o">-</span> <span class="n">m_nWindowLines</span><span class="p">;</span>
+    <span class="n">m_nHScrollMax</span> <span class="o">=</span> <span class="n">m_nLongestLine</span> <span class="o">-</span> <span class="n">m_nWindowColumns</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>この最後の2行を理解することが重要です。m_nVScrollMaxとm_nHScrollMaxの値は、スクロールバーのsi.nMaxプロパティの設定には使われません。その代わりに、m_n_XScrollMax値は、サムの最大位置を表しています。これらの値は、TextViewの中で単独で使用されるので、今回の目的にはより有用です。</p>
+
+<h2 id="window-size-affects-scrolling-range">Window size affects scrolling range</h2>
+
+<p>最初に理解しなければならないのは、TextViewコントロールのサイズを変更するたびに、そのウィンドウ内の可視テキストの量が変わり、したがって、スクロールバーのnPage値がこれを反映して変更されなければならないということです。したがって、TextViewウィンドウがリサイズされたとき、受信したWM_SIZEメッセージに反応することができます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="n">WM_SIZE</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">tvp</span><span class="o">-&gt;</span><span class="n">OnSize</span><span class="p">(</span><span class="n">LOWORD</span><span class="p">(</span><span class="n">lParam</span><span class="p">),</span> <span class="n">HIWORD</span><span class="p">(</span><span class="n">lParam</span><span class="p">));</span>
+</code></pre></div></div>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnSize</span><span class="p">(</span><span class="kt">int</span> <span class="n">width</span><span class="p">,</span> <span class="kt">int</span> <span class="n">height</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">m_nWindowLines</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">height</span> <span class="o">/</span> <span class="n">m_nFontHeight</span><span class="p">,</span> <span class="n">m_nLineCount</span><span class="p">);</span>
+    <span class="n">m_nWindowColumns</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="n">m_nFontWidth</span><span class="p">,</span> <span class="n">m_nLongestLine</span><span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">PinToBottomCorner</span><span class="p">())</span>
+        <span class="n">RefreshWindow</span><span class="p">();</span>
+
+    <span class="n">SetupScrollbars</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>最初の2行は、ウィンドウ内のテキストが何行/何列あるかを単純に計算しています。min()関数は、ウィンドウに表示できるテキストの数が多い場合（ファイル全体がウィンドウ内に収まる場合）の処理に使用されます。</p>
+
+<p>この2つの値が計算されると、上で書いたSetupScrollbars関数を使ってスクロールバーを設定することができます。ここで、次の質問に移ります。</p>
+
+<h2 id="what-is-pinning-">What is “Pinning” ?</h2>
+
+<p>次のようなシナリオを想像してみてください。テキスト文書を読み込んで、一番下までスクロールした。次に、ウィンドウを大きくするために、下のウィンドウの境界線を下にドラッグします。問題は、このときファイルの内容はどうなるのかということです。2つの選択肢がありますが、どちらも問題ありません。</p>
+
+<p>現在のスクロールバーの位置をそのままにして、ファイルの最後に「ボイド」スペースを確保するか？このオプションは、ファイルの位置に影響を与えません。つまり、ファイルは静止したままです。テキスト表示が画面上の同じ場所に残るため、この方法を好む人もいます。</p>
+
+<p>もう1つの方法は、ファイルの内容を同時に下にドラッグして（ウィンドウの上部にコンテンツが増える）、同時にスクロールバーの位置を調整して、常にウィンドウがテキストでいっぱいになるようにすることです。つまり、ファイルの内容をウィンドウのクライアント領域の下端に「固定」することになります。</p>
+
+<p>通常のメモ帳ユーティリティーを見て、それが何をしているのかを見てみましょう。このユーティリティー（というか、標準の複数行エディットコントロール）は、コントロールのサイズが変更されたときに、コンテンツをコントロールの右下に「ピン留め」することがわかります。これは、エディットコントロールで使用する動作です。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">bool</span> <span class="n">TextView</span><span class="o">::</span><span class="n">PinToBottomCorner</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">bool</span> <span class="n">repos</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">m_nHScrollPos</span> <span class="o">+</span> <span class="n">m_nWindowColumns</span> <span class="o">&gt;</span> <span class="n">m_nLongestLine</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">m_nHScrollPos</span> <span class="o">=</span> <span class="n">m_nLongestLine</span> <span class="o">-</span> <span class="n">m_nWindowColumns</span><span class="p">;</span>
+        <span class="n">repos</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">m_nVScrollPos</span> <span class="o">+</span> <span class="n">m_nWindowLines</span> <span class="o">&gt;</span> <span class="n">m_nLineCount</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">m_nVScrollPos</span> <span class="o">=</span> <span class="n">m_nLineCount</span> <span class="o">-</span> <span class="n">m_nWindowLines</span><span class="p">;</span>
+        <span class="n">repos</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">repos</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上の関数は、スクロールバーの位置が常にスクロール範囲内に収まるように調整し、何か変化があったかどうかを示すブール値を返すだけで、ウィンドウを再描画する必要があるかどうかがわかります。</p>
+
+<p>なお、別の方法（ファイルを下にドラッグするのではなく、最後に空のスペースを表示する）でも構いません。実際、Visual Studioや他の多くのエディタはこの方法を採用しています。実際、Visual Studioや他の多くのエディタではこの方法が採用されています。この動作をオプションとして追加することも検討しています。個人的には「ピン留め」方式の方が好きなので、まず最初にこれを実装しました。</p>
+
+<h2 id="taking-the-scrollbar-position-into-account-when-drawing">Taking the scrollbar position into account when drawing</h2>
+
+<p>現在、私たちのテキスト表示は、表示を描くときにスクロールバーの情報が使われていないので、非常に原始的です。その結果、テキストファイルはTextViewのクライアントエリアの左上にしっかりと固定されており、より多くのテキストを見たい場合はウィンドウを大きくドラッグしなければなりません。幸いなことに、TextViewを完全にスクロール可能にするために必要な作業はほとんどありません。</p>
+
+<p>前回のチュートリアルで覚えていると思いますが、TextView::OnPaintルーチンは、単純な式を使って更新するテキストの最初の行と最後の行を計算します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">first</span> <span class="o">=</span> <span class="n">ps</span><span class="p">.</span><span class="n">rcPaint</span><span class="p">.</span><span class="n">top</span> <span class="o">/</span> <span class="n">m_nFontHeight</span><span class="p">;</span>
+ <span class="n">last</span> <span class="o">=</span> <span class="n">ps</span><span class="p">.</span><span class="n">rcPaint</span><span class="p">.</span><span class="n">bottom</span> <span class="o">/</span> <span class="n">m_nFontHeight</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>垂直スクロールバーの位置を考慮するのは簡単なことです。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">first</span> <span class="o">=</span> <span class="n">m_nVScrollPos</span> <span class="o">+</span> <span class="p">(</span><span class="n">ps</span><span class="p">.</span><span class="n">rcPaint</span><span class="p">.</span><span class="n">top</span> <span class="o">/</span> <span class="n">m_nFontHeight</span><span class="p">);</span>
+ <span class="n">last</span> <span class="o">=</span> <span class="n">m_nVScrollPos</span> <span class="o">+</span> <span class="p">(</span><span class="n">ps</span><span class="p">.</span><span class="n">rcPaint</span><span class="p">.</span><span class="n">bottom</span> <span class="o">/</span> <span class="n">m_nFontHeight</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>基本的には、描画する線のインデックスを変更することで、スクロールバーが下に移動すると、テキストの行が効果的にディスプレイの上に移動するようにします。ウィンドウ内の物理的な位置に線を描くことに変わりはありませんが、ドキュメントをスクロールしているような錯覚を与えるために異なる線を描きます。</p>
+
+<p>これで、どの論理行を更新する必要があるのかを正しく判断できるようになったので、実際のテキスト出力を見てみましょう。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">TextView</span><span class="o">::</span><span class="n">PaintLine</span><span class="p">(</span><span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">RECT</span> <span class="n">rect</span><span class="p">;</span>
+    <span class="n">GetClientRect</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rect</span><span class="p">);</span>
+
+    <span class="c1">// calculate rectangle for entire length of line in window
+</span>    <span class="n">rect</span><span class="p">.</span><span class="n">left</span> <span class="o">=</span> <span class="o">-</span><span class="n">m_nHScrollPos</span> <span class="o">*</span> <span class="n">m_nFontWidth</span><span class="p">;</span>
+    <span class="n">rect</span><span class="p">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">right</span><span class="p">;</span>
+    <span class="n">rect</span><span class="p">.</span><span class="n">top</span> <span class="o">=</span> <span class="p">(</span><span class="n">nLineNo</span> <span class="o">-</span> <span class="n">m_nVScrollPos</span><span class="p">)</span> <span class="o">*</span> <span class="n">m_nFontHeight</span><span class="p">)</span>
+    <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">top</span> <span class="o">+</span> <span class="n">m_nFontHeight</span><span class="p">;</span>
+
+    <span class="c1">// rest of function body omitted
+</span>
+    <span class="c1">// draw text and fill line background at the same time
+</span>    <span class="n">TabbedExtTextOut</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rect</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>まず最初に、水平方向のテキストの位置関係（rect.leftとrect.rightの値）を理解してください。水平スクロールバーの位置が大きくなると（つまり右にスクロールすると）、ページが左にスクロールすることが期待されます。そのため、スクロール位置が大きくなると、テキストの位置は小さくならざるを得ません。これが「-m_nHScrollPos」が使われる理由です。この論理的なテキスト位置に、現在のフォント幅を乗じて、描画に使用できるピクセルベースの座標を生成します。これは、固定幅のフォント表示に最適です。</p>
+
+<p>テキストの行の右端は、ウィンドウの右端に固定されていなければならないので、この値は変更されません。この結果、基本的には次のような現象が発生します。右にスクロールすると、始点のX座標がどんどん負の値になっていくので、描くテキストの長さがどんどん大きくなっていきます。デバイスコンテキストが出力をクリップしていなければ、テキストの行は次のようになります。</p>
+
+<p><img src="assets/img/editor03.gif" alt="<>"></p>
+
+<p>もちろん、描画を左にオフセットする代わりに、水平スクロールバーの位置を利用して、バッファリングされた文字列の中から適切な描画位置を見つけ、（賢明にも）固定のx座標0からすべての描画を行うこともできました。これは単純なテキスト表示ではうまくいくでしょう。しかし、「タブ付き」のテキスト表示には問題があり、さらに複雑なシンタックスの色付けや可変幅のフォントを始めると、すぐにこの方法では不十分な選択になってしまいます。今のところ、水平方向のスクロールをどのように処理するのがベストなのかは未定なので、今はこのシンプルな方法を使うことにします。</p>
+
+<p>次に、垂直スクロールバーの位置について説明します。PaintLine関数には、文書の先頭からの相対的な「論理的」行番号( nLineNo )が与えられているので、この値から垂直スクロールバーの位置を引いて、クライアント領域の先頭からの相対的なゼロベースのインデックスを得る必要があります。この値にフォントの高さを掛けて、ピクセルベースのY座標を算出します。</p>
+
+<h2 id="scrollbar-messages">Scrollbar Messages</h2>
+
+<p>これで、TextViewに実際のスクロール機能を追加する準備ができました。WM_HSCROLLハンドラはほとんど同じなので、ここではWM_VSCROLLメッセージだけに集中します。WM_VSCROLLのPlatform SDKドキュメントを見ると、wParamの低次WORDにスクロールコードが入っていると書かれています。これは以下の値のいずれかになります。SB_TOP, SB_BOTTOM, SB_LINEUP, SB_LINEDOWN, SB_PAGEUP, SB_PAGEDOWNなどです。基本的には、スクロールバーのどの部分がマウスでクリックされたかを教えてくれます。</p>
+
+<p>まず、SB_TOPとSB_BOTTOMのメッセージを見てみましょう。垂直スクロールバーのハンドラは次のようになります。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnVScroll</span><span class="p">(</span><span class="n">UINT</span> <span class="n">nSBCode</span><span class="p">,</span> <span class="n">UINT</span> <span class="n">nPos</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">switch</span><span class="p">(</span><span class="n">nSBCode</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="k">case</span> <span class="n">SB_TOP</span><span class="p">:</span><span class="n">m_nVScrollPos</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">RefreshWindow</span><span class="p">();</span>
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="n">SB_BOTTOM</span><span class="p">:</span><span class="n">m_nVScrollPos</span> <span class="o">=</span> <span class="n">m_nVScrollMax</span><span class="p">;</span>
+        <span class="n">RefreshWindow</span><span class="p">();</span>
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="p">...</span>    
+    <span class="p">}</span>
+
+    <span class="c1">// update the scrollbar metrics
+</span>    <span class="n">SetupScrollbars</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>SB_TOP と SB_BOTTOM のケースは非常にシンプルです。必要なのは、スクロール位置をスクロール範囲の両端に移動させ、その変更を反映させてウィンドウ全体を再描画することだけです。</p>
+
+<p>スクロールバーの「親指」メッセージへの反応も非常にシンプルです。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="n">SB_THUMBPOS</span><span class="p">:</span> <span class="k">case</span> <span class="n">SB_THUMBTRACK</span><span class="p">:</span>
+        <span class="n">m_nVScrollPos</span> <span class="o">=</span> <span class="n">GetTrackPos32</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="n">SB_VERT</span><span class="p">);</span>
+        <span class="n">RefreshWindow</span><span class="p">();</span> 
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="p">...</span>
+</code></pre></div></div>
+
+<p>GetTrackPos32は、GetScrollInfoの単純なラッパー関数です。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="nf">GetTrackPos32</span><span class="p">(</span><span class="n">HWND</span> <span class="n">hwnd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">nBar</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">SCROLLINFO</span> <span class="n">si</span> <span class="o">=</span> <span class="p">{</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">si</span><span class="p">),</span> <span class="n">SIF_TRACKPOS</span> <span class="p">};</span>
+    <span class="n">GetScrollInfo</span><span class="p">(</span><span class="n">hwnd</span><span class="p">,</span> <span class="n">nBar</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">si</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">si</span><span class="p">.</span><span class="n">nTrackPos</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>これは、WM_VSCROLLメッセージから得られる16ビットの位置ではなく、完全な32ビットのスクロールバーの値を求めるために必要です。</p>
+
+<p>残りの4つのケース(SB_LINEUP, SB_LINEDOWN, SB_PAGEUP, SB_PAGEDOWN)は若干異なります。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="n">SB_LINEUP</span><span class="p">:</span>
+        <span class="n">Scroll</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="n">SB_LINEDOWN</span><span class="p">:</span>
+        <span class="n">Scroll</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span> <span class="k">case</span> <span class="n">SB_PAGEUP</span><span class="p">:</span>
+        <span class="n">Scroll</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">m_nWindowLines</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span> <span class="k">case</span> <span class="n">SB_PAGEDOWN</span><span class="p">:</span>
+        <span class="n">Scroll</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">m_nWindowLines</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="p">...</span>
+</code></pre></div></div>
+
+<p>ご覧のように、実際の作業はプライベートなスクロール関数に委ねていますが、これはすぐに実装します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">VOID</span> <span class="n">TextView</span><span class="o">::</span><span class="n">Scroll</span><span class="p">(</span><span class="kt">int</span> <span class="n">dx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">dy</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>この関数は、2つの符号付き整数のパラメータを受け取ります。その目的は、ビューポートをスクロールする方向と量（テキスト単位）を指定することです。SB_LINEUP/DOWN のメッセージハンドラを見ると、上にスクロールする場合は -1 を、下にスクロールする場合は 1 を指定しています。同様に、SB_PAGEUP/DOWN の場合は、ページ全体分のテキスト (つまり、現在ウィンドウに表示されている行数) で上下にスクロールします。ドキュメントの開始/終了から外れてスクロールしないように、Scroll関数に任せます。</p>
+
+<h2 id="scrolling-the-viewport">Scrolling the Viewport</h2>
+
+<p>スクロールは1つの関数呼び出しの中に分離されています。これにはいくつかの利点があります。これらを理解することで、将来、より良いプログラムを開発することができます。まず最初の（そして最も明白な）利点は、モジュラーデザインの利点です。スクロール関数は、コントロールの他の多くの部分で再利用することができますが(既に垂直と水平のスクロールバーのメッセージに2回使用しています)、キーボードやマウスのスクロールに関してもこの関数を有効に活用することができます。</p>
+
+<p>最大の利点は、一見しただけではわかりませんが、デザインを大幅に簡素化できることです。一度に2つの方向（水平と垂直）にディスプレイをパンすることができるスクロール関数を設計することで、マウススクロールのインタラクションを大幅に強化することができます。多くのコントロールは、2つのスクロール・メッセージを同時に送信することに頼っています。これは、スクロールの不具合やアーティファクトを引き起こす可能性があり、また、操作も少し不器用です。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">VOID</span> <span class="n">TextView</span><span class="o">::</span><span class="n">Scroll</span><span class="p">(</span><span class="kt">int</span> <span class="n">dx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">dy</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// make sure dx,dy don't scroll past the end of the document!
+</span>
+    <span class="c1">// adjust the scrollbar thumb position
+</span>    <span class="n">m_nVScrollPos</span> <span class="o">+=</span> <span class="n">dy</span><span class="p">;</span>
+    <span class="n">m_nHScrollPos</span> <span class="o">+=</span> <span class="n">dx</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">dx</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">dy</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// perform the scroll
+</span>        <span class="n">ScrollWindowEx</span><span class="p">(</span>
+            <span class="n">m_hWnd</span><span class="p">,</span> 
+            <span class="o">-</span><span class="n">dx</span> <span class="o">*</span> <span class="n">m_nFontWidth</span><span class="p">,</span> 
+            <span class="o">-</span><span class="n">dy</span> <span class="o">*</span> <span class="n">m_nFontHeight</span><span class="p">,</span>
+            <span class="nb">NULL</span><span class="p">,</span>              
+            <span class="nb">NULL</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">SW_INVALIDATE</span>
+           <span class="p">);</span>
+
+        <span class="n">SetupScrollbars</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上の関数は完全ではありません。 dxとdyが現在のファイルの境界の外にスクロールできないようにするための重要なロジックが欠けています。ソースコードのダウンロードにはこのコードが含まれています。</p>
+
+<p>私が本当に見せたかったのは、表示を更新するためのScrollWindowEx APIでした。TextView::Scroll関数は今のところ非常にシンプルですが、うまく機能しています。つまり、ちらつきなくスムーズにウィンドウをスクロールします。次のチュートリアルでは、マウスによる選択範囲のスクロールを見るときに、この関数を再考します。</p>
+
+<h2 id="mousewheel-support">MouseWheel support</h2>
+
+<p>スクロールを見ている間に、マウスホイールによるスクロールのサポートを実装してもいいかもしれません。WM_MOUSEWHEELメッセージは、Windows 98とWindows NT4で追加され、マウスホイールによるスクロールを実現しました。このメッセージをサポートするためには、新しめのPlatform SDKがインストールされている必要があります。また、<windows.h>を#includeする前に、_WIN32_WINNT変数を定義し、メッセージを使用できるようにしなければなりません。</windows.h></p>
+
+<p>WM_MOUSEWHEELのハンドラは、単純にホイール回転の差分（つまり、前後のベクトル）を抽出し、TextViewクラスの本当のメッセージハンドラを呼び出します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="n">WM_MOUSEWHEEL</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ptv</span><span class="o">-&gt;</span><span class="n">OnMouseWheel</span><span class="p">((</span><span class="kt">short</span><span class="p">)</span><span class="n">HIWORD</span><span class="p">(</span><span class="n">wParam</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>ハンドラは、システム設定の SPI_GETWHEELSCROLLLINES を使用して、何行分のスクロールを行うかを計算します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnMouseWheel</span><span class="p">(</span><span class="kt">int</span> <span class="n">nDelta</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">nScrollLines</span><span class="p">;</span>
+
+    <span class="n">SystemParametersInfo</span><span class="p">(</span><span class="n">SPI_GETWHEELSCROLLLINES</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nScrollLines</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">uScrollLines</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">uScrollLines</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+
+    <span class="n">Scroll</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">nDelta</span><span class="o">/</span><span class="mi">120</span><span class="p">)</span> <span class="o">*</span> <span class="n">uScrollLines</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>それもそのはず、私たちが開発したScroll機能をうまく利用して、大変な作業をしているからです。ほら、便利だと言ったじゃないですか。)</p>
+
+<h2 id="coming-up-in-part-4">Coming up in Part 4</h2>
+
+<p>このチュートリアルの先頭にあるzipファイルをダウンロードして、最新のNeatpadを使ってみてください。このような少量のコードで、すでにかなり便利なツールになっています。かなり効果的なテキストドキュメント表示アプリケーションになっています。もちろん、大きなファイルはまったく扱えませんが、どこまでやればいいのか、いいアイデアが得られるはずです。</p>
+
+<p>次のチュートリアルでは、マウスサポートが目的となります。フォーカスとテキストキャレットのサポート、マウスによるキャレットの位置決め、テキストの全選択を追加する方法を見ていきます。このためには、もちろん、描画コードの修正が必要です。また、「マウススクロール」も実装します。つまり、テキストの選択範囲がウィンドウからはみ出してしまい、内容をスクロールして表示しなければならないような場合です。これまでに行ってきたスクロール作業により、この作業は非常に簡単になります。</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad3.zip">neatpad3.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2005-02-20T00:00:00+00:00">February 20, 2005</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="loading-text-file.html" class="pagination--pager" title="Loading a text file
+">Previous</a>
+    
+    
+      <a href="../../tuts/win32/introduction-to-device-drivers.html" class="pagination--pager" title="Introduction to Device Drivers
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

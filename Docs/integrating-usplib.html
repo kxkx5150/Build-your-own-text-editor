@@ -1,0 +1,976 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Integrating UspLib - Catch22</title>
+<meta name="description" content="It’s finally here! - a new and improved Neatpad which demonstrates the rendering capabilities of UspLib. The purpose of this is tutorial to document the UspLib API, and secondly to mention a few details about how UspLib was integrated into Neatpad’s code. I very much hope that the design of UspLib is good enough that it will others to import it into their own editors and get instant styled-text support!">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Integrating UspLib">
+<meta property="og:url" content="integrating-usplib">
+
+
+  <meta property="og:description" content="It’s finally here! - a new and improved Neatpad which demonstrates the rendering capabilities of UspLib. The purpose of this is tutorial to document the UspLib API, and secondly to mention a few details about how UspLib was integrated into Neatpad’s code. I very much hope that the design of UspLib is good enough that it will others to import it into their own editors and get instant styled-text support!">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2006-03-06T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="integrating-usplib.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></head>
+
+  <body class="layout--tutorial wide" style="margin-bottom: 171.375px;">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button" count="0" style="">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Integrating UspLib</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad15.zip">neatpad15.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="active">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Integrating UspLib">
+    <meta itemprop="description" content="It’s finally here! - a new and improved Neatpad which demonstrates the rendering capabilities of UspLib. The purpose of this is tutorial to document the UspLib API, and secondly to mention a few details about how UspLib was integrated into Neatpad’s code. I very much hope that the design of UspLib is good enough that it will others to import it into their own editors and get instant styled-text support!">
+    <meta itemprop="datePublished" content="March 06, 2006">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Integrating UspLib
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Integrating UspLib</h1-->
+<!--h3>Migrating Neatpad to the UspLib engine</h3-->
+
+<p>ついにここまで来ました。- UspLibのレンダリング機能を実演する、新しく改良されたNeatpadです。この記事の目的は、UspLibのAPIを文書化することと、UspLibがNeatpadのコードにどのように統合されたかについて、いくつかの詳細を述べることです。UspLibのデザインが良いので、他の人が自分のエディタに取り込んで、すぐにスタイル付きテキストをサポートできるようになることを大いに期待しています。
+
+</p>
+
+<p><img src="assets/img/editor1401.gif" alt="<>"></p>
+
+<p>上の画像は、Neatpadの新しいUnicodeテキストレンダリングエンジンの動作を示しています。5つの異なるスクリプトが表示されています - デーヴァナーガリー、タミル、タイ、アラビア、そしてもちろんラテンです。現在、Neatpadでは、フォント・フォールバックはサポートされていないので、これらの異なるスクリプトをすべて表示するには、適切なフォントを選択する必要があります。上の例では、"Arial Unicode MS "フォントを使用していますが、このフォントは22MBもあります。
+
+</p>
+
+<p>さて、この最新バージョンにあまり興奮しないでください。表面的にはこれまでと変わりませんが、複雑なスクリプトを多数含むUnicodeファイルを読み込んだときに初めて、すべての作業がどのように行われたかがわかるでしょう。
+
+</p>
+
+<p>UspLib APIは以下のように文書化されています。このAPIをあなたのプロジェクトに組み込むことができたら、ぜひ教えてください。
+
+</p>
+
+<hr>
+
+<p>UspLibを使用するには、単一のヘッダーファイルであるusplib.hをインクルードし、usplib.libに対してリンクします。ライブラリ自体には、Windows2000以上に存在するUniscribe Script Processor DLL (usp10.dll)以外の依存関係はありません。
+
+</p>
+
+<h2 id="uspallocate">UspAllocate</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">USPDATA</span> <span class="o">*</span> <span class="n">UspAllocate</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>UspAllocateは、新しいUSPDATAオブジェクトを初期化して返します。このオブジェクトは、その後のすべてのUspLib操作に使用されなければなりません。
+
+</p>
+
+<h2 id="uspanalyze">UspAnalyze</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="n">UspAnalyze</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>
+  <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span>
+  <span class="n">WCHAR</span> <span class="o">*</span> <span class="n">wstr</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">wlen</span><span class="p">,</span> 
+  <span class="n">ATTR</span> <span class="o">*</span> <span class="n">attrRunList</span><span class="p">,</span> <span class="c1">// optional
+</span>  <span class="n">UINT</span> <span class="n">flags</span><span class="p">,</span>
+  <span class="n">USPFONT</span> <span class="o">*</span> <span class="n">uspFont</span><span class="p">,</span> <span class="c1">// optional
+</span>  <span class="n">SCRIPT_CONTROL</span> <span class="o">*</span> <span class="n">scriptControl</span><span class="p">,</span>
+  <span class="n">SCRIPT_STATE</span> <span class="o">*</span> <span class="n">scriptState</span><span class="p">,</span>
+  <span class="n">SCRIPT_TABDEF</span> <span class="o">*</span> <span class="n">scriptTabdef</span><span class="p">,</span> <span class="c1">// optional
+</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspAnalyzeは、1つのUSPDATAオブジェクトを入力として受け取り、UTF-16テキストの指定された段落を分析し、その結果をuspDataに戻して保存します。
+
+</p>
+
+<ul>
+  <li>uspDataは、分析結果を格納する単一のUSPDATAオブジェクトを指します。このオブジェクトは、以前のUspAnalyzeの呼び出しから再利用することができるため、メモリ割り当てのオーバーヘッドが少なくて済みます。
+</li>
+  <li>hdcは、デバイスコンテキストのハンドルです。
+</li>
+  <li>wstrとwlenの組み合わせで、解析対象となるワイド文字列を特定します。
+</li>
+  <li>attrRunListは、ATTR構造体のオプションの配列を指す。この配列のサイズは、UspAnalyzeの呼び出しでは直接指定されません。各配列要素の ATTR::len フィールドで表されるテキストの範囲は、wlen - 分析される文字列と同じ長さであると想定されます。
+</li>
+</ul>
+
+<p>attrRunListがNULLの場合、文字列は、デフォルトのシステムカラーとuspFontで指定されたフォントを使用して、テキストの全範囲にわたる単一のデフォルト属性で初期化されます。
+
+</p>
+
+<ul>
+  <li>flagsは1つのDWORD変数で、0に設定する必要があります。
+</li>
+  <li>uspFontは、USPFONT構造体のオプションの配列を指します。各配列要素は、事前にUspInitFontを使用して初期化されている必要があります。uspFontがNULLの場合は、HDCで現在選択されているフォントが代わりに使用される。UspTextOutを呼び出す際には、この同じフォントをターゲットデバイスのコンテキストに再選択しなければならない。
+</li>
+  <li>scriptControlは、オプションのSCRIPT_CONTROL構造体を指します。詳細はMSDNを参照してください。
+</li>
+  <li>scriptStateは、オプションのSCRIPT_STATE構造体を指します。詳細はMSDNを参照してください。
+</li>
+  <li>scriptTabdefは、オプションのSCRIPT_TABDEF構造体を指し、タブ展開を行う際に使用するタブストップ位置を定義する。詳細はMSDNを参照してください。
+</li>
+</ul>
+
+<p>UspAnalyzeは、テキストの段落全体を分析するために使用する必要があります。結果として得られるUSPDATAオブジェクトは、その後のUspTextOutやUspSnapXtoOffsetの呼び出しで使用できます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">ATTR</span>
+<span class="p">{</span>
+   <span class="n">COLORREF</span> <span class="n">fg</span><span class="p">;</span> <span class="c1">// foreground text colour
+</span>   <span class="n">COLORREF</span> <span class="n">bg</span><span class="p">;</span> <span class="c1">// background text colour
+</span>
+   <span class="kt">int</span> <span class="n">len</span> <span class="o">:</span> <span class="mi">16</span><span class="p">;</span> <span class="c1">// length of this run (in WCHARs)
+</span>   <span class="kt">int</span> <span class="n">font</span> <span class="o">:</span> <span class="mi">7</span><span class="p">;</span> <span class="c1">// font-index into the USPFONT table 
+</span>   <span class="kt">int</span> <span class="n">sel</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// selection flag (yes/no)
+</span>   <span class="kt">int</span> <span class="n">ctrl</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// show as an isolated control-character
+</span>   <span class="kt">int</span> <span class="n">eol</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// only valid for last character in line, prevents mouse selection
+</span>   <span class="kt">int</span> <span class="n">reserved</span> <span class="o">:</span> <span class="mi">6</span><span class="p">;</span> <span class="c1">// unused
+</span><span class="p">};</span>
+</code></pre></div></div>
+
+<p>ATTR構造体のすべてのフィールドは、使用前に初期化する必要があります。要求されていないフィールドは、ゼロに設定する必要があります。ATTR::font フィールドは USPFONT テーブルへのインデックスとして使用されます。ATTR::font で参照されるフォントは、 UspInitFont を用いて初期化されていなければなりません。
+
+</p>
+
+<h2 id="uspinitfont">UspInitFont</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">UspInitFont</span> <span class="p">(</span>
+  <span class="n">USPFONT</span> <span class="o">*</span> <span class="n">uspFont</span><span class="p">,</span>
+  <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span>            
+  <span class="n">HFONT</span> <span class="n">hFont</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspInitFontは、attrRunList配列の中でUspAnalyzeが参照する各フォントに対して1回呼び出す必要があります。USPFONTオブジェクトは、Uniscribe SCRIPT_CACHEオブジェクトやフォントのテキストメトリックなど、いくつかのフォント関連リソースを管理します。
+
+</p>
+
+<ul>
+  <li>uspFontは、単一のUSPFONT構造体を指します。
+</li>
+  <li>hdcは、デバイスコンテキストのハンドルです。
+</li>
+  <li>hFontは、フォントリソースへのハンドルです。
+</li>
+</ul>
+
+<p>USPFONTの構造は以下のように定義されています。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">USPFONT</span>
+<span class="p">{</span>
+  <span class="n">HFONT</span> <span class="n">hFont</span><span class="p">;</span>        
+  <span class="n">SCRIPT_CACHE</span> <span class="n">scriptCache</span><span class="p">;</span>  
+  <span class="n">TEXTMETRIC</span> <span class="n">tm</span><span class="p">;</span>           
+  <span class="kt">int</span> <span class="n">yoffset</span><span class="p">;</span> <span class="c1">// height-adjustment when drawing font (set to zero)
+</span><span class="p">};</span>
+</code></pre></div></div>
+
+<p>yoffsetフィールドはユーザー定義で、このフォントを使用するすべてのテキストに適用される垂直調整を指定します。UspInitFontは、最初にこの値をゼロに設定しますが、この呼び出しの後に変更することができます。他のすべての構造体メンバーは、UspInitFontによって管理され、呼び出し元によって変更されるべきではありません。
+
+</p>
+
+<h2 id="uspfreefont">UspFreeFont</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">UspFreeFont</span> <span class="p">(</span>
+  <span class="n">USPFONT</span> <span class="o">*</span> <span class="n">uspFont</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspFreeFontは、指定されたUSPFONTリソースが必要なくなったときに呼び出されなければならない。UspInitFontへの呼び出しで指定されたfont-handleは、構造体に内部的に保持されたSCRIPT_CACHEオブジェクトと同様に解放される。
+
+</p>
+
+<h2 id="uspapplyattributes">UspApplyAttributes</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">UspApplyAttributes</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span> 
+  <span class="n">ATTR</span> <span class="o">*</span> <span class="n">attrRunList</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspApplyAttributesは、いつでも呼び出すことができ、指定されたUSPDATAオブジェクトのスタイルラン属性を再適用します。色と選択情報のみが使用され、属性ランの他のフィールド（フォントを含む）はすべて無視されます。
+
+</p>
+
+<ul>
+  <li>attrRunListは、テキストのスタイルランの新しいリストを指定します。
+</li>
+</ul>
+
+<p>属性ランリストは、UspAnalyzeによって以前に分析された文字列と同じ長さのテキスト範囲を参照する必要があります。
+
+</p>
+
+<h2 id="uspapplyselection">UspApplySelection</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">UspApplySelection</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="n">selStart</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">selEnd</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspApplySelectionは、UspApplyAttributesと同様のタスクを実行します。ただし、今回はUSPDATAオブジェクト内の選択フラグのみが変更されます。
+
+</p>
+
+<ul>
+  <li>selStartは、選択ハイライトを開始する文字列の開始位置です。
+</li>
+  <li>selEndは、選択-ハイライトの終了位置です。
+</li>
+</ul>
+
+<h2 id="uspsetselcolor">UspSetSelColor</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">UspSetSelColor</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>
+  <span class="n">COLORREF</span> <span class="n">fg</span><span class="p">,</span>
+  <span class="n">COLORREF</span> <span class="n">bg</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspSetSelColorは、UspTextOutを呼び出すときに使用される選択ハイライトカラーを制御します。ATTR::sel属性でマークされた文字や、UspApplySelectionで識別されたテキストの範囲は、この色を使って描画されます。デフォルトでは、Windowsの選択ハイライトカラーが使用されることに注意してください。
+
+</p>
+
+<ul>
+  <li>fgは、選択範囲の前景色（テキスト）のCOLORREF値です。
+</li>
+  <li>bgは、選択範囲の背景色のCOLORREF値です。
+</li>
+</ul>
+
+<h2 id="usptextout">UspTextOut</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">UspTextOut</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>
+  <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">xpos</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="n">ypos</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">lineHeight</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">lineOffsetY</span><span class="p">,</span>
+  <span class="n">RECT</span> <span class="o">*</span> <span class="n">rect</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspTextOutは、ScriptStringOutと対をなすものです。先に解析されたUSPDATAオブジェクトを入力として、指定された場所にテキストを描画します。描画されたテキストには、フォントや色、選択範囲のハイライトが適用されます。
+
+</p>
+
+<ul>
+  <li>hdcは、デバイスコンテキストのハンドルです。
+</li>
+  <li>xposは、テキストの出力を開始するx座標です。
+</li>
+  <li>yposは、テキスト出力の開始点となるY座標です。
+</li>
+  <li>lineHeightは、各行が占める高さの合計を、ピクセル単位で指定します。テキストの背景は、この範囲内で塗りつぶされます。アプリケーションでは通常、この値を（rect.bottom - rect.top）と同じ値に設定します。
+</li>
+  <li>lineOffsetYは、テキストがオフセットされる垂直方向の距離をyposを基準にしてピクセル単位で指定します。この値は、USPFONT構造体で指定されたY調整に加えて使用されます。ゼロでもよいです。
+</li>
+  <li>rect は、クリッピングが発生する範囲を示す境界矩形です。このパラメータは必ず指定する必要があり、最低でもデバイスコンテキストのクライアントエリアの矩形を特定する必要があります。
+</li>
+</ul>
+
+<p>マルチパスレンダリングでは、ちらつきが発生するため、この関数の出力を「ダブルバッファ」にすることをお勧めします。この関数の戻り値では、alignment-mode、background-mode、およびdevice-contextの色が指定されていません。
+
+</p>
+
+<p>UspTextOutは将来的にワードラッピングに対応するように変更される予定です。
+
+</p>
+
+<h2 id="uspsnapxtooffset">UspSnapXToOffset</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="n">UspSnapXToOffset</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>    
+  <span class="kt">int</span> <span class="n">xpos</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="o">*</span> <span class="n">snappedX</span><span class="p">,</span> <span class="c1">// out, optional
+</span>  <span class="kt">int</span> <span class="o">*</span> <span class="n">charPos</span><span class="p">,</span> <span class="c1">// out
+</span>  <span class="n">BOOL</span> <span class="o">*</span> <span class="n">fRTL</span> <span class="c1">// out, optional
+</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspSnapXtoOffsetは、x座標を最も近い文字オフセットに変換します。さらに、選択された文字のx座標を返します。
+
+</p>
+
+<ul>
+  <li>xposは、x座標を指定します。
+</li>
+  <li>snappedXは、調整後のX座標を受け取る整数を指します。
+</li>
+  <li>charPosは、xposに対応する文字位置を受け取る整数を指します。
+</li>
+  <li>fRTLは、xposに対応するアイテムランの方向を受け取るBOOLを指します。TRUEの場合は右から左への実行を、FALSEの場合は左から右への実行を表します。
+</li>
+</ul>
+
+<p>fRTLパラメータは、xposに対応するテキストランの読解方向に合わせて、テキストカレットの形状を変更する場合に有効です。
+
+</p>
+
+<h2 id="uspxtooffset">UspXToOffset</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="n">UspXToOffset</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">xpos</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="o">*</span> <span class="n">charPos</span><span class="p">,</span> <span class="c1">// out
+</span>  <span class="n">BOOL</span> <span class="o">*</span> <span class="n">trailing</span><span class="p">,</span> <span class="c1">// out
+</span>  <span class="n">BOOL</span> <span class="o">*</span> <span class="n">fRTL</span> <span class="c1">// out, optional
+</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspXToOffsetは、x座標を文字位置に変換します。
+
+</p>
+
+<ul>
+  <li>xposは、x座標を指定します。
+</li>
+  <li>charPosは、xposに対応する文字位置を受け取る変数を指します。
+</li>
+  <li>trailing は、その位置が文字の先頭であるか末尾であるかを示すインジケータを受け取る変数を指します。
+</li>
+  <li>fRTLは、xposに対応するアイテムランの方向を受け取る変数を指します。TRUEの場合は右から左への実行を、FALSEの場合は左から右への実行を表します。
+</li>
+</ul>
+
+<h2 id="uspoffsettox">UspOffsetToX</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="n">UspOffsetToX</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>    
+  <span class="kt">int</span> <span class="n">offset</span><span class="p">,</span>
+  <span class="n">BOOL</span> <span class="n">trailing</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="o">*</span> <span class="n">xpos</span> <span class="c1">// out
+</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspOffsetToXは、文字位置の前縁または後縁のx座標を返します。
+
+</p>
+
+<ul>
+  <li>offsetは、文字列の中の文字位置を指定します。
+</li>
+  <li>trailing は、x 座標に対応する文字の端を示します。TRUEの場合は後縁を、FALSEの場合は前縁を表します。
+</li>
+  <li>xposは、character-offsetに対応するx座標を受け取る変数を指します。
+</li>
+</ul>
+
+<h2 id="uspfree">UspFree</h2>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">UspFree</span><span class="p">(</span><span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>UspFreeは、指定されたUSPDATAオブジェクトが不要になったときに呼び出されます。
+
+</p>
+
+<hr>
+
+<h2 id="changes-to-neatpad">Changes to Neatpad</h2>
+
+<p>UspLibをNeatpadの既存のコードベースにインポートするのは非常に簡単でした。しかし、これを可能にするために、TextViewライブラリの重要な部分にいくつかの変更が加えられました。これらの変更点を以下に簡単に紹介します。
+
+</p>
+
+<ul>
+  <li>NeatTextOutとNeatTextWidthへの参照は、関数自体と同様に削除されました。つまり、UspLib以前の、描画やペインティングについて説明したすべてのチュートリアルは、事実上、時代遅れになっています。提示されたアイデアは良かったのですが、スタイル付きテキストの描画方法（ExtTextOutの連続呼び出し）はUspLibライブラリに取って代わられました。
+</li>
+  <li>既存のマウス操作のコードは、大幅に複雑さを減らしました。以前のチュートリアルで紹介したキャレットのヒットテストのアイデアも、UspLibが提供する機能に取って代わられました。
+
+</li>
+  <li>フォント処理が一部UspLibに移行しました。
+
+</li>
+  <li>制御文字のレンダリングは、UspLibによって完全に処理されるため、関連するコードはすべてTextViewから削除されました。
+
+</li>
+</ul>
+
+<p>大量のコードがTextViewから削除されていますが、実際にはこれらの機能領域はUspLibに移されており、UspLibは描画、フォント、マウスヒットテストのすべての側面を処理しています。
+
+</p>
+
+<p><img src="assets/img/editor1201.gif" alt="<>"></p>
+
+<p>UspLibは、主にNeatpadで使用するために設計されました。しかし、他のテキストエディタプロジェクトや、複雑でスタイルのあるテキストを必要とするアプリケーションに使用できないということではありません。UspLibはフリーウェアであり、どのようなプロジェクトにも使用することができます。
+
+</p>
+
+<h2 id="problems-with-paragraphs">Problems with paragraphs</h2>
+
+<p>Uniscribe (そしてUspLib)では、テキストの基本単位はパラグラフです。Neatpadのようなテキストエディターでは、一行全体を段落として扱うことができます。しかし、この概念は重要で、UspLibの使用方法に制限を課しています。行全体を分析する必要があるため、事実上、一度にテキストの全行がメモリに入っていなければなりません。そのため、読み込むテキストファイルには「行数」の制限を設けなければなりません。Neatpadでは、一定の長さを超えたテキストの行は切り捨てられます。
+
+</p>
+
+<p>恣意的な長蛇の列を処理することを楽しみにしていなかったので、この制限については非常に喜ばしいことです。このように、長い回線にはいくつかの問題があります。
+
+</p>
+
+<ul>
+  <li>行全体がメモリ内になければならない場合、ScriptItemizeでUnicode双方向アルゴリズムを適用するには？
+</li>
+  <li>ところで、最大のラインレングスは何でしょうか？2Gbです。4Gb？
+</li>
+  <li>こんなに長い線のx座標をどうやって表現するのか？x座標は、32bit整数の限界を超えてしまいます。
+
+</li>
+  <li>タブを含む行の文字数をどのようにカウントするのか？タブを拡張すると、行の長さが4Gbを超える可能性があります。
+
+</li>
+</ul>
+
+<p>これらの質問に対する良い答えはありませんので、今のところ、1回線あたり65Kbのようなシンプルな制限で満足しています。この分野で何かご意見があれば、ぜひお聞かせください。
+
+</p>
+
+<h2 id="caching-with-getuspdata">Caching with GetUspData</h2>
+
+<p>Uniscribeの大きな問題点は、たった一行のテキストを表示するために、すべてのメモリを割り当てなければならないことです。UspLibは、この複雑さをUSPDATAオブジェクトの後ろに隠します。しかし、各USPDATAが負担するメモリのオーバーヘッドは非常に大きなものです。
+
+</p>
+
+<p>グリフ単位で16バイト、ワイド文字単位で14バイト、アイテムラン単位で32バイトとなります。
+
+</p>
+
+<p>典型的なUTF-16の文字列の場合、元の文字列の長さの何倍もの長さになることがわかります。明らかに、これはファイル内のすべてのテキスト行に対してUSPDATAオブジェクトを作成するには多すぎます。この問題を解決するために、内部キャッシュからUSPDATAオブジェクトを管理する新しいTextViewメンバ関数が書かれました。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">USP_CACHE</span>
+<span class="p">{</span>
+   <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">;</span> <span class="c1">// the UspLib data for this line
+</span>   <span class="n">ULONG</span> <span class="n">lineno</span><span class="p">;</span> <span class="c1">// which line this refers to
+</span>   <span class="n">ULONG</span> <span class="n">usage</span><span class="p">;</span> <span class="c1">// usage count for caching purposes
+</span><span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">TextView</span>
+<span class="p">{</span>
+   <span class="p">...</span>
+   <span class="c1">// keep an internal cache of USPDATA objects
+</span>   <span class="n">USP_CACHE</span> <span class="n">m_uspCache</span><span class="p">[</span><span class="n">USP_CACHE_SIZE</span><span class="p">];</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>TextViewでテキストの行が必要になると（描画やマウスのヒットテストのため）、GetUspData関数が呼び出されます。描画やマウス関連のルーチンは、基礎となるTextDocumentに直接アクセスしなくなりました。すべてのデータアクセスは、この1つの関数を通して行われます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">USPDATA</span> <span class="o">*</span><span class="n">TextView</span><span class="o">::</span><span class="n">GetUspData</span><span class="p">(</span><span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">TCHAR</span> <span class="n">buff</span><span class="p">[</span><span class="n">TEXTBUFSIZE</span><span class="p">];</span>
+    <span class="n">ATTR</span> <span class="n">attr</span><span class="p">[</span><span class="n">TEXTBUFSIZE</span><span class="p">];</span>
+    <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>
+
+    <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span> <span class="o">=</span> <span class="o">&lt;&lt;</span> <span class="n">find</span> <span class="n">a</span> <span class="n">cached</span> <span class="n">object</span> <span class="o">&gt;&gt;</span>
+
+    <span class="c1">// if found a match (an already analyzed line) then return it here!!
+</span>    <span class="k">if</span><span class="p">(....)</span>
+        <span class="k">return</span> <span class="n">uspData</span><span class="p">;</span>
+
+    <span class="c1">// otherwise we need to style + analyze a new line
+</span>    <span class="n">len</span> <span class="o">=</span> <span class="n">m_pTextDoc</span><span class="o">-&gt;</span><span class="n">getline</span><span class="p">(</span><span class="n">nLineNo</span><span class="p">,</span> <span class="n">buff</span><span class="p">,</span> <span class="n">TEXTBUFSIZE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">off_chars</span><span class="p">);</span>
+    <span class="n">len</span> <span class="o">=</span> <span class="n">ApplyTextAttributes</span><span class="p">(</span><span class="n">nLineNo</span><span class="p">,</span> <span class="n">off_chars</span><span class="p">,</span> <span class="n">colno</span><span class="p">,</span> <span class="n">buff</span><span class="p">,</span> <span class="n">len</span><span class="p">,</span> <span class="n">attr</span><span class="p">);</span>
+
+    <span class="c1">// setup the tabs
+</span>    <span class="kt">int</span> <span class="n">tablist</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">m_nTabWidthChars</span> <span class="p">};</span>
+    <span class="n">SCRIPT_TABDEF</span> <span class="n">tabdef</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tablist</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+    <span class="n">SCRIPT_CONTROL</span> <span class="n">scriptControl</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span> 
+
+    <span class="n">SCRIPT_STATE</span> <span class="n">scriptState</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+
+    <span class="c1">// generate glyphs etc
+</span>    <span class="n">UspAnalyze</span><span class="p">(</span><span class="n">uspData</span><span class="p">,</span> <span class="n">hdcTemp</span><span class="p">,</span> <span class="n">buff</span><span class="p">,</span> <span class="n">len</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">m_uspFontList</span><span class="p">,</span> 
+       <span class="o">&amp;</span><span class="n">scriptControl</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">scriptState</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">tabdef</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">uspData</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上記のサンプルコードは、GetUspDataがどのように動作するかについての一般的なアイデアを示しています。キャッシュの詳細は退屈なので、ここでは省略しました（実際のソースを見てください）。しかし、このメソッドの背後にあるアイデアは、USPDATAオブジェクトが必要なときにはいつでも、GetUspDataが分析済みのオブジェクトを返すということです。ほとんどの場合、このオブジェクトはキャッシュから取得されますが、たまにTextDocumentから行を取得してUspAnalyzeで分析する必要があります。
+
+</p>
+
+<h2 id="conclusions">Conclusions</h2>
+
+<p>Uniscribeへの移行は、Neatpadの開発におけるターニングポイントとなりました。ここに至るまでには多くの努力が必要でしたが、今では未来が非常に明確になっています。いろいろな意味で、このプロジェクトを最初からUniscribeで始めていれば、多くの作業を省くことができただろうと思います。しかし、Unicodeは非常に複雑なので、最初のチュートリアルはこの余分な複雑さに悩まされていたと思います。また、このプロジェクトを始めてからの進化と、その過程で犯した間違いを見るのは良いことだと思います。
+
+</p>
+
+<p>全体的に見て、Uniscribeでの作業はとてもやりがいのある経験でした。API自体はかなり複雑ですが、非常によく設計されています。主な難点は、グリフベースのレンダリングの概念を理解することです。しかし、UniscribeのMSDNドキュメントは、かなり不十分な部分があると感じています。Unicodeテキストを表示した経験のない私にとって、このプロジェクトのこのフェーズを最終的に完了するまで、かなりの時間苦労しました。
+
+</p>
+
+<p>比較として、ATSUI（Uniscribeと同等のAPIですが、より高レベルです）のAppleドキュメントを見てみましょう。ATSUIのAPIを単に文書化しているのではなく、Appleのシステム上でどのように使用すべきかのガイドラインを示しています。
+
+</p>
+
+<h2 id="coming-up-in-part-16">Coming up in Part 16</h2>
+
+<p>UspLibにはまだいくつかの細かい「Todo」があり、それはまだ完了していません。テキストの行末にあるCRLFシーケンスの問題は、双方向テキストのために対処する必要があります。RTLテキストの場合、CRLFは行の右端ではなく、左端、あるいは行の中央になることもあります。もう一つの問題は、ファイルを右から左に完全に配置し、スクロールバーを左に配置して適切に表示することです。
+
+</p>
+
+<p>次のチュートリアルでは、TextViewにキーボードサポートを追加することを考えます。実際のテキスト入力は、TextDocumentが実際にテキストを編集できるようになるまで待たなければならないので、キーボードでのキャレット移動にのみ焦点を当てます。キャレット移動のコードは、UniscribeのScriptBreakルーチンを使用しますので、おそらくUspLib関数が2つほど追加されることになるでしょう。
+
+</p>
+
+<p>その先にはシンタックスハイライトがあると思いますが、GUIが完全に完成したら、いよいよファイル編集に移ります。終わりが近づいてきたと感じています。
+
+</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad15.zip">neatpad15.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2006-03-06T00:00:00+00:00">March 06, 2006</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="drawing-styled-text-uniscribe.html" class="pagination--pager" title="Drawing styled text with Uniscribe
+">Previous</a>
+    
+    
+      <a href="keyboard-navigation.html" class="pagination--pager" title="Keyboard Navigation
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer" style="">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

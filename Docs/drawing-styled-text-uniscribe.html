@@ -1,0 +1,1123 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Drawing styled text with Uniscribe - Catch22</title>
+<meta name="description" content="The last tutorial saw the completion of the UspAnalyze function, one of the main APIs of the new UspLib text-rendering engine. We will now switch our attention to the implementation of the UspTextOut function. Our goal is to divide up the glyph-lists we ceated in the last tutorial, and apply colour information prior to display with ScriptTextOut. The method we will use to identify which colour belongs to each glyph is the central theme of this tutorial.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Drawing styled text with Uniscribe">
+<meta property="og:url" content="drawing-styled-text-uniscribe">
+
+
+  <meta property="og:description" content="The last tutorial saw the completion of the UspAnalyze function, one of the main APIs of the new UspLib text-rendering engine. We will now switch our attention to the implementation of the UspTextOut function. Our goal is to divide up the glyph-lists we ceated in the last tutorial, and apply colour information prior to display with ScriptTextOut. The method we will use to identify which colour belongs to each glyph is the central theme of this tutorial.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2006-03-06T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="drawing-styled-text-uniscribe.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></head>
+
+  <body class="layout--tutorial wide" style="margin-bottom: 171.375px;">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button" count="0" style="">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Drawing styled text with Uniscribe</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/uspdemo.zip">uspdemo.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="active">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Drawing styled text with Uniscribe">
+    <meta itemprop="description" content="The last tutorial saw the completion of the UspAnalyze function, one of the main APIs of the new UspLib text-rendering engine. We will now switch our attention to the implementation of the UspTextOut function. Our goal is to divide up the glyph-lists we ceated in the last tutorial, and apply colour information prior to display with ScriptTextOut. The method we will use to identify which colour belongs to each glyph is the central theme of this tutorial.">
+    <meta itemprop="datePublished" content="March 06, 2006">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Drawing styled text with Uniscribe
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Drawing styled text with Uniscribe</h1-->
+<!--h3>Drawing styled text with ScriptTextOut</h3-->
+
+<p>前回のチュートリアルでは、新しいUspLibテキストレンダリングエンジンの主要なAPIの1つであるUspAnalyze関数を完成させました。次は、UspTextOut関数の実装に注目します。ここでの目的は、前回のチュートリアルで作成したグリフリストを分割し、ScriptTextOutで表示する前に色情報を適用することです。どの色が各グリフに属しているかを識別する方法が、このチュートリアルの中心テーマです。
+
+</p>
+
+<p>このチュートリアルにはUnscribeに関連する非常に特殊な情報が含まれており、スタイル付きテキストの描画方法を理解しようとしている方にしか興味を持っていただけないと思います。UspLibの動作を確認したい場合は、次のチュートリアルに進んでください。
+
+</p>
+
+<p><img src="assets/img/editor1403.gif" alt="<>"></p>
+
+<p>上の画像は、私がUniscribeを使って書いたもう一つの小さなユーティリティです。このアプリの目的は、UspLibライブラリのデモ（およびテスト）です。デモとUspLibのソースコードは、この記事のトップからダウンロードできます。
+
+</p>
+
+<h2 id="6-drawing-styled-text">6. Drawing styled text</h2>
+
+<p>この時点では、単純にグリフをずらっと並べてScriptTextOutを呼び出して終わりにすることができます。正しく表示され、ユニコードテキストを表示するという目的は達成されたことになります。しかし、このテキストは単一のフォントと色でしか描画されませんので、代わりに ScriptString API を使った方がずっと簡単だったでしょう。覚えておいていただきたいのは、Uniscribe を使用する理由は、フォントや色の情報を非常に細かい方法で適用する必要があるからです。
+
+</p>
+
+<p>本連載の第10回では、Neatpadでテキストをレンダリングする際に、3つのパスを使った新しい方法を提案しました。今回は、UspTextOut関数を使って、この描画方法を実装しました。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">UspTextOut</span><span class="p">(</span> <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>
+                 <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span>
+                 <span class="kt">int</span> <span class="n">xpos</span><span class="p">,</span>
+                 <span class="kt">int</span> <span class="n">ypos</span><span class="p">,</span>
+                 <span class="n">RECT</span> <span class="o">*</span> <span class="n">bounds</span>
+    <span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">//
+</span>    <span class="c1">// 1. Draw all background colours, including selection-highlights;
+</span>    <span class="c1">// selected areas are added to the HDC clipping region which prevents
+</span>    <span class="c1">// step#2 (below) from drawing over them
+</span>    <span class="c1">//     
+</span>    <span class="n">PaintBackground</span><span class="p">(</span><span class="n">uspData</span><span class="p">,</span> <span class="n">hdc</span><span class="p">,</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">bounds</span><span class="p">);</span>
+
+    <span class="c1">//
+</span>    <span class="c1">// 2. Draw the text normally. Selected areas are left untouched
+</span>    <span class="c1">// because of the clipping-region created in step#1
+</span>    <span class="c1">//
+</span>    <span class="n">SetBkMode</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">TRANSPARENT</span><span class="p">);</span>
+    <span class="n">PaintForeground</span><span class="p">(</span><span class="n">uspData</span><span class="p">,</span> <span class="n">hdc</span><span class="p">,</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">);</span>
+
+    <span class="c1">//
+</span>    <span class="c1">// 3. Redraw the text using a single text-selection-colour (i.e. white)
+</span>    <span class="c1">// in the same position, directly over the top of the text drawn in step#2
+</span>    <span class="c1">// Before we do this, the HDC clipping-region is inverted,
+</span>    <span class="c1">// so only selection areas are modified this time
+</span>    <span class="c1">//
+</span>    <span class="n">PaintForegound</span><span class="p">(</span><span class="n">uspData</span><span class="p">,</span> <span class="n">hdc</span><span class="p">,</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>UspTextOutは、表示の前に文字列の分析を必要とするという点で、ScriptStringOutとよく似ています。UspAnalyzeによって生成された情報を含むUSPDATAオブジェクトを入力として受け取ります。3つのパスがありますが、実装する必要があるのはDrawBackgroundとDrawForegroundの2つの関数だけです。これらの関数の実装については、もう少し後に見てみましょう。
+
+</p>
+
+<h2 id="characters-vs-glyphs-vs-clusters">Characters vs Glyphs vs Clusters</h2>
+
+<p>Uniscribeの大きな問題点は、ScriptShapeとScriptPlaceの呼び出し結果をどのように読み解くかということです。テキストの各行について返される情報があまりにも多いため、そのすべてを理解するにはかなりの時間と労力が必要です。このチュートリアルを終える頃には、Uniscribeのすべての機能がどのように連携しているかについて、少し理解できるようになっていることを願っています。
+
+</p>
+
+<p>Uniscribe（および一般的なコンピュータタイポグラフィ）を理解する上で重要なことは、文字とグリフの違いです。これまでNeatpadの主な焦点は、論理的なUnicode文字シーケンスでした。しかし、Uniscribeが加わってからは、グリフに焦点が当てられるようになりました。ここで理解していただきたいのは、文字とグリフの間には直接的な関係はないということです。
+
+</p>
+
+<p>英語のような単純な用字系では、フォントは通常、1つのUnicode文字に対して1つのグリフを含みます。しかし、より複雑な用字系ではこの関係が変わることがあります。1 つの Unicode 文字が複数のグリフになることもあります。逆もまた真なりで、複数のUnicode文字が1つのグリフになることもあります。この挙動は、使用しているフォントによって様々です。このように文字とグリフが分かれているのは、属性のスタイルランがすべて文字ベースであり、このスタイル情報を特定のグリフに変換する必要があるという問題があります。
+
+</p>
+
+<p>さらに複雑なことに、グリフクラスターの概念を理解しなければなりません。クラスタとは基本的に、選択可能な1つのユニットとして扱わなければならないグリフのグループのことです。これ自体は問題ではありませんが、クラスターの境界を尊重しなければならないため、グリフシーケンスのレンダリングが少し複雑になります。
+
+</p>
+
+<h2 id="understanding-the-logical-cluster-list">Understanding the Logical Cluster List</h2>
+
+<p>ロジカルクラスターリストは、キャラクターとグリフの関係を確立するための鍵となります。このリストは ScriptShape が pwLogClust[] 配列で返します。このリストは、論理的な文字の位置とグリフ クラスタの位置の間のマッピングを提供します。UspLibは、各ランの論理クラスタ情報をUSPDATAオブジェクトのclusterList[]フィールドに格納します。
+
+</p>
+
+<p>このような文字からグリフへのマッピングの考え方をサポートするために、ロジカルクラスターリストは2つの重要なコンセプトを表す必要があります。
+
+</p>
+
+<ul>
+  <li>まず、元のUnicode文字列内のクラスタ境界、つまり各クラスタの論理文字単位（WCHAR）でのオフセットを特定します。clusterListの各エントリは、元の文字列の1文字に正確に対応しているため、clusterListは常に処理対象のUnicode文字列と同じ長さになります。
+</li>
+  <li>次に、この同じ配列は、ScriptShape と ScriptPlace によって生成されたグリフバッファ内の各グリフクラスターのオフセットも特定します。
+</li>
+</ul>
+
+<p>つまり、clusterListの個々の要素の値（コンテンツ）はグリフクラスターを定義し、配列要素の位置は論理的な文字用語でクラスターを表現します。
+
+</p>
+
+<p>例として、前回見たのと同じアラビア語の文字列「يُساوِي」を使います。この7つのユニコード文字からなる文字列では、以下のような論理クラスタ情報がScriptShapeによって生成されます。なお、表の上部には、論理配列のインデックスの位置が記載されています。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Array</td>
+      <td>[0]</td>
+      <td>[1]</td>
+      <td>[2]</td>
+      <td>[3]</td>
+      <td>[4]</td>
+      <td>[5]</td>
+      <td>[6]</td>
+    </tr>
+    <tr>
+      <td>WCHAR <strong>wszText</strong> []</td>
+      <td>U+064A</td>
+      <td>U+064F</td>
+      <td>U+0633</td>
+      <td>U+0627</td>
+      <td>U+0648</td>
+      <td>U+0650</td>
+      <td>U+064A</td>
+    </tr>
+    <tr>
+      <td>WORD <strong>clusterList</strong> []</td>
+      <td><strong>6</strong></td>
+      <td>6</td>
+      <td><strong>4</strong></td>
+      <td><strong>3</strong></td>
+      <td><strong>2</strong></td>
+      <td>2</td>
+      <td><strong>0</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>全体のクラスターは、ロジカルクラスターリストの中の同じ数字をグループ化することで識別されます。上の表のクラスターリストからわかるように、2つの6と2が（他の単数の数字に加えて）あり、結果的に5つの全体のクラスターが一緒になっていることがわかります。下の画像は、このグループ化の概念を示したものです。
+
+</p>
+
+<p><img src="assets/img/editor1402.gif" alt="<>"></p>
+
+<p>クラスタリストは常に論理的な順序で格納されているのに対し、グリフリストは常に視覚的な順序で格納されていることに注意してください。これは、右から左に書かれたスクリプト（上のアラビア文字列など）では、配列を読むときにcluster-listの要素が減っていくことを意味します。この結果、最初に描画しなければならないグリフはグリフリストの一番最後になります。この点を考慮して、クラスターの内訳は以下のようになります。
+
+</p>
+
+<ul>
+  <li>第1クラスター：2つのグリフで表される2つの文字。
+
+</li>
+  <li>第2クラスター：1つのグリフで表される1つの文字。
+
+</li>
+  <li>第3クラスター：1つのグリフで表される1つのキャラクター。
+
+</li>
+  <li>第4クラスター：2つのグリフで表される2つの文字。
+
+</li>
+  <li>第5クラスター：1つのグリフで表される1つのキャラクター。
+
+</li>
+</ul>
+
+<p>うまくいけば、どのようにして論理的なクラスタが特定されたのか、かなり明らかになるでしょう。各クラスタ内のWCHARの数は、各グループ内のキャラクタの数によって計算されます。各クラスタに含まれるグリフの数を計算するのは、あまり明らかではありません。ここで重要なのは、クラスター値の差を見ることです。このようにして、各クラスタの識別が行われました。
+
+</p>
+
+<ol>
+  <li>最初の2つの6は、2つのWCHAR（文字位置0および1）で構成されるクラスタ#1を識別します。この6という値は、このクラスタのグリフを含むglyphListの終わりを示しています。このクラスタが2つのグリフ（#5と#6）で表されていることがわかるのは、以下の理由によります。
+</li>
+  <li>クラスタリストの次の値(4)は、2つのことを教えてくれます。明らかに、このクラスターはグリフリストのグリフ#4から始まっています。しかし、これは最後のクラスターに2つのグリフがあったことも意味します（6-4 = 2）。
+
+</li>
+  <li>第3のクラスターは、単一のグリフ#3と単一のWCHARで構成されています。
+
+</li>
+  <li>4つ目のクラスターは、再び2つのWCHARで構成されており、グリフ#1と#2で表現されています。
+
+</li>
+  <li>最後の5つ目のクラスターは、再び1つのWCHARで、グリフリストのグリフ#0で表されます。
+
+</li>
+</ol>
+
+<p>ご覧のように、ここでの重要な詳細は、各クラスタ内のグリフの数をカウントするために、グリフインデックスの差を見ることです。また、右から左へ書かれたスクリプトでは、グリフが逆順に格納されているため、特別な配慮が必要です。私がこの問題に対処する方法は、x座標を実行の最後まで進め、SetTextAlign(TA_RIGHT)を呼び出し、出力場所を毎回左に移動させることで、グリフが論理的（右から左）な順序で出力されるようにしました。
+
+</p>
+
+<p>理解すべき重要な点は、右から左に書かれたスクリプトであっても、常にクラスターリストに論理的な順序で従うということです。私たちは、要素値の順序を頼りに、各グリフクラスターが描かれるべき場所を探します。
+
+</p>
+
+<h2 id="another-example">Another example</h2>
+
+<p>前の例は、もちろん右から左へのスクリプトで、これらのスクリプトがUniscribeで表現されるユニークな方法を強調しています。次に示す例は、MSDNのScriptShapeドキュメントにある例をベースにしており、複雑な左から右へのテキストがUniscribeでどのように表現されるかを強調しています。
+
+</p>
+
+<p><img src="assets/img/editor1407.gif" alt="<>"></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>U+920, U+911, U+915, U+94D, U+937, U+91D, U+949
+</code></pre></div></div>
+
+<p>今回の文字列は、デーヴァナーガリー文字である。たまたま「見た目」の良いコードポイントを繋げただけなので、何を意味しているのか全くわかりません。もし誰か、7文字のUnicodeフレーズを提供してくれる人がいたら、下記のようなグリフ＋クラスタの特性になるので、ぜひ連絡してください。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Array</td>
+      <td>[0]</td>
+      <td>[1]</td>
+      <td>[2]</td>
+      <td>[3]</td>
+      <td>[4]</td>
+      <td>[5]</td>
+      <td>[6]</td>
+    </tr>
+    <tr>
+      <td>Unicode string</td>
+      <td>U+0920</td>
+      <td>U+0911</td>
+      <td>U+0915</td>
+      <td>U+094D</td>
+      <td>U+0937</td>
+      <td>U+091D</td>
+      <td>U+0949</td>
+    </tr>
+    <tr>
+      <td>clusterList[]</td>
+      <td><strong>0</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>4</strong></td>
+      <td><strong>4</strong></td>
+      <td><strong>4</strong></td>
+      <td><strong>5</strong></td>
+      <td><strong>5</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ここでの重要な違いは、配列を読むときにクラスタリストの要素がどのように増えていくかということです。左から右への実行では、グリフは元のUnicode文字と同じ順序で格納されます。これは、多くの西洋の読者が最も自然だと感じる順序です。
+
+</p>
+
+<p><img src="assets/img/editor1404.gif" alt="<>"></p>
+
+<p>この図は、論理的なキャラクタとグリフクラスターの関係を、今度は左から右へのテキストの場合に示しています。この例は、必要なグリフ+クラスターの特性を満たすフレーズ、フォント、スクリプトが見つからなかったため、純粋に架空のものです。繰り返しになりますが、クラスターあたりのグリフ数は、クラスターリストの要素間の差によって計算されます。
+
+</p>
+
+<ul>
+  <li>第1クラスター：1つのグリフで表される1つの文字（1-0=1
+</li>
+  <li>第2クラスター：3つのグリフで表現される1つのキャラクター（4-1=3
+</li>
+  <li>第3クラスター：1つのグリフで3つのキャラクターが表現される（5-4=1
+</li>
+  <li>第4クラスター：3つのグリフで表される2つのキャラクター（8-5=3
+</li>
+</ul>
+
+<p>最後のクラスターのグリフ数を計算したのは、今回の実行でScriptShapeによって生成されたグリフの数（合計8個）がわかっていたからです。
+
+</p>
+
+<h2 id="interpolation-is-the-key">Interpolation is the key</h2>
+
+<p>Uniscribeで理解すべきことは、文字とグリフの分離です。では、別の例として、3つのキャラクターが2つのグリフを構成している場合はどうなるでしょうか。ここで問題となるのは、各文字の色情報をグリフにどのように配分するか、そしてどのグリフがどの色を担当するかということです。
+
+</p>
+
+<p><img src="assets/img/editor1405.gif" alt="<>"></p>
+
+<p>U+0635 U+0651 U+0650</p>
+
+<p>グリフが一般的に水平方向に並んでいるいくつかのスクリプトでは、色の関係をほとんど推測することができます。しかし、グリフがクラスタ内で垂直に重なり合っている場合や、グリフに対して文字数が不均等な場合には、色と特定のグリフを関連付ける簡単な方法はありません。
+
+</p>
+
+<p>UspLibでは、この問題を2つの方法で解決しました。1つは背景を描くための方法、もう1つは実際のグリフ自体（前景）を描くための方法です。前景を描くのは簡単で、単純にクラスタ内のすべてのグリフを単一の色で描くことにしました。クラスタに複数の色属性がある場合、最初の色だけが選択され、残りの色は無視されます。これは圧倒的に簡単な方法であり、実際には個々のグリフがクラスター内で独自の色を持つことはないでしょう。
+
+</p>
+
+<p>背景の描き方は、反転・ハイライト方式を考慮しなければならないため、かなり異なります。私がここで使った方法は、背景を描くときに各クラスタの幅に合わせて色を補うというものです。この方法については、マイクロソフト社がMSDNの「ScriptXtoCPとScriptCPtoXの注意点」の項で次のように示唆しています。
+
+</p>
+
+<blockquote>
+  <p><em>"論理クラスター配列のクラスター情報は、グリフのクラスターの幅を、それらが表現する論理的なキャラクターの間で均等に共有するために使用されます。"
+
+</em></p>
+</blockquote>
+
+<p>この方法がテキストレンダリングにも使えると論理的に理解するのに時間がかかりましたが、実装してみるとScriptString APIで使われている方法と全く同じであることに気づきました。
+
+</p>
+
+<p><img src="assets/img/editor1406.gif" alt="<>"></p>
+
+<p>そのプロセスはとてもシンプルです。各クラスタを構成する文字数と、各クラスタを構成するグリフの数がわかっています。そこで、これらのグリフの幅を合計して、クラスタの総幅を算出します。そして、クラスターの幅をクラスター内の文字数で割ると、各カラーバンドの幅がわかります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">advanceWidth</span> <span class="o">=</span> <span class="n">clusterWidth</span> <span class="o">/</span> <span class="n">charCount</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>いくつかのスクリプトでは、このようにクラスタを分割することは非常に理にかなっています。特にアラビア語では、キャレットはグリフクラスタの境界ではなく文字の境界に位置するのが一般的です。しかし、ほとんどのスクリプトでは、これは正しくないとみなされるでしょう。アラビア語のためだけに特別なケースを用意するのではなく、色属性がこのように細かく設定されている場合には、UspTextOutが常にグリフクラスター上で補間するように書きました。ScriptCPtoX がキャレット (したがって選択高さ) をクラスタの中央に置くことを許可するのは、適切な場合だけであるという事実に頼ることにします。
+
+</p>
+
+<p>最後に、クラスタの除算に整数演算を用いると、丸め誤差が生じる可能性があります。これは大した問題ではありませんが、 ScriptCPtoX が推定上の除算操作を行ったときに得られる結果と全く同じにする必要があります (そうしないと、たまに 1 ピクセルの誤差が生じることがあります)。ScriptCPtoXはMulDivを使って計算していると思われますが、これは正しい結果が得られるように見えるためで、私はUspLibに使っています。
+
+</p>
+
+<h2 id="drawing-the-background">Drawing the background</h2>
+
+<p>前述の通り、補間を使用しているため、背景の描画は少し異なります。まずは、PaintBackgroundルーチンを見てみましょう。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">PaintBackground</span><span class="p">(</span><span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span> <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> <span class="kt">int</span> <span class="n">xpos</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">RECT</span> <span class="o">*</span> <span class="n">bounds</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="n">ITEM_RUN</span> <span class="o">*</span> <span class="n">itemRun</span><span class="p">;</span>
+
+    <span class="c1">// Process the item-runs in visual-order
+</span>    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">itemRunCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">itemRun</span> <span class="o">=</span> <span class="n">GetItemRun</span><span class="p">(</span><span class="n">uspData</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+
+        <span class="c1">// paint the background of the specified item-run
+</span>        <span class="n">PaintItemRunBackground</span><span class="p">(</span><span class="n">uspData</span><span class="p">,</span> <span class="n">itemRun</span><span class="p">,</span> <span class="n">hdc</span><span class="p">,</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">bounds</span><span class="p">);</span>
+
+        <span class="n">xpos</span> <span class="o">+=</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ご覧の通り、この関数は非常にシンプルです。単に、アイテムランを視覚的な順序で処理し、各ランのx座標をアイテム幅だけ進めます。各アイテムランの背景は、PaintItemRunBackground関数によって個別にレンダリングされます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">PaintItemRunBackground</span><span class="p">(</span><span class="n">USPDATA</span> <span class="o">*</span><span class="n">uspData</span><span class="p">,</span> <span class="n">ITEM_RUN</span> <span class="o">*</span><span class="n">itemRun</span><span class="p">,</span> <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> <span class="kt">int</span> <span class="n">xpos</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ypos</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">lasti</span><span class="p">;</span>
+
+    <span class="c1">// locate the item-run buffers
+</span>    <span class="n">WORD</span> <span class="o">*</span> <span class="n">clusterList</span> <span class="o">=</span> <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">clusterList</span> <span class="o">+</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">charPos</span><span class="p">;</span>
+    <span class="n">ATTR</span> <span class="o">*</span> <span class="n">attrList</span> <span class="o">=</span> <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">attrList</span> <span class="o">+</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">charPos</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="o">*</span> <span class="n">widthList</span> <span class="o">=</span> <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">widthList</span> <span class="o">+</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">glyphPos</span><span class="p">;</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="n">lasti</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// search for a logical cluster boundary (or end of run)
+</span>        <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">||</span> <span class="n">clusterList</span><span class="p">[</span><span class="n">lasti</span><span class="p">]</span> <span class="o">!=</span> <span class="n">clusterList</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="p">{</span>
+            <span class="o">&lt;&lt;</span> <span class="n">process</span> <span class="n">cluster</span> <span class="o">&gt;&gt;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>主な作業は、論理的なクラスターの位置を特定することです。2つのループインデックス(lastiとi)は、元のテキスト文字列におけるこれらのクラスタ位置を表しています。各クラスタ内のWCHARの数は、したがって(i-lasti)となります。常に論理的な順序で反復しているので、これはLTRとRTLの両方のテキストに当てはまります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;&lt;</span> <span class="n">process</span> <span class="n">cluster</span> <span class="o">&gt;&gt;</span>
+        <span class="kt">int</span> <span class="n">glyphIdx1</span><span class="p">,</span> <span class="n">glyphIdx2</span><span class="p">;</span>
+
+        <span class="c1">// locate glyph-positions for the cluster
+</span>        <span class="n">GetGlyphClusterIndices</span><span class="p">(</span><span class="n">itemRun</span><span class="p">,</span> <span class="n">clusterList</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">lasti</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">glyphIdx1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">glyphIdx2</span><span class="p">);</span>
+
+        <span class="c1">// measure width of this group of glyphs
+</span>        <span class="k">for</span><span class="p">(</span><span class="n">runWidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">glyphIdx1</span> <span class="o">&lt;=</span> <span class="n">glyphIdx2</span><span class="p">;</span> <span class="p">)</span>
+            <span class="n">runWidth</span> <span class="o">+=</span> <span class="n">widthList</span><span class="p">[</span><span class="n">glyphIdx1</span><span class="o">++</span><span class="p">];</span>
+
+        <span class="c1">// divide the cluster-width by the number of code-points that cover it
+</span>        <span class="n">advanceWidth</span> <span class="o">=</span> <span class="n">MulDiv</span><span class="p">(</span><span class="n">runWidth</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="n">lasti</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>クラスタが特定されると、GetGlyphClusterIndicesが呼び出されます。この関数はclusterListを検査して、iとlastiに対応するグリフインデックスの位置を返します。
+
+</p>
+
+<p>次に、グリフクラスターの幅が計算されます。これは、glyphIdx1 と glyphIdx2 の間を単純に繰り返して、クラスター幅を文字数（WCHARs）で割ることで行われます。これで、ちょっとした背景を描くたびにどこまで進めればよいかがわかります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="n">lasti</span><span class="p">;</span> <span class="n">a</span> <span class="o">&lt;=</span> <span class="n">i</span><span class="p">;</span> <span class="n">a</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// look for change in attribute background
+</span>        <span class="k">if</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">||</span>
+           <span class="n">attr</span><span class="p">.</span><span class="n">bg</span> <span class="o">!=</span> <span class="n">attrList</span><span class="p">[</span><span class="n">a</span><span class="p">].</span><span class="n">bg</span> <span class="o">||</span> 
+           <span class="n">attr</span><span class="p">.</span><span class="n">sel</span> <span class="o">!=</span> <span class="n">attrList</span><span class="p">[</span><span class="n">a</span><span class="p">].</span><span class="n">sel</span> <span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">PaintRectBG</span><span class="p">(</span><span class="n">uspData</span><span class="p">,</span> <span class="n">itemRun</span><span class="p">,</span> <span class="n">hdc</span><span class="p">,</span> <span class="n">xpos</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rect</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">attr</span><span class="p">);</span>
+            <span class="n">rect</span><span class="p">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">right</span><span class="p">;</span>
+        <span class="p">}</span> 
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>最後のタスクは、クラスター上の色属性を補間することです。背景を塗るのは色の変化を検出したときだけなので、ほとんどの場合、1回の操作でアイテムランの背景を塗ることができます。上記のコードリストには、（整数）除算の丸め誤差を補正するという細かい部分が含まれていませんが、これはコードを理解する上で必要ありません。
+
+</p>
+
+<p>PaintRectBG関数のコードは省略しますが、選択ハイライトの背景領域を描画した後にExcludeClipRectを呼び出すこと以外は、あまり興味深いものではありません。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">GetGlyphClusterIndices</span><span class="p">(</span> <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span> 
+                             <span class="n">ITEM_RUN</span> <span class="o">*</span> <span class="n">itemRun</span><span class="p">,</span> 
+                             <span class="kt">int</span> <span class="n">clusterIdx1</span><span class="p">,</span> 
+                             <span class="kt">int</span> <span class="n">clusterIdx2</span><span class="p">,</span> 
+                             <span class="kt">int</span> <span class="o">*</span> <span class="n">glyphIdx1</span><span class="p">,</span> 
+                             <span class="kt">int</span> <span class="o">*</span> <span class="n">glyphIdx2</span>
+                           <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">WORD</span> <span class="o">*</span><span class="n">clusterList</span> <span class="o">=</span> <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">clusterList</span> <span class="o">+</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">charPos</span><span class="p">;</span>
+
+    <span class="c1">// locate glyph-positions for the cluster
+</span>    <span class="k">if</span><span class="p">(</span><span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">analysis</span><span class="p">.</span><span class="n">fRTL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// RTL scripts
+</span>        <span class="o">*</span><span class="n">glyphIdx1</span> <span class="o">=</span> <span class="n">clusterIdx1</span> <span class="o">&lt;</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">?</span> <span class="n">clusterList</span><span class="p">[</span><span class="n">clusterIdx1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="o">*</span><span class="n">glyphIdx2</span> <span class="o">=</span> <span class="n">clusterList</span><span class="p">[</span><span class="n">clusterIdx2</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="c1">// LTR scripts
+</span>        <span class="o">*</span><span class="n">glyphIdx1</span> <span class="o">=</span> <span class="n">clusterList</span><span class="p">[</span><span class="n">clusterIdx2</span><span class="p">];</span>
+        <span class="o">*</span><span class="n">glyphIdx2</span> <span class="o">=</span> <span class="n">clusterIdx1</span> <span class="o">&lt;</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">?</span> <span class="n">clusterList</span><span class="p">[</span><span class="n">clusterIdx1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">:</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">glyphCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上記は GetGlyphClusterIndices 関数です。これは、クラスタ配列を読み込むときにクラスタ要素が減少する（RTLスクリプトの場合）が、LTRスクリプトでは増加するために必要です。
+
+</p>
+
+<h2 id="drawing-the-foreground">Drawing the Foreground</h2>
+
+<p>テキストを描くプロセスは、背景を描くプロセスと非常によく似ているので、今回はあまり多くのコードを含める必要はありません。DrawForegroundItemRun関数の冒頭に飛び込んでみましょう。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// right-left runs can be drawn backwards for simplicity
+</span><span class="k">if</span><span class="p">(</span><span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">analysis</span><span class="p">.</span><span class="n">fRTL</span><span class="p">)</span>
+<span class="p">{</span>     
+     <span class="n">oldMode</span> <span class="o">=</span> <span class="n">SetTextAlign</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">TA_RIGHT</span><span class="p">);</span>
+
+     <span class="n">xpos</span> <span class="o">+=</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">;</span>
+     <span class="n">runDir</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>まず最初に行うことは、右から左への文字列の場合、text-alignmentをTA_RIGHTに設定し、x-coordinateを実行の最後まで進めることです。これにより、論理的な順序でテキストを描画することができます（logical-cluster-listを歩くように）。これは重要なことで、この1つの詳細を除けば、LTRとRTLの両方のテキストを描画するための1つの関数を維持することができるということです。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// loop over all the logical character-positions
+</span> <span class="k">for</span><span class="p">(</span><span class="n">lasti</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+ <span class="p">{</span>
+     <span class="c1">// find a change in attribute
+</span>     <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">||</span> <span class="n">attrList</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">fg</span> <span class="o">!=</span> <span class="n">attrList</span><span class="p">[</span><span class="n">lasti</span><span class="p">].</span><span class="n">fg</span> <span class="p">)</span>
+     <span class="p">{</span>
+         <span class="c1">// scan forward to locate end of cluster (we must always
+</span>         <span class="c1">// handle whole-clusters because the attr[] might fall in the middle)
+</span>         <span class="k">for</span><span class="p">(</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+             <span class="k">if</span><span class="p">(</span><span class="n">clusterList</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">clusterList</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                 <span class="k">break</span><span class="p">;</span>
+
+        <span class="c1">// locate glyph-positions for the cluster [i,lasti]
+</span>        <span class="n">GetGlyphClusterIndices</span><span class="p">(</span><span class="n">itemRun</span><span class="p">,</span> <span class="n">clusterList</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">lasti</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">glyphIdx1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">glyphIdx2</span><span class="p">);</span>
+
+        <span class="o">&lt;&lt;</span> <span class="n">display</span> <span class="n">text</span> <span class="o">&gt;&gt;</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</code></pre></div></div>
+
+<p>フォアグラウンドレンダリングとバックグラウンドレンダリングの次の違いは、クラスターの境界線をどのように特定するかです。今回はまず、色の変化を探します。新しい色が見つかったら、前方をスキャンしてクラスターの端を探します。これにより、補間を気にすることなく、クラスター全体を一色で描くことができます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;&lt;</span> <span class="n">display</span> <span class="n">text</span> <span class="o">&gt;&gt;</span>
+
+    <span class="c1">// measure the width (in pixels) of the run
+</span>    <span class="k">for</span><span class="p">(</span><span class="n">runWidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">glyphIdx1</span><span class="p">;</span> <span class="n">g</span> <span class="o">&lt;=</span> <span class="n">glyphIdx2</span><span class="p">;</span> <span class="n">g</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">runWidth</span> <span class="o">+=</span> <span class="n">widthList</span><span class="p">[</span><span class="n">g</span><span class="p">];</span>
+
+    <span class="c1">// only need the text colour as we are drawing transparently
+</span>    <span class="n">SetTextColor</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">forcesel</span> <span class="o">?</span> <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">selFG</span> <span class="o">:</span> <span class="n">attrList</span><span class="p">[</span><span class="n">lasti</span><span class="p">].</span><span class="n">fg</span><span class="p">);</span>
+
+    <span class="c1">//
+</span>    <span class="c1">// Finally output the run of glyphs
+</span>    <span class="c1">//
+</span>    <span class="n">hr</span> <span class="o">=</span> <span class="n">ScriptTextOut</span><span class="p">(</span>
+        <span class="n">hdc</span><span class="p">,</span> 
+        <span class="o">&amp;</span><span class="n">uspFont</span><span class="o">-&gt;</span><span class="n">scriptCache</span><span class="p">,</span>
+        <span class="n">xpos</span><span class="p">,</span>
+        <span class="n">ypos</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="nb">NULL</span><span class="p">,</span>                    
+        <span class="o">&amp;</span><span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">analysis</span><span class="p">,</span> 
+        <span class="nb">NULL</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="n">glyphList</span> <span class="o">+</span> <span class="n">glyphIdx1</span><span class="p">,</span>
+        <span class="n">glyphIdx2</span> <span class="o">-</span> <span class="n">glyphIdx1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">widthList</span> <span class="o">+</span> <span class="n">glyphIdx1</span><span class="p">,</span>
+        <span class="nb">NULL</span><span class="p">,</span>
+        <span class="n">offsetList</span> <span class="o">+</span> <span class="n">glyphIdx1</span>
+    <span class="p">);</span>
+
+    <span class="c1">// +ve/-ve depending on run direction
+</span>    <span class="n">xpos</span> <span class="o">+=</span> <span class="n">runWidth</span> <span class="o">*</span> <span class="n">runDir</span><span class="p">;</span>
+    <span class="n">lasti</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>テキストカラーが設定されると、 ScriptTextOut が呼び出され、クラスター内のグリフの範囲が指定されます。繰り返しになりますが、色の変更があった場合にはテキストを出力するだけなので、通常は ScriptTextOut の呼び出しは 1 回だけです。
+
+</p>
+
+<h2 id="7-scripttextout">7. ScriptTextOut</h2>
+
+<p>念のため、以下にScriptTextOutのプロトタイプを示します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRESULT</span> <span class="n">WINAPI</span> <span class="n">ScriptTextOut</span><span class="p">(</span>
+
+   <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> 
+   <span class="n">SCRIPT_CACHE</span> <span class="o">*</span> <span class="n">psc</span><span class="p">,</span>
+   <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> 
+   <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> 
+   <span class="n">UINT</span> <span class="n">fuOptions</span><span class="p">,</span>
+
+   <span class="c1">// ExtTextOut options
+</span>   <span class="n">RECT</span> <span class="o">*</span> <span class="n">rect</span><span class="p">,</span>        
+   <span class="n">SCRIPT_ANALYSIS</span> <span class="o">*</span> <span class="n">analysis</span><span class="p">,</span> 
+   <span class="n">WCHAR</span> <span class="o">*</span> <span class="n">pwcReserved</span><span class="p">,</span> 
+   <span class="kt">int</span> <span class="n">iReserved</span><span class="p">,</span>
+   <span class="n">WORD</span> <span class="o">*</span> <span class="n">pwGlyphs</span><span class="p">,</span> <span class="c1">// in - results of ScriptShape
+</span>   <span class="kt">int</span> <span class="n">cGlyphs</span><span class="p">,</span> 
+   <span class="kt">int</span> <span class="o">*</span> <span class="n">piAdvance</span><span class="p">,</span> <span class="c1">// in - results of ScriptPlace
+</span>   <span class="kt">int</span> <span class="o">*</span> <span class="n">piJustify</span><span class="p">,</span>    
+   <span class="n">GOFFSET</span> <span class="o">*</span> <span class="n">pGoffset</span> <span class="c1">// in - results of ScriptPlace
+</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>これは、誰が見てもかなり威圧的な機能です。注目すべきパラメータは
+
+</p>
+
+<ul>
+  <li>fuOptionsには、ETO_CLIPPED、ETO_OPAQUE、またはゼロのいずれかを指定します。これらは標準的なExtTextOutフラグです。背景は自分で描いているので、これらのパラメータを使用する必要はありません。opaqueを指定した場合は、グリフのクラスタ全体をこの関数に渡す必要があることに注意してください。
+</li>
+  <li>pwGlyphsとcGlyphsは、ScriptShapeが返すグリフ値のリストを特定します。
+</li>
+  <li>piAdvanceとpGoffsetは、ScriptPlaceが返したグリフ配置バッファを指します。
+</li>
+  <li>piJustifyは、オプションである正当化されたアドバンス値の配列を指します。
+</li>
+</ul>
+
+<p>ScriptTextOutは基本的にExtTextOutのラッパーですが、この関数にはWCHAR*パラメータがないことにお気づきでしょうか。これは、ScriptTextOutがETO_GLYPH_INDEXオプションを付けてExtTextOutを呼び出し、指定したグリフのバッファを渡しているからです。
+
+</p>
+
+<p>ScriptTextOutは、GDIを呼び出す前に追加の処理（グリフの再配置など）を行う場合があるので、ExtTextOutを直接呼び出してScriptTextOutを回避しようとしないでください。
+
+</p>
+
+<h2 id="uniscribe-limitations">Uniscribe Limitations</h2>
+
+<p>Uniscribe の欠点のひとつは、Uniscribe が最も得意とするところ、つまり文字列を個々に成形可能なアイテムに分割することです。問題は、多くのホワイトスペースや句読点を含む文字列では、多数のアイテムランが発生することです。これ自体は悪いことではありませんが、テキストの行をレンダリングする際に問題となります。ScriptTextOutの呼び出し回数が多いと、同じ行のテキストでExtTextOutを呼び出した場合と比べて、パフォーマンスが低下します。
+
+</p>
+
+<p>複雑なスクリプトの場合は、ScriptItemizeで文字列を分割するしかありません。しかし、複雑でない（つまり英語の）スクリプトの場合、アイテムランをどうにかして再結合し、ScriptTextOutの呼び出し回数を減らすことができればいいのですが。しかし、SCRIPT_ANALYSIS::eScriptフィールドを調べることで、アイテムランが複雑であるかどうかを識別することは可能です。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">SCRIPT_ANALYSIS</span>
+<span class="p">{</span>
+    <span class="n">WORD</span> <span class="n">eScript</span> <span class="o">:</span> <span class="mi">10</span><span class="p">;</span> 
+    <span class="n">WORD</span> <span class="n">fRTL</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">...</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>さて、eScriptフィールドは「不透明」であり、その値を推測すべきではありません。しかし、このフィールドは、システムにインストールされている特定のスクリプトシェーピングエンジンに関する情報を含む「グローバルスクリプトテーブル」へのインデックスとして使用することができます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRESULT</span> <span class="n">WINAPI</span> <span class="n">ScriptGetProperties</span><span class="p">(</span><span class="n">SCRIPT_PROPERTIES</span> <span class="o">***</span><span class="n">ppSp</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">piNumScripts</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>ScriptGetProperties関数は、このglobal-script-tableへのポインタを返し、tableの各エントリは、SCRIPT_PROPERTIES構造体へのポインタとなります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">SCRIPT_PROPERTIES</span>
+<span class="p">{</span>
+    <span class="n">DWORD</span> <span class="n">langid</span><span class="p">;</span>
+    <span class="n">DWORD</span> <span class="n">fNumeric</span><span class="p">;</span>
+    <span class="n">DWORD</span> <span class="n">fComplex</span><span class="p">;</span>
+    <span class="p">...</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>この構造体には多くの情報フィールドがありますが、私たちにとって興味深いのは、fComplexフラグです。これらの情報をまとめると、次のような関数になります。この関数は、アイテムランが複雑であるかどうかを示すブール値を返します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="nf">IsRunComplex</span><span class="p">(</span><span class="n">ITEM_RUN</span> <span class="o">*</span><span class="n">itemRun</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">SCRIPT_PROPERTIES</span> <span class="o">**</span> <span class="n">propList</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">propCount</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">scriptIndex</span><span class="p">;</span> 
+
+    <span class="c1">// get pointer to the global script table
+</span>    <span class="n">ScriptGetProperties</span><span class="p">(</span><span class="o">&amp;</span><span class="n">propList</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">propCount</span><span class="p">);</span>
+
+    <span class="c1">// the SCRIPT_ANALYSIS::eScript is an index to the global script table
+</span>    <span class="n">scriptIndex</span> <span class="o">=</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">analysis</span><span class="p">.</span><span class="n">eScript</span><span class="p">;</span>
+
+    <span class="c1">// locate the script from the script-index
+</span>    <span class="k">return</span> <span class="n">propList</span><span class="p">[</span><span class="n">scriptIndex</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">fComplex</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>理論的には、複雑でないアイテム・ランを識別し、SCRIPT_ANALYSIS::eScriptフィールドをSCRIPT_UNDEFINEDに設定して、1つのランに統合することができる。これらの作業は、ScriptShapeが呼び出される前に行う必要があります。
+
+</p>
+
+<h2 id="coming-up-in-part-15">Coming up in Part 15</h2>
+
+<p>新しいチュートリアルを投稿するたびに、Neatpadのアップデートがあるだろうと約束していますが、もちろんそれは実現していません（またか！）。Uniscribeは非常に複雑で、最初に予想していたよりもはるかに多くの時間がかかっています。今のところ、このチュートリアルのトップにあるUspLibのデモをダウンロードすることができます。
+
+</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/uspdemo.zip">uspdemo.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2006-03-06T00:00:00+00:00">March 06, 2006</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="more-uniscribe-mysteries.html" class="pagination--pager" title="More Uniscribe Mysteries
+">Previous</a>
+    
+    
+      <a href="integrating-usplib.html" class="pagination--pager" title="Integrating UspLib
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer" style="">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

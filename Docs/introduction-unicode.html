@@ -1,0 +1,863 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Introduction to Unicode - Catch22</title>
+<meta name="description" content="The user-interface for the TextView has progressed enough to allow us to switch our attention back to the TextDocument. I am now concentrating on adding full Unicode support to Neatpad. Because Unicode is such a complicated subject I won’t attempt to tackle it all at once so instead I will split the various aspects of Unicode across several tutorials.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Introduction to Unicode">
+<meta property="og:url" content="introduction-unicode">
+
+
+  <meta property="og:description" content="The user-interface for the TextView has progressed enough to allow us to switch our attention back to the TextDocument. I am now concentrating on adding full Unicode support to Neatpad. Because Unicode is such a complicated subject I won’t attempt to tackle it all at once so instead I will split the various aspects of Unicode across several tutorials.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2005-12-04T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="introduction-unicode.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></head>
+
+  <body class="layout--tutorial wide" style="margin-bottom: 171.375px;">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button" count="0" style="">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Introduction to Unicode</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="active">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Introduction to Unicode">
+    <meta itemprop="description" content="The user-interface for the TextView has progressed enough to allow us to switch our attention back to the TextDocument. I am now concentrating on adding full Unicode support to Neatpad. Because Unicode is such a complicated subject I won’t attempt to tackle it all at once so instead I will split the various aspects of Unicode across several tutorials.">
+    <meta itemprop="datePublished" content="December 04, 2005">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Introduction to Unicode
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Introduction to Unicode</h1-->
+<!--h3>An introduction to Unicode and character sets</h3-->
+
+<p>TextView のユーザーインターフェースが十分に進歩したので、TextDocument に目を向けることができるようになりました。私は今、Neatpad に Unicode を完全にサポートすることに集中しています。Unicodeは非常に複雑な問題なので、一度にすべてに取り組もうとはせず、いくつかのチュートリアルに分けて説明します。
+
+</p>
+
+<p>最初のUnicodeトピック（Part 8 - あなたが今読んでいるもの）では、Unicodeと一般的に使用されている様々なエンコーディングスキームについて紹介します。コードのダウンロードはありません。このトピックでは、Unicodeに関する議論を行い、さまざまな問題を理解してもらうことを目的としています。次のUnicodeトピック(パート9)では、ここで説明したコンセプトをNeatpadに組み込む方法を見ていきます。Unicodeに関する残りのトピックは、Unicodeテキストの表示を取り巻く問題に焦点を当てており、複雑なスクリプトのサポート、双方向テキスト、Uniscribe APIなどが含まれます。
+
+</p>
+
+<h2 id="unicode-myths">Unicode Myths</h2>
+
+<p>この記事を読み終える頃には、Unicodeがどのようなものなのかを理解していただけると思いますが、その前に、Unicodeに関する最も一般的な神話を紹介します。
+
+</p>
+
+<p>Unicodeについて、最もよく見かける間違った記述はこれです。"Unicodeでは、すべての文字は2バイト長である。"
+
+</p>
+
+<p>これは全くの誤りです。Unicode規格では、常に複数の文字のエンコーディング形式が定義されており、元々はUCS-2が最も一般的でした。しかし、Unicode 2.0以降、すべての文字を2バイトで表現できる符号化方式は存在しなくなりました（UTF-16については、このページの下の方にあります）。
+
+</p>
+
+<p>また、Microsoft社でさえ、自社のドキュメントの中で、「Unicodeはワイドキャラクタセットである」というような間違った記述をしていることがあります。少なくともWindowsでは、Unicodeの文字列は通常UCS-2/UTF-16でエンコードされますが、Unicodeが「ワイドキャラクタセット」であると主張するのはかなり誤解を招く恐れがあります。
+
+</p>
+
+<p>Windowsプログラマが次によく聞く質問は、「UNICODEの文字列をUTF-8の文字列に変換するにはどうしたらいいですか」というものです。これは、Unicodeを理解していない人がよくする質問です。UTF-8の文字列はUnicodeの文字列なので、変換できません。おそらく質問者は、「このUCS-2形式の文字列とUTF-8の間で変換するにはどうしたらいいですか」という意味で質問しているのでしょう。もちろん、この場合の答えはWideCharToMultiByte()のAPIコールになります。
+
+</p>
+
+<p>最後の誤解は、wchar_tの「ワイド文字」型は16ビットであるというものです。C言語はwchar_t型の幅についてそのような仮定をしていません。Cコンパイラが1つの「ワイド文字」を表現するために必要とする幅を持つことができますし、UNIXやLinuxではwchar_tは一般的に32ビットの量です。
+
+</p>
+
+<h2 id="code-pages-and-character-sets">Code Pages and Character Sets</h2>
+
+<p>誰もが知っているASCII文字セットは、7ビットの整数を使って128個のユニークな文字値（0〜127）をエンコードします。また、ANSI文字セットの存在も知っている人は多いと思います。また、ごく少数のヨーロッパ言語を除いて、世界中の文字体系をエンコードするには8ビットバイトでは不十分であることも、ほとんどの人が認識していると言ってよいでしょう。
+
+</p>
+
+<p>このような「バイトベース」の文字セットは、しばしば「Single-Byte-Character-Set」（略してSBCS）と呼ばれます。ほとんどの8ビット文字セットは、下位128文字をASCIIのままにして、バイトの上位「半分」に独自の文字を定義しています。シングルバイト文字セットにはたくさんの種類があります。
+
+</p>
+
+<p>これらの追加文字セットは、コードページ（IBMの伝統的な用語）と呼ばれ、それぞれがANSI/ISO組織によって定義された固有のコードページ番号によって識別されます。例えば、Windows で使用されている ANSI コードページは 1252 です。Windowsアプリケーションは、コードページ番号を設定することで、どの文字セットで動作させたいかをWindowsに伝えることができます。
+
+</p>
+
+<p>もちろん、8ビットの文字だけでは、世界の他の文字体系を表現することはできませんでした。そこで登場したのが、ダブルバイト文字セット（DBCS）です。この文字セットでは、1文字を1バイトまたは2バイトで表現することができます。このような文字セットは他にも多数あり、マイクロソフトではこれらをすべてマルチバイト文字セット（MBCS）と呼んでいます。これらの文字セットに共通しているのは、その複雑さであり、プログラミングの観点からは非常に扱いにくいものとなっています。
+
+</p>
+
+<p>CharNext、CharPrev、_mbsinc、_mbsdecなど、MBCS文字列を扱うための多くのAPIやサポートライブラリをご存じかもしれません。これらのAPIはすべて、プログラムがレガシー文字セットを扱うために設計されており、アプリケーションがテキストを正しく表示するためには、正しいコードページが設定されている必要があります。
+
+</p>
+
+<p>なお、これらの概念はすべて、今となってはかなり古いものです。SBCS、MBCS、DBCS、そしてコードページという概念はすべて過去のものであり、ありがたいことに私たちはもうそれらを気にする必要はありません。
+
+</p>
+
+<h2 id="what-is-unicode">What is Unicode?</h2>
+
+<p>Unicodeには多くの混乱があるようです。これは、Unicodeが1991年に初めてリリースされて以来、大幅に進化していることが主な原因です。この間、Unicodeについて多くの情報が書かれてきましたが、初期の情報の多くは今では不正確なものとなっています。約15年後の現在、Unicodeはバージョン4.1となっていますが、Unicodeに対するあなたの認識は、あなたが最初にこのテーマに触れた時期に応じて最も影響を受けているでしょう。Unicodeの歴史を理解することは、Unicodeそのものを理解することと同じくらい重要です。
+
+</p>
+
+<p>Unicodeは、世界の文字体系をコンピュータで表現するための世界共通の文字符号化規格です。また、ISO-10646規格を実用化したものでもあります。Unicodeコンソーシアム（MicrosoftやIBMなどの国際企業が代表）は、ISO-10646と並行してUnicode規格を策定しています。よく、それぞれの規格の用語が混在して使われていることがありますが、実際には同じものを指しています。
+
+</p>
+
+<p>Unicodeの主な目的は、現在一般的に使用されているすべての文字を保持する単一のコードページを定義することです。そもそもUnicodeは、ISO-10646で定義されているように、各文字に固有の番号を割り当てる大きなテーブルに過ぎません。Unicodeコードページ内のこれらの番号は、それぞれ「コードポイント」と呼ばれています。以下は、Unicodeコードポイントの例です。
+
+</p>
+
+<p><strong>U+0041</strong>“Latin Capital Letter A” <strong>U+03BE</strong>“Greek Small Letter Xi” <strong>U+1D176</strong>“Musical Symbol End Tie”</p>
+
+<p>標準的な慣習では、「U+」の後にコードポイントの値を表す16進数を書きます。多くの場合、各コードポイントの横には、Unicode規格で定義されているコードポイントの完全な名称を示す説明タグが付いています。
+
+</p>
+
+<p>Unicode規格では、100万個強のコードポイントを表現することができます。バージョン4.0では、約96,382文字が実際のコードポイントに割り当てられており、符号化空間の約91%が未割り当てとなっています。世界の文字体系のほとんどがすでに符号化されているので（中国・日本・韓国のガラパゴス文字を含む）、将来の使用のために多くの拡張性が残されています。
+
+</p>
+
+<p>このコードポイントは、0x000000から0x10FFFFの間の値をとることができます。Unicodeのコードポイントは、21ビットの整数値で表されます。この数字が選ばれたのは偶然ではありませんし、UTF-16フォーマットを詳しく読めば、Unicodeがこのように制限されている理由がわかるでしょう。なお、UnicodeコンソーシアムとISOは、この範囲を超えて符号化空間を拡張することはないと約束していますので、ご注意ください。
+
+</p>
+
+<h2 id="utf-32-and-ucs4">UTF-32 and UCS4</h2>
+
+<p>もちろん、21ビットの整数はちょっと変わった大きさの単位なので、コンピュータに保存するには適していません。このため、Unicodeでは、Unicodeのコードポイントのストリームをエンコードするための変換フォーマットをいくつか定義しています。最も一般的なものは、「UTF-8」、「UTF-16」、「UTF-32」の3つです。
+
+</p>
+
+<p>これらの3つのうち、圧倒的に扱いやすいのがUTF-32です。各 Unicode 文字を格納するのに、32 ビットの整数がちょうど 1 つ必要です。しかし、UTF-32は非常に無駄が多く、32ビットのうち11ビットは決して使用されません。UTF-32でエンコードされたプレーン・イングリッシュ・テキストの場合、全体で75％の無駄があることになります。下の表は、21ビットの整数（「x」で表される）が32ビットの記憶装置にどのようにエンコードされるかを示しています。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Unicode</td>
+      <td>UTF-32</td>
+    </tr>
+    <tr>
+      <td>00000000 - 0010FFFF</td>
+      <td><code class="highlighter-rouge">00000000</code> <code class="highlighter-rouge">000xxxxx</code> <code class="highlighter-rouge">xxxxxxxx</code> <code class="highlighter-rouge">xxxxxxxx</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>UNIXなどの一部のOSでは、文字列の処理や保存にUTF-32を内部的に使用しています。しかし、UTF-32はスペース効率が悪いため、テキストファイルの送受信にはほとんど使用されていません。
+
+</p>
+
+<h2 id="ucs-2">UCS-2</h2>
+
+<p>UCSとは、ISO-10646で定義された用語で、Universal Character Setを意味します。UCSは、ISO-10646で定義された用語で、Universal Character Setの略です。UCS-2は16ビットのコードユニットを用いて各文字を格納・表現します。当時、Unicodeのコードポイントに割り当てられていた文字は55,000文字だけだったので、これは適切な方式だと考えられていました。つまり、（当時の）Unicodeのすべての文字は、1つの16ビット整数で表現できるということです。残念ながら、この信じられないほど短絡的な決定の結果は、今もなお続いています。
+
+</p>
+
+<p>Unicodeが開発される以前にも、1文字を格納するのに1バイト以上を必要とする「ワイド文字セット」は数多く存在していた。代表的なものとしては、IBMのDBCS（double-byte-character-set）、JIS-208、SJIS、EUCなどが挙げられます。さまざまなワイド文字セットをサポートするために、80年代後半にC言語の標準にwchar_t型が導入されました（ただし、承認されたのは1995年です）。wchar_t型（および一般的なワイドキャラクタサポート）は、これらのワイドキャラクタセットをサポートするメカニズムを提供しました。
+
+</p>
+
+<p>UCS-2フォーマットを支持した企業は、Unicodeのサポートを約束した。特にマイクロソフト社は、Windows NT OSを最初から「ユニコード」対応にして、16ビットのUCS-2ワイド文字列を使って、すべてのテキストを保存・処理した。
+
+</p>
+
+<h2 id="utf-16">UTF-16</h2>
+
+<p>1996年にはUnicode 2.0がリリースされ、コードスペースが65,535文字からBMP（Basic Multilingual Plane）に拡張されました。Unicodeのコードスペース全体をエンコードするには、16ビットの整数では不十分であることが明らかになり、UTF-16形式とUTF-16サロゲート・メカニズムが導入されました。重要なのは、UTF-16がUCS-2と下位互換であることです（同じ値を同じようにエンコードします）。
+
+</p>
+
+<p>0x10000から0x10FFFFまでの文字を表現するためには、2つの16ビットの値が必要となり、これらをまとめてサロゲートペアと呼びます。これは、16ビット単位とUnicodeの文字との間に1対1の対応関係がなくなったことを意味します。この2つの16ビット値は、サロゲートであることを示すために、慎重にフォーマットする必要があります。
+
+</p>
+
+<ul>
+  <li>最初の16ビットの値は「ハイサロゲート」と呼ばれ、上位6ビット（16ビット中）を「110110」に設定する必要があります。これにより、0xD800から0xDBFFまでの値を格納するための未使用の10ビットが残り、1024文字分の範囲が確保されます。
+
+</li>
+  <li>2つ目の16ビットは "low surrogate "と呼ばれ、上位6ビットが "110111 "に設定されています。
+
+</li>
+</ul>
+
+<p>このD800からDFFFFまでの「サロゲート範囲」は、以前にUCS-2の「私用領域」と呼ばれていたものの一つから「盗用」されたものです。サロゲートペアを組み合わせると1024×1024の組み合わせとなり、BMPの外側に0x100000（1,048,576）個のコードポイントが追加されることになります。下の表は、UTF-16を使ってUnicodeコードスペースをどのように表現するかを示しています。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Unicode</td>
+      <td>UTF-16</td>
+    </tr>
+    <tr>
+      <td>00000000-0000FFFF</td>
+      <td><code class="highlighter-rouge">xxxxxxxx</code> <code class="highlighter-rouge">xxxxxxxx</code></td>
+    </tr>
+    <tr>
+      <td>00010000-0010FFFF</td>
+      <td><code class="highlighter-rouge">110110yy</code> <code class="highlighter-rouge">yyxxxxxx</code> <code class="highlighter-rouge">110111xx</code> <code class="highlighter-rouge">xxxxxxxx</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>つまり、本質的には、UTF-16はマルチバイトのUTF-8と同様に可変幅のエンコーディング方式なのです。UTF-16が固定幅のフォーマットでなくなった今、何が有利なのかと（私もそうでしたが）思っているかもしれません。もし最初からUTF-8が使えていたら、今頃UTF-16が使われていたかもしれないと思うと面白いですね。
+
+</p>
+
+<p>可変幅の問題を抜きにしても、C/C++の観点からUTF-16を使うのは、奇妙なwchar_t型や、ワイド文字の文字列リテラル用のL""構文のために、かなり面倒です。現時点では、UTF-16が主流のエンコーディング形式であることをご理解ください。Microsoft WindowsもMacintosh OSXもOSにUTF-16を採用していますし、JavaやC#言語もすべての文字列操作にUTF-16を採用しています。UTF-16がすぐになくなることはないでしょう。
+
+</p>
+
+<p>実際のところ、UTF-16の可変幅の性質と、それによってもたらされた若干の複雑さは、Unicodeを表示する際の悪夢に比べれば、取るに足らないものです。文字列がマルチバイト形式であることは重要ではありません。UTF-32であっても、1つのコードポイントが必ずしも1つの可視/選択可能な「グリフ」に対応するわけではありません。
+
+</p>
+
+<h2 id="utf-8">UTF-8</h2>
+
+<p>非常によく使われているエンコーディング形式に、1993年に公式に発表されたUTF-8があります。よくある誤解として、UTF-8はUTF-16の「劣等生」であるというものがあります。UTF-8は、UTF-16やUTF-32とまったく同じUnicode値をエンコードしますが、その代わりに最大4つの8ビットバイトの可変長シーケンスを使用します。これは、UTF-8が真のマルチバイトフォーマットであることを意味します。インターネット上のテキスト（WebページやXMLなど）の多くは、UTF-8を使って送信されていますし、多くのLinuxやUNIXでは、内部的にUTF-8を使用しています。
+
+</p>
+
+<p>UTF-8の仕組みは非常に巧妙です。各バイトのMSB（最上位ビット）は、文字単位が単一の7ビットASCII値であるか（最上位ビットを "0 "に設定）、またはマルチバイトシーケンスの一部であるか（最上位ビットを "1 "に設定）を示すために使用されます。これは、UTF-8が7ビットのASCIIテキストと100％の下位互換性があることを意味しています。もちろん、この目的のために設計されています。この設計により、古い非Unicodeソフトウェアは、ほとんど、あるいは全く変更することなく、Unicodeデータを扱い、処理することができます。
+
+</p>
+
+<p>UTF-8テキストには、実は3つの基本構造があります。
+
+</p>
+
+<ul>
+  <li>プレーンなASCIIテキスト（0～127の範囲の文字）は、何も手を加えずにそのままの形で表現されます。
+
+</li>
+  <li>リードバイトは、マルチバイトシーケンスの開始点を示します。リードバイトの先頭にある "1 "ビットの数は、リードバイトを含めたシーケンスのバイト数を表します。つまり、先頭が "110 "のバイトは2バイトのシーケンスを表し、"1110 "のバイトは3バイトのシーケンスを表しています。リードバイトの下部にある残りのビットは、21ビットのUnicode値の最初の部分を格納するために使用されます。
+</li>
+  <li>トレイルバイトの先頭ビットは常に "10 "で、下位6ビットにはUnicode値の残りのビットが格納されます。トレイルバイトは、常にリードバイトの後に続く必要があり、単独で出現することはありません。
+</li>
+</ul>
+
+<p>そのため、0～127の範囲のUnicodeの値は、そのまま表現されます。この範囲外の値（0x80～0x10FFFF）は、ちょうど1つのリードバイトと1つ以上のトレイルバイトからなるマルチバイトシーケンスを使って表現されます。0x7F以上の値を持つ各Unicode文字は、そのビットがマルチバイト列の「スペア」ビットに分配されます。
+
+</p>
+
+<p>次の表は、この考え方を示したものです。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Unicode</td>
+      <td>UTF-8</td>
+    </tr>
+    <tr>
+      <td>00000000-0000007F</td>
+      <td><code class="highlighter-rouge">0xxxxxxxx</code></td>
+    </tr>
+    <tr>
+      <td>00000080-000007FF</td>
+      <td><code class="highlighter-rouge">110xxxxx</code> <code class="highlighter-rouge">10xxxxxx</code></td>
+    </tr>
+    <tr>
+      <td>00000800-0000FFFF</td>
+      <td><code class="highlighter-rouge">1110xxxx</code> <code class="highlighter-rouge">10xxxxxx</code> <code class="highlighter-rouge">10xxxxxx</code></td>
+    </tr>
+    <tr>
+      <td>00010000-001FFFFF</td>
+      <td><code class="highlighter-rouge">11110xxx</code> <code class="highlighter-rouge">10xxxxxx</code> <code class="highlighter-rouge">10xxxxxx</code> <code class="highlighter-rouge">10xxxxxx</code></td>
+    </tr>
+    <tr>
+      <td>00200000-03FFFFFF*</td>
+      <td><code class="highlighter-rouge">111110xx</code> <code class="highlighter-rouge">10xxxxxx</code> <code class="highlighter-rouge">10xxxxxx</code> <code class="highlighter-rouge">10xxxxxx</code> <code class="highlighter-rouge">10xxxxxx</code></td>
+    </tr>
+    <tr>
+      <td>04000000-7FFFFFFF*</td>
+      <td><code class="highlighter-rouge">1111110x</code> <code class="highlighter-rouge">10xxxxxx</code> <code class="highlighter-rouge">10xxxxxx</code> <code class="highlighter-rouge">10xxxxxx</code> <code class="highlighter-rouge">10xxxxxx</code> <code class="highlighter-rouge">10xxxxxx</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>最後の2行にはアスタリスクが付けられていることに注意してください。これはUTF-8の不正な形式です。UTF-8は理論的にはリードバイトの111110xxと11111110xを使って31ビットの整数を完全にエンコードすることができますが、これらは0～10FFFFのユニコード範囲外の数字を表しているため、オーバーロングシーケンスとなります。この「人工的な」制限は、UTF-16のサロゲートメカニズムのために課せられたものであることを覚えておいてください。
+
+</p>
+
+<h2 id="unicode-text-files">Unicode text files</h2>
+
+<p>Windows NTで通常のメモ帳を使ったことがある方は、テキストファイルにはASCII、Unicode（実際にはUTF-16）、Unicode-Big-Endian（ビッグエンディアン-UTF-16）、そして最後のUTF-8といういくつかの形式で保存できることをご存知でしょう。
+
+</p>
+
+<p>Windows（およびおそらく他のほとんどのOS）のテキストファイルの問題点は、ファイルに含まれるテキストの種類を知る方法がないことです。なぜなら、プレーンテキストのファイルにはそのような機能がないからです。そこで、Unicode規格では、ファイルの保存に使用されたエンコーディング方式を識別するために、テキストファイルに「バイトオーダーマーク」をタグ付けする方法を定義しています。オプションの「BOM」シーケンスを以下に示します。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Byte Signature</td>
+      <td>Unicode Format</td>
+    </tr>
+    <tr>
+      <td><em>none</em></td>
+      <td>Plain ASCII/ANSI</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">EF BB BF</code></td>
+      <td>UTF-8</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">FF FE</code></td>
+      <td>UTF-16, little-endian</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">FE FF</code></td>
+      <td>UTF-16, big-endian</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">FF FE 00 00</code></td>
+      <td>UTF-32, little-endian</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">00 00 FE FF</code></td>
+      <td>UTF-32, big-endian</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>上の表は、Unicode Standard 4.0から引用したものです。BOM値が選択されているのは、プレーンテキスト文書の先頭にこれらの文字列が存在する可能性が極めて低いからです。もちろん、そのようなファイルに出会う可能性はありますが、非常にまれです。
+
+</p>
+
+<p>Neatpadでは、署名がない場合、ファイルはプレーンなANSIテキストとして扱われます。これは、メモ帳の動作とは対照的です。メモ帳は、ファイルの統計的な分析を行い、基本的なフォーマットに関して「最善の推測」を行いますが、時にはそれを間違えることもあります。
+
+</p>
+
+<h2 id="relevant-reading">Relevant reading</h2>
+
+<p>最初に始めるべき場所は www.unicode.org/faq です。これは、Unicodeの公式サイトで、Unicode 4.1規格の全文が掲載されています。また、この規格は書籍（ハードカバー）としても販売されています。
+
+</p>
+
+<p>しかし、もしUnicodeに関する本当に良い本が欲しいのであれば、Richard Gillamの「Unicode Demystified」をお勧めします。この本は、Unicodeに関する様々な問題を実践的に解説しており、このプロジェクトを進める上で欠かせないものとなりました。
+
+</p>
+
+<p>また、以下のリンクも参考になるでしょう。
+
+</p>
+
+<ul>
+  <li><a href="../../../en.wikipedia.org/wiki/Unicode.html">WIKI page on Unicode</a></li>
+  <li><a href="../../../www.unicode.org/notes/tn12/index.html">UTF16 for processing</a></li>
+  <li><a href="../../../www.tbray.org/ongoing/When/200x/2003/04/26/UTF.html">Characters vs Bytes</a></li>
+  <li><a href="../../../icu.sourceforge.net/docs/papers/forms_of_unicode/index.html">Forms of Unicode</a></li>
+  <li><a href="../../../www-128.ibm.com/developerworks/opensource/library/os-unicode/index.html">Power user’s guide to multilingual text editors</a></li>
+  <li><a href="../../../www.cs.tut.fi/%7Ejkorpela/chars.html">A tutorial on character-code issues</a></li>
+  <li><a href="../../../www.cl.cam.ac.uk/%7Emgk25/unicode.html">UTF-8 and Unicode FAQ for Unix/Linux</a></li>
+</ul>
+
+<h2 id="unicode-c-projects-in-windows">Unicode C++ projects in Windows</h2>
+
+<p>Neatpadでは、Unicodeをサポートしたいので、Windows OSが提供するネイティブなUnicodeサポートを使用するのが理にかなっています。実際には、"Wide-character" Unicode API (基本的には UTF-16/UCS-2) を使用することになります。WindowsでUnicode対応のアプリケーションを書くには、プログラマーが知っておくべきテクニックがあります。
+
+</p>
+
+<ol>
+  <li>Unicode Windowsプロジェクトを作成する際の最初のステップは、ワイドキャラクタAPIのサポートを有効にすることです。これは通常、プロジェクト内のすべてのソースファイルにUNICODEマクロと_UNICODEマクロを定義することで実現されます（_MBCSや_DBCSなどのマクロは削除します）。2つのマクロが必要な理由は簡単です。UNICODEは、Windows/Platform SDKのライブラリに使用され、_UNICODEは、標準のC/C++ランタイムのライブラリに使用されます。
+</li>
+  <li>2番目のステップは、#include tchar.hです。このファイルには、Unicodeプロジェクトで非常に有用な多くの「サポートマクロ」が含まれています。</li>
+  <li>3番目のステップは、任意の文字タイプをTCHARとして定義することです。これは別のマクロで、UNICODEプロジェクトではWCHAR文字列タイプ、通常の「非Unicode」プロジェクトではchar文字列タイプになります。
+</li>
+  <li>次のステップでは、tchar.h で定義されている_Tおよび_TEXTマクロを使って、すべての文字列リテラルを宣言します。これらのマクロは、文字列リテラルの定義方法を制御します。非ユニコードプロジェクトでは、これらのマクロは何もしませんが、ユニコードプロジェクトでは、すべての文字列リテラルにL""という文字列のプレフィックスが付きます。
+</li>
+  <li>最後のステップは、Cランタイムの文字列関数（strcpyなど）のすべての呼び出しを、 _tcsと同等のもの（_tcscpyなど）に置き換えることです。これらの等価物はすべて tchar.h ランタイムヘッダにありますが、オリジナルから「_t」の名前を得るためには簡単なトリックがあります - 「str」の部分を「_tcs」に置き換えるだけです。
+
+</li>
+</ol>
+
+<p>WindowsでのUnicodeプログラミングは、C/C++プリプロセッサのサポートに大きく依存していることがお分かりいただけたと思います。以下の例では、これらの概念をすべてまとめて説明しています。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;windows.h&gt;
+#include &lt;tchar.h&gt;
+</span>
+<span class="n">TCHAR</span> <span class="n">szFileName</span><span class="p">[</span><span class="n">MAX_PATH</span><span class="p">];</span>
+
+<span class="c1">// calling one of the standard-C calls
+</span><span class="n">_tcscpy</span><span class="p">(</span><span class="n">szFileName</span><span class="p">,</span> <span class="n">_T</span><span class="p">(</span><span class="s">"file.txt"</span><span class="p">));</span>
+
+<span class="c1">// calling one of the Platform-SDK APIs
+</span><span class="n">CreateFile</span><span class="p">(</span><span class="n">szFileName</span><span class="p">,</span> <span class="n">GENERIC_READ</span><span class="p">,</span> <span class="p">...);</span>
+</code></pre></div></div>
+
+<p>TCHAR, _tcscpy, _T, CreateFile は MACRO なので、UNICODE を定義するとサンプルプログラムは次のようになります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">WCHAR</span> <span class="n">szFileName</span><span class="p">[</span><span class="n">MAX_PATH</span><span class="p">];</span>
+
+<span class="n">_wcscpy</span><span class="p">(</span><span class="n">szFileName</span><span class="p">,</span> <span class="s">L"file.txt"</span><span class="p">);</span>
+<span class="n">CreateFileW</span><span class="p">(</span><span class="n">szFileName</span><span class="p">,</span> <span class="p">...);</span>
+</code></pre></div></div>
+
+<p>なお、WCHARという文字型は、実際にはwchar_tとして定義されている別のマクロです。Visual-C コンパイラは、このワイド文字タイプを 16 ビットの量として扱います。例えば UNIX システムではネイティブの Unicode フォーマットが UTF-32 であるため、wchar_t は通常 32 ビットの量になります。
+
+</p>
+
+<p>UNICODEの設定をしないと、サンプルプログラムは通常のC言語プログラムになります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">char</span> <span class="n">szFileName</span><span class="p">[</span><span class="n">MAX_PATH</span><span class="p">];</span>
+
+<span class="n">strcpy</span><span class="p">(</span><span class="n">szFileName</span><span class="p">,</span> <span class="s">"file.txt"</span><span class="p">);</span>
+<span class="n">CreateFileA</span><span class="p">(</span><span class="n">szFileName</span><span class="p">,</span> <span class="p">...);</span>
+</code></pre></div></div>
+
+<p>すべてのソースファイルの先頭にUNICODEや_UNICODEを置くのではなく、自分たちで簡単にできるようにします。最後にやるべきことは、NeatpadとTextViewのプロジェクトを、プロジェクト全体でUnicodeアプリケーションとしてビルドするように設定することです。既存のプロジェクトを変更するのではなく、2つの新しいプロジェクト構成を追加します（1つはデバッグ用、もう1つはリリース用）。これにより、同じソースコードから、ASCIIのみのNeatpadと、Unicodeのビルドが可能になります。
+
+</p>
+
+<p>Select <code class="highlighter-rouge">Build -&gt; Configurations</code> menu item from Visual Studio.</p>
+
+<p><img src="assets/img/editor801.gif" alt="<>"></p>
+
+<p>新しい設定は、既存の非ユニコードプロジェクトをテンプレートとして使用して作成されます。この作業は、Neatpad プロジェクトと TextView プロジェクトの両方について、また、Debug と Release の各ビルドについて行う必要があります。この作業を行うと、各プロジェクトには、Debug、Release、Unicode Debug、Unicode Release の 4 つのプロジェクト構成ができあがります。
+
+</p>
+
+<h2 id="coming-up-in-part-9">Coming up in Part 9</h2>
+
+<p>これがUnicodeの入門書として役立つものであれば幸いです。Unicodeは非常に複雑なテーマなので、すぐに飛び込む前に、まず基本的な部分をカバーする必要があると感じました。このシリーズの次のパートでは、ここで紹介したアイデアをNeatpadに直接統合することを考えています。
+
+</p>
+
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2005-12-04T00:00:00+00:00">December 04, 2005</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="../../tuts/win32/64bit-scrollbars.html" class="pagination--pager" title="64bit Scrollbars
+">Previous</a>
+    
+    
+      <a href="unicode-text-processing.html" class="pagination--pager" title="Unicode Text Processing
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer" style="">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

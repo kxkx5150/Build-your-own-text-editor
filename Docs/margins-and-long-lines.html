@@ -1,0 +1,682 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Margins and Long Lines - Catch22</title>
+<meta name="description" content="This will probably be quite a short tutorial as the subject of margins is really quite simple to implement. This time around we will look at implementing a selection margin (complete with full-line selection), line numbers, line-indicator icons (e.g. like the breakpoint bitmaps in Visual Studio), and lastly the problem of long-line display.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Margins and Long Lines">
+<meta property="og:url" content="margins-and-long-lines">
+
+
+  <meta property="og:description" content="This will probably be quite a short tutorial as the subject of margins is really quite simple to implement. This time around we will look at implementing a selection margin (complete with full-line selection), line numbers, line-indicator icons (e.g. like the breakpoint bitmaps in Visual Studio), and lastly the problem of long-line display.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2005-08-07T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="margins-and-long-lines.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--tutorial wide">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Margins and Long Lines</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad7.zip">neatpad7.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="active">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Margins and Long Lines">
+    <meta itemprop="description" content="This will probably be quite a short tutorial as the subject of margins is really quite simple to implement. This time around we will look at implementing a selection margin (complete with full-line selection), line numbers, line-indicator icons (e.g. like the breakpoint bitmaps in Visual Studio), and lastly the problem of long-line display.">
+    <meta itemprop="datePublished" content="August 07, 2005">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Margins and Long Lines
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Margins and Long Lines</h1-->
+<!--h3>Selection margin, line numbers and long-line highlighting</h3-->
+
+<p>マージンの実装は非常に簡単なので、今回はかなり短いチュートリアルになるでしょう。今回は、選択マージン（全行選択が可能）、行番号、行表示アイコン（Visual Studioのブレイクポイントのビットマップのようなもの）、そして最後に長文表示の問題について説明します。
+
+</p>
+
+<p><img src="assets/img/editor32.gif" alt=""></p>
+
+<h2 id="drawing-a-margin">Drawing a margin</h2>
+
+<p>メインのスクリーンショットでは、Neatpadに選択マージン、ラインナンバー、ビットマップされたブックマーク、ロングラインハイライトが表示されています。マージンを描くのはとても複雑に見えますが、ディスプレイの左側にある長方形の領域で、描画やスクロールの仕方が異なるだけだと理解していれば、とても簡単です。</p>
+
+<p><img src="assets/img/editor34.gif" alt=""></p>
+
+<p>上の絵を強調したのは、垂直方向のマージンを追加しても、線は一本ずつ水平方向に描かれることを示しています。しかし、線を引く処理（TextView::PaintLine関数）は、余白を考慮して変更されています。
+
+</p>
+
+<p>まず最初に、新しい関数TextView::PaintMarginを使ってマージンを描きます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">TextView</span><span class="o">::</span><span class="n">PaintMargin</span><span class="p">(</span><span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">,</span> <span class="n">RECT</span> <span class="o">*</span><span class="n">margin</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>そして、余白で囲まれた部分は、その上に何かが描かれないようにクリップされます。次に、テキストを通常通りに描画しますが、マージンの右側にオフセットします。クリッピングが重要なのは、水平方向にスクロールしたときに、テキストの行が余白をはみ出して、余白の向こう側に「消えて」しまわないようにするためです。基本的には次のような処理を行います。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">TextView</span><span class="o">::</span><span class="n">PaintLine</span><span class="p">(</span><span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">RECT</span> <span class="n">rect</span><span class="p">;</span> 
+
+    <span class="c1">// work out where to draw the line// handle the margins
+</span>    <span class="k">if</span><span class="p">(</span><span class="n">LeftMarginWidth</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">RECT</span> <span class="n">margin</span><span class="p">;</span> <span class="c1">// work out the margin coordinates
+</span>
+        <span class="c1">// paint the margin
+</span>        <span class="n">PaintMargin</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">nLineNo</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">margin</span><span class="p">);</span>
+
+        <span class="c1">// clip the margin so the text doesn't draw over it
+</span>        <span class="n">ExcludeClipRect</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">margin</span><span class="p">.</span><span class="n">left</span><span class="p">,</span> <span class="n">margin</span><span class="p">.</span><span class="n">top</span><span class="p">,</span> <span class="n">margin</span><span class="p">.</span><span class="n">right</span><span class="p">,</span> <span class="n">margin</span><span class="p">.</span><span class="n">bottom</span><span class="p">);</span>
+
+        <span class="c1">// offset the text placement
+</span>        <span class="n">rect</span><span class="p">.</span><span class="n">left</span> <span class="o">+=</span> <span class="n">LeftMarginWidth</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="c1">// paint the text as normal
+</span>    <span class="n">PaintText</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">nLineNo</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rect</span><span class="p">);</span>   
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>理解すべきポイントは、マージンを考慮して、通常のラインテキストを右にオフセットする必要があることです。とても簡単なので、ダウンロードしたソースコードを見て、実際に動かしてみてください。</p>
+
+<p>さらに重要なことを2つ挙げておきます。メインテキストがスクロールされたときにマージンがスクロールされないように、スクロールルーチンを修正する必要がありました。これは非常に簡単で、ScrollWindowEx で指定したクリッピング レクタングルを調整するだけで、マージンが含まれないようになります。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRGN</span> <span class="n">TextView</span><span class="o">::</span><span class="n">ScrollRgn</span><span class="p">(</span><span class="kt">int</span> <span class="n">dx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">dy</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">fReturnUpdateRgn</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+
+    <span class="c1">// take margin into account
+</span>    <span class="n">clip</span><span class="p">.</span><span class="n">left</span> <span class="o">+=</span> <span class="n">LeftMarginWidth</span><span class="p">();</span>
+    
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>もう一つの修正点は、マウス入力（選択）のコードです。カーソルの位置を調整して、再び余白を考慮しなければなりません。もうお分かりのことと思いますが、このためのコードは省略します。基本的には、入力や描画が行われる前に、x座標が余白の大きさ分だけ右に移動します。</p>
+
+<h2 id="line-bitmaps">Line bitmaps</h2>
+
+<p>ラインインジケーターのビットマップについて簡単に説明します。TextViewクラスに新しいImageListメンバ変数を追加し、ユーザが指定したビットマップのコレクションを保持できるようにしました。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HIMAGELIST</span> <span class="n">m_hImageList</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>イメージリストは、新しいTextView TXM_SETIMAGELISTメッセージ（またはTextView_SetImageListマクロ）を使って設定できます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HIMAGELIST</span> <span class="n">hImageList</span> <span class="o">=</span> <span class="n">ImageList_LoadImage</span><span class="p">(...);</span>
+
+<span class="n">TextView_SetImageList</span><span class="p">(</span><span class="n">hwndTextView</span><span class="p">,</span> <span class="n">hImageList</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>イメージリストは、ビットマップのメモリを管理し、描画もサポートしているので、ビットマップの保存や描画がとても簡単にできます。</p>
+
+<p>難しいのは、一本一本の線を引くときです。余白部分にどのような画像を配置すべきか、どうやって知ることができるでしょうか？行の配列やリンクされたリストを使用するテキストエディタでは、これはとても簡単です。しかし、私たちのNeatpadのデザインでは、これは不可能です。なぜなら、いつかは大容量ファイルの編集をサポートしなければならず、4GBのファイルのためにラインバッファを持つことは、良いアイデアではないからです。</p>
+
+<p>このため、ビットマップが関連付けられている行のみを保持する別の配列を使用しています。この配列は常にソートされているので、バイナリサーチを使って特定の行にビットマップが割り当てられているかどうかをすぐに判断することができます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+    <span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">nImageIdx</span><span class="p">;</span>
+
+<span class="p">}</span> <span class="n">LINEINFO</span><span class="p">;</span><span class="n">LINEINFO</span> <span class="n">m_LineInfo</span><span class="p">[</span><span class="n">MAX_LINE_INFO</span><span class="p">];</span>
+</code></pre></div></div>
+
+<p>線が描画されるたびに、TextView::GetLineInfo関数を使ってLINEINFO配列が検索されます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LINEINFO</span><span class="o">*</span> <span class="n">TextView</span><span class="o">::</span><span class="n">GetLineInfo</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">LINEINFO</span> <span class="n">key</span> <span class="o">=</span> <span class="p">{</span> <span class="n">nLineNo</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+
+    <span class="c1">// perform the binary search
+</span>    <span class="k">return</span> <span class="p">(</span><span class="n">LINEINFO</span> <span class="o">*</span><span class="p">)</span> <span class="n">bsearch</span><span class="p">(</span>
+                          <span class="o">&amp;</span><span class="n">key</span><span class="p">,</span> 
+                          <span class="n">m_LineInfo</span><span class="p">,</span>
+                          <span class="n">m_nLineInfoCount</span><span class="p">,</span>
+                          <span class="k">sizeof</span><span class="p">(</span><span class="n">LINEINFO</span><span class="p">),</span>
+                          <span class="p">(</span><span class="n">COMPAREPROC</span><span class="p">)</span><span class="n">CompareLineInfo</span>
+                       <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>この関数は、成功した場合は適切なLINEINFO構造体へのポインタを返し、指定された行の情報が保存されていない場合はNULLを返します。</p>
+
+<p>行全体のハイライトカラー、ブックマーク、注釈など、行に関するより多くの情報を保存できると考えています。しかし、現時点では、画像インデックスのサポートを含めました。各行の画像は、もう一つの新しいTextViewメッセージ、TXM_SETLINEIMAGEを使って設定できます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TextView_SetLineImage</span><span class="p">(</span><span class="n">hwndTextView</span><span class="p">,</span> <span class="n">nLineNo</span><span class="p">,</span> <span class="n">nImageIdx</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="line-selection-and-mouse-input">Line-selection and mouse input</h2>
+
+<p>メインのテキスト表示の左側に余白ができたので、この部分を使って行単位の選択を行うことができます。</p>
+
+<p><img src="assets/img/editor35.gif" alt=""></p>
+
+<p>このようなラインベースの選択方法を可能にするためには、選択を行っているという事実だけでなく、それ以外の情報も記録しておく必要があります。これまでのm_fSelectionというブーリアン（選択中かどうかを示すためだけに使われていた）は、新しい変数に置き換えられました。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SELMODE</span> <span class="n">m_nSelectionMode</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>m_nSelectionModeは、以下の値を持つSELMODE列挙体です。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">enum</span> <span class="n">SELMODE</span> 
+<span class="p">{</span> 
+   <span class="n">SELMODE_NONE</span><span class="p">,</span> 
+   <span class="n">SELMODE_NORMAL</span><span class="p">,</span> 
+   <span class="n">SELMODE_MARGIN</span> 
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>現時点では、「通常」と「マージン」の2種類の選択をサポートしています。将来的には、列やブロックの選択など、他のタイプの選択をサポートするように拡張することができるでしょう。もちろん、新しいタイプの選択を理解するために、マウスのルーチンも変更されています。</p>
+
+<h2 id="highlighting-long-lines">Highlighting long lines</h2>
+
+<p>私が特に便利だと思う機能は、長い行の強調表示です。Windows 3.1用のBorland C++ 4.0 IDEでは、80列目の位置を示すために1本の縦線の余白が表示されていたのを今でも覚えています。これはちょっとダサいと思いましたが、同じような効果を出したいと思いました。</p>
+
+<p>長い行をハイライトする理由は、テキストの行が長くなりすぎたときに、ユーザーにそれを示す方法を提供するためです。これは、印刷時にテキストが「折り返される」ことを嫌うプログラマーにとって最も便利な機能で、すべてのテキスト行を一定の制限内に収めることを目的としています。</p>
+
+<p>ロングラインハイライトの導入方法は、基本的に2通りあります。
+
+</p>
+
+<ul>
+  <li>2段階のアプローチを使用します。最初の段階では、左側の「通常の」テキストと右側の「切り取られた」テキストを区別するために、2つの色を使って背景を準備します。例えば、一定の大きさの領域を、（例えば）列位置80までの通常の背景色で塗りつぶします。それ以降の背景は別の色で塗りつぶされるか、または縦線が引かれて長さの限界を示します。</li>
+</ul>
+
+<p>そして、この背景の上に、背景が透けて見えるように、透明モードでテキストが描画されます。これは、テキストの描画が長い線のディスプレイから独立しているため、まさに「ピクセルベース」のアプローチです。</p>
+
+<ul>
+  <li>もう一つの方法は、80列目以降に描かれた文字の背景色を単純に変更することです。これは、Scintillaのテキストエディタコンポーネントがやっていることで、上記の方法よりもはるかにシンプルです。</li>
+</ul>
+
+<p>この新しい長蛇の列表示をサポートするために、TextView::ApplyTextAttributesメンバ関数に新しいパラメータである&amp;nColumnを追加する必要がありました。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">TextView</span><span class="o">::</span><span class="n">ApplyTextAttributes</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">nOffset</span><span class="p">,</span> <span class="n">ULONG</span> <span class="o">&amp;</span><span class="n">nColumn</span><span class="p">,</span> <span class="n">TCHAR</span> <span class="o">*</span><span class="n">szText</span><span class="p">,</span> <span class="kt">int</span> <span class="n">nTextLen</span><span class="p">,</span> <span class="n">ATTR</span> <span class="o">*</span><span class="n">attr</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>nColumn は C++ の参照であることに注意してください。これは、現在の列位置を追跡するために、ApplyTextAttributesによって継続的に更新されます（連続した呼び出しで値が保持されるように、C++参照が必要です）。nColumn が特定の値に達すると、ApplyTextAttributes はテキストに異なるデフォルトの背景色を使用します。</p>
+
+<p>TextViewに新しいメッセージ(TXM_SETLONGLINE)が追加され、プログラムで長文の制限を変更できるようになりました。TextView_SetLongLineを使ってこの値を設定することができます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TextView_SetLongLine</span><span class="p">(</span><span class="n">hwndTextView</span><span class="p">,</span> <span class="mi">80</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="64bit-support">64bit support</h2>
+
+<p>これは少し遅かったかもしれませんが（1日目から実施すべきでした）、NeatpadとTextViewのプロジェクトを64ビット互換にし始めました。そのため、新しい32bit/64bit混在の定義を得るためには、Neatpadをコンパイルする際に、最新のPlatform SDKを使用する必要があります。これに伴い、これまでに以下のような変更がありました。</p>
+
+<ul>
+  <li>Get/SetWindowLong は Get/SetWindowLongPtr に変更されました。
+
+</li>
+</ul>
+
+<p>これらの変更が実際に機能するかどうかを確認するために、IA64アーキテクチャ用のMicrosoft 64bitコンパイラを使用してプロジェクトをコンパイルしました。以下の手順で再現してみてください。
+
+</p>
+
+<ul>
+  <li>Neatpadプロジェクトをmakefileとしてエクスポートする：Project -&gt; Export Makefile</li>
+  <li>スタートメニューの「Microsoft Platform SDK」→「Windows XP 64bit Build Environment」から、Platform SDK 64bitのビルド環境を開きます。</li>
+  <li>Neatpadプロジェクトのディレクトリに移動し、Neatpad.mak\Neatpad07\Neatpadを開きます。</li>
+  <li>LINK32_FLAGSを変更し、/machineスイッチが "I386 "ではなく "IA64 "になるようにし、ODBC32.LIBとODBCCP32.LIBへの参照を削除します。</li>
+  <li>Neatpadプロジェクトが "クリーン "になっていることを確認し、64ビットツールを使ってビルドします： nmake Neatpad.mak</li>
+</ul>
+
+<p>まだ多くの変更点があり（ULONGとULONG64の問題）、現在64ビットのマシンにアクセスできないので、きちんとテストできるようになるまでこれ以上の変更はできません。しかし、このシリーズが終わるまでには、Neatpadを完全に64ビット対応にしたいと思っています。
+
+</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>このチュートリアルは少し脱線してしまいました。マージンやロングラインハイライトはテキストエディタのデザインとしてはそれほど重要ではありません。いずれにしても、コアな機能に集中するために、この問題を解決しておきたかったのです。</p>
+
+<p>パート8では、UTF-8とUnicodeのサポートを予定しています。</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad7.zip">neatpad7.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2005-08-07T00:00:00+00:00">August 07, 2005</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="scrolling-mouse.html" class="pagination--pager" title="Scrolling with the Mouse
+">Previous</a>
+    
+    
+      <a href="../../tuts/win32/64bit-scrollbars.html" class="pagination--pager" title="64bit Scrollbars
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

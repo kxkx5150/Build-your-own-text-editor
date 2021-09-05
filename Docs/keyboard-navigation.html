@@ -1,0 +1,1215 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Keyboard Navigation - Catch22</title>
+<meta name="description" content="Keeping with the Uniscribe theme brings us to the next area of Neatpad’s development that hasn’t been touched on yet, which is keyboard-input. I’ve deliberately left this stage until now because I knew that without Uniscribe keyboard-navigation would be very difficult indeed. The problem with keyboard-handling is not how to process keyboard input (which is easy), but rather how to navigate through a Unicode file - taking into account combining sequences, surrogates, graphaeme clusters etc.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Keyboard Navigation">
+<meta property="og:url" content="keyboard-navigation">
+
+
+  <meta property="og:description" content="Keeping with the Uniscribe theme brings us to the next area of Neatpad’s development that hasn’t been touched on yet, which is keyboard-input. I’ve deliberately left this stage until now because I knew that without Uniscribe keyboard-navigation would be very difficult indeed. The problem with keyboard-handling is not how to process keyboard input (which is easy), but rather how to navigate through a Unicode file - taking into account combining sequences, surrogates, graphaeme clusters etc.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2006-05-14T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="keyboard-navigation.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></head>
+
+  <body class="layout--tutorial wide" style="margin-bottom: 171.375px;">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button" count="0" style="">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Keyboard Navigation</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad16.zip">neatpad16.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="active">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Keyboard Navigation">
+    <meta itemprop="description" content="Keeping with the Uniscribe theme brings us to the next area of Neatpad’s development that hasn’t been touched on yet, which is keyboard-input. I’ve deliberately left this stage until now because I knew that without Uniscribe keyboard-navigation would be very difficult indeed. The problem with keyboard-handling is not how to process keyboard input (which is easy), but rather how to navigate through a Unicode file - taking into account combining sequences, surrogates, graphaeme clusters etc.">
+    <meta itemprop="datePublished" content="May 14, 2006">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Keyboard Navigation
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Keyboard Navigation</h1-->
+<!--h3>Keyboard navigation with Uniscribe</h3-->
+
+<p>Uniscribeのテーマを継続することで、Neatpadの開発でまだ触れられていない次の分野、つまりキーボード入力にたどり着きます。Uniscribeがなければ、キーボードナビゲーションが非常に困難になることがわかっていたので、あえてこの段階を残しました。キーボード操作の問題は、キーボード入力をどう処理するかではなく（これは簡単です）、むしろUnicodeファイルの中をどうやってナビゲートするかにあります（結合配列、サロゲート、書記素クラスタなどを考慮に入れて）。
+
+</p>
+
+<p>ここまでのところ、Uniscribe API はテキストレンダリングのサポートのために広く使用されてきました。幸いなことに、Uniscribe はテキスト出力以外にも使用することができます。ここでは ScriptBreak API と、それがキーボードナビゲーションの管理にどのように役立つかについて詳しく見ていきます。
+
+</p>
+
+<h2 id="keyboard-messages-in-win32">Keyboard messages in Win32</h2>
+
+<p>すべてのWindowsプログラムは、WM_KEYDOWNメッセージとWM_KEYUPメッセージの形でキーボード入力を受け取ります。キーが押されると、一連のWM_KEYDOWNメッセージがアプリケーションのメッセージ・キューに送信され、キーが離されると、1つのWM_KEYUPメッセージが送信されます。これらの2つのメッセージは比較的「低レベル」ですが、これらを合わせて、Windowsのキーボード入力の基礎を形成しています。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>&nbsp;</td>
+      <td>Key Pressed</td>
+      <td>Key Released</td>
+    </tr>
+    <tr>
+      <td>Normal Keystroke</td>
+      <td><code class="highlighter-rouge">WM_KEYDOWN</code></td>
+      <td><code class="highlighter-rouge">WM_KEYUP</code></td>
+    </tr>
+    <tr>
+      <td>System Keystroke</td>
+      <td><code class="highlighter-rouge">WM_SYSKEYDOWN</code></td>
+      <td><code class="highlighter-rouge">WM_SYSKEYUP</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>上の表は、2つの基本的なキーボード入力メッセージと、それらの「システム」対応メッセージであるWM_SYSKEYDOWNとWM_SYSKEYUPをまとめたものです。最後の2つのメッセージは、Windowsプログラムではほとんど使用されず、Neatpadの開発にも関係がないので、ここでは説明しません。
+
+</p>
+
+<p>WM_KEYDOWNメッセージは、キーボードの特定のキーが押されたことを検出するために、アプリケーションで最もよく使われます。これは、<control>、<shift>、矢印キーなどのキーを検出するのに適した方法です。しかし、テキスト入力に関しては、特定のキーが押されたことを処理することは、実は最良の方法ではありません。
+
+</shift></control></p>
+
+<p>例えば、特定のキーの押下を処理する場合、文字のケースを判断する簡単な方法はありません。ユーザーは「A」というキーを押したかもしれませんが、これは小文字なのか大文字なのか？仮想キーストロークの「A」が入力されたことだけはわかっていますが、CAPSLOCKボタンの状態や、ユーザーがSHIFTキーを押していたかどうかについては何もわかりません。もちろん、実際に入力される文字は、これらの要因によって異なります。この単純なケースでは、「a」か「A」のどちらかになります。英語のキーボードだけでなく、UnicodeやInput Method Editors、システムロケールの領域になると、さらに複雑になります。
+
+</p>
+
+<p>幸いなことに、Windowsには文字入力を処理する別のメカニズムがあります。それは、WM_CHARおよびWM_UNICHARメッセージです。これらのメッセージは、キーストロークではなく文字を表すことを特に意図しています。興味深いことに、キーボードでキーが押されても、WM_CHARは自動的にアプリケーションに送信されません。アプリケーションのメッセージループ内でTranslateMessage関数が呼ばれて初めて、WM_CHARメッセージがディスパッチされます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span><span class="p">(</span><span class="n">GetMessage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">TranslateMessage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
+    <span class="n">DispatchMessage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上の図は、多くの Win32 プログラムの標準的なメッセージループです。ほとんどのプログラマは、このループをあまり気にせずにそのままコードにコピー＆ペーストしていると思いますが、特にTranslateMessage関数は非常に特殊な目的を持っています。この関数は、特定のメッセージ（WM_KEYDOWNなど）を一連の対応するWM_CHARメッセージに変換します。TranslateMessageは、SHIFTキーやCAPSLOCKキーの状態や、現在のロケールなどを考慮します。代わりに、新しいWM_CHARメッセージがTranslateMessageによって構築され、後続の処理のために現在のスレッドのメッセージ・キューにポストバックされます。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>&nbsp;</td>
+      <td>Characters</td>
+      <td>Dead Characters</td>
+    </tr>
+    <tr>
+      <td>UTF-16 Character</td>
+      <td><code class="highlighter-rouge">WM_CHAR</code></td>
+      <td><code class="highlighter-rouge">WM_DEADCHAR</code></td>
+    </tr>
+    <tr>
+      <td>UTF-32 Character</td>
+      <td><code class="highlighter-rouge">WM_UNICHAR</code></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>Input Method Editor</td>
+      <td><code class="highlighter-rouge">WM_IME_CHAR</code></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>System Character</td>
+      <td><code class="highlighter-rouge">WM_SYSCHAR</code></td>
+      <td><code class="highlighter-rouge">WM_DEADSYSCHAR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>今回の表は、Windowsプログラムで利用できる様々な文字入力メッセージをまとめたものです。実際にNeatpadにデータを入力するのは、この連載のかなり後の方になるので、これらのメッセージを今見ても意味がありません。
+
+</p>
+
+<h2 id="keyboard-navigation-with-wm_keydown">Keyboard Navigation with WM_KEYDOWN</h2>
+
+<p>このチュートリアルの目的は、キーボードナビゲーションの実装をカバーすることです。したがって、矢印キー、ページアップ、ページダウン、ホーム＆エンドなどの物理的なキーにのみ関心があります。実際の文字入力（およびWM_CHAR/WM_UNICHARメッセージ）は、このシリーズの後半で、実際にTextDocumentを変更する仕組みができるまで待つことにします。
+
+</p>
+
+<p>一般的に、Windowsのテキストエディタにおけるキーボード操作はかなり一貫しています。矢印キー（左、右、上、下）は、テキストカーソルを4つの基本的な方向に移動させるために使用され、ページアップ、ページダウン、ホーム、エンドはすべて、それらが達成すべきことが確立されています。さらに、コントロールキーやシフトキーを押すことで、その時に押されているナビゲーションキーの動作を変更することができます。
+
+</p>
+
+<p>以下の表は、Neatpadに実装する予定の行動をまとめたものです。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Key Code</td>
+      <td>Normal Action</td>
+      <td>TextView Method</td>
+      <td>With &lt;Control&gt;</td>
+      <td>TextView Method</td>
+    </tr>
+    <tr>
+      <td>VK_LEFT</td>
+      <td>Character left</td>
+      <td><code class="highlighter-rouge">MoveCharPrev</code></td>
+      <td>Word left</td>
+      <td><code class="highlighter-rouge">MoveWordPrev</code></td>
+    </tr>
+    <tr>
+      <td>VK_RIGHT</td>
+      <td>Character right</td>
+      <td><code class="highlighter-rouge">MoveCharNext</code></td>
+      <td>Word right</td>
+      <td><code class="highlighter-rouge">MoveWordNext</code></td>
+    </tr>
+    <tr>
+      <td>VK_UP</td>
+      <td>Line up</td>
+      <td><code class="highlighter-rouge">MoveLineUp(1)</code></td>
+      <td>Scroll line up</td>
+      <td><code class="highlighter-rouge">Scroll</code></td>
+    </tr>
+    <tr>
+      <td>VK_DOWN</td>
+      <td>Line down</td>
+      <td><code class="highlighter-rouge">MoveLineDown(1)</code></td>
+      <td>Scroll line down</td>
+      <td><code class="highlighter-rouge">Scroll</code></td>
+    </tr>
+    <tr>
+      <td>VK_PRIOR</td>
+      <td>Page up</td>
+      <td><code class="highlighter-rouge">MoveLineUp(x)</code></td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>VK_NEXT</td>
+      <td>Page down</td>
+      <td><code class="highlighter-rouge">MoveLineDown(x)</code></td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>VK_HOME</td>
+      <td>Line start</td>
+      <td><code class="highlighter-rouge">MoveLineStart</code></td>
+      <td>Document start</td>
+      <td><code class="highlighter-rouge">MoveFileStart</code></td>
+    </tr>
+    <tr>
+      <td>VK_END</td>
+      <td>Line end</td>
+      <td><code class="highlighter-rouge">MoveLineEnd</code></td>
+      <td>Document end</td>
+      <td><code class="highlighter-rouge">MoveFileEnd</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>各アクションは、関連する操作を実行するTextViewのメンバー関数で表されます。ご覧のように、実装しなければならないアクションの数は非常に多くなっています。これは、コントロールキーの影響で、実装しなければならないメソッドの数が2倍になっていることが原因です。
+
+</p>
+
+<p>NeatpadのTextViewのWM_KEYDOWNハンドラを以下に示します。switch文を使って、興味のあるキーストロークをそれぞれ処理しています。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnKeyDown</span><span class="p">(</span><span class="n">UINT</span> <span class="n">nKeyCode</span><span class="p">,</span> <span class="n">UINT</span> <span class="n">nFlags</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">bool</span> <span class="n">fCtrlDown</span> <span class="o">=</span> <span class="n">IsKeyPressed</span><span class="p">(</span><span class="n">VK_CONTROL</span><span class="p">);</span>
+
+    <span class="k">switch</span><span class="p">(</span><span class="n">nKeyCode</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="k">case</span> <span class="n">VK_LEFT</span><span class="p">:</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">fCtrlDown</span><span class="p">)</span> <span class="n">MoveWordPrev</span><span class="p">();</span>
+        <span class="k">else</span> <span class="n">MoveCharPrev</span><span class="p">();</span>
+
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="n">VK_RIGHT</span><span class="p">:</span>
+    <span class="p">...</span>
+    <span class="p">}</span> 
+
+    <span class="o">&lt;&lt;</span> <span class="n">extend</span> <span class="n">selection</span> <span class="k">if</span> <span class="o">&lt;</span><span class="n">shift</span><span class="o">&gt;</span> <span class="n">is</span> <span class="n">held</span> <span class="n">down</span> <span class="o">&gt;&gt;</span> 
+
+    <span class="o">&lt;&lt;</span> <span class="n">update</span> <span class="n">text</span><span class="o">-</span><span class="n">caret</span> <span class="n">position</span> <span class="o">&gt;&gt;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>MoveXxxx関数の目的は、m_nCursorOffset変数を更新して、現在のファイル内の新しい位置を参照することです。各MoveXxxx関数は、処理すべきキーボード操作に応じて、異なる方法でm_nCursorOffsetを調整します。ここでは、上記のスニペットから大まかなアイデアを得られることを期待して、関数全体は記載しません。
+
+</p>
+
+<p>キー操作によってm_nCursorOffsetが更新されたら、次はテキスト選択の処理を行います。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Extend selection if &lt;shift&gt; is down
+</span><span class="k">if</span><span class="p">(</span><span class="n">IsKeyPressed</span><span class="p">(</span><span class="n">VK_SHIFT</span><span class="p">))</span>
+<span class="p">{</span>        
+    <span class="n">InvalidateRange</span><span class="p">(</span><span class="n">m_nSelectionEnd</span><span class="p">,</span> <span class="n">m_nCursorOffset</span><span class="p">);</span>
+    <span class="n">m_nSelectionEnd</span> <span class="o">=</span> <span class="n">m_nCursorOffset</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Otherwise clear the selection
+</span><span class="k">else</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">m_nSelectionStart</span> <span class="o">!=</span> <span class="n">m_nSelectionEnd</span><span class="p">)</span>
+        <span class="n">InvalidateRange</span><span class="p">(</span><span class="n">m_nSelectionStart</span><span class="p">,</span> <span class="n">m_nSelectionEnd</span><span class="p">);</span>
+
+    <span class="n">m_nSelectionEnd</span> <span class="o">=</span> <span class="n">m_nCursorOffset</span><span class="p">;</span>
+    <span class="n">m_nSelectionStart</span> <span class="o">=</span> <span class="n">m_nCursorOffset</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>テキストの選択範囲を広げるには、シフトキーの状態（アップ/ダウン）をチェックして、TextView変数m_nSelectionStartとm_nSelectionEndを適切に変更するだけです。選択範囲を広げる必要があるとき（シフトキーが下）は、m_nSelectionEnd変数だけが修正されます。それ以外の場合は、両方の変数が同じ値に更新され、効果的に選択を「ゼロ」にします。
+
+</p>
+
+<p>最後のステップは、カーソルオフセットから物理的なキャレットの位置を更新することです。これは重要な概念で、キーボード操作中にキャレットの物理的な画面上の位置を考慮する必要はありません。すべてのキーボード操作は、主に1つの論理的な文字オフセットに基づいており、（キー操作によって）カーソルオフセットが更新された後にのみ、カレットの位置が変更されます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// update text-caret location (xpos, line#) from the offset
+</span><span class="n">UpdateCaretOffset</span><span class="p">(</span><span class="n">m_nCursorOffset</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">m_nCaretPosX</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">m_nCurrentLine</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>UpdateCaretOffsetは、以前のチュートリアルでキャレットの位置を決めるために使われていたので（UspOffsetToXとSetCaretPos APIを使用）、この関数は単にキーボード処理に再利用されています。
+
+</p>
+
+<blockquote>
+  <p><em>Uniscribe のすべてのキーボード操作は、論理的なオフセットに基づいています。言い換えれば、カーソルは WCHAR 単位でバッキングストア（ファイル）を進みます。双方向文字列をナビゲートする場合、キャレットはファイルを論理的に進みます。Uniscribeが論理的なカーソルオフセットを画面上の物理的な位置に変換することに依存しています（ScriptCPtoX関数を使用）。このため、単一の矢印キーを使用していても、同じ文字列の中でカーソルが「左」と「右」の両方に移動しているように見えることがあります。双方向文字列でのキャレットの表示については心配ありません。Uniscribe を使用しているため、これらの詳細はすべて自動的に処理されます。
+
+</em></p>
+</blockquote>
+
+<p>最後に、GetKeyState APIのシンプルなラッパーであるIsKeyPressed関数の使用に注目してください。この関数の目的は、キーが押されているかどうかのテストを単純化することであり、この事実を示すブール値を返します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">bool</span> <span class="nf">IsKeyPressed</span><span class="p">(</span><span class="n">UINT</span> <span class="n">nVirtKey</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">GetKeyState</span><span class="p">(</span><span class="n">nVirtKey</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="nb">true</span> <span class="o">:</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="scriptbreak">ScriptBreak</h2>
+
+<p>ScriptBreakはScriptItemizeと一緒に動作し、文字列内の各文字の論理的属性を特定します。ScriptBreakは、（ScriptItemizeによって特定された）文字列内の個々のアイテムランごとに1回呼び出す必要があり、SCRIPT_LOGATTR構造体の配列を返します。配列の各エントリは、Unicode文字列内の1つのWCHARを表しており、ラン内のWCHARの数と同じ数の要素を持つように、呼び出し元が割り当てなければなりません。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRESULT</span> <span class="n">WINAPI</span> <span class="n">ScriptBreak</span> <span class="p">(</span> 
+  <span class="n">WCHAR</span> <span class="o">*</span> <span class="n">pwcChars</span><span class="p">,</span> 
+  <span class="kt">int</span> <span class="n">cChars</span><span class="p">,</span> 
+  <span class="n">SCRIPT_ANALYSIS</span> <span class="o">*</span> <span class="n">psa</span><span class="p">,</span> 
+  <span class="n">SCRIPT_LOGATTR</span> <span class="o">*</span> <span class="n">psla</span> 
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>各キャラクターの個々の属性は、以下に示すSCRIPT_LOGATTR構造体に格納されています。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">SCRIPT_LOGATTR</span> 
+<span class="p">{</span> 
+  <span class="n">BYTE</span> <span class="n">fSoftBreak</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> 
+  <span class="n">BYTE</span> <span class="n">fWhiteSpace</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> 
+  <span class="n">BYTE</span> <span class="n">fCharStop</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> 
+  <span class="n">BYTE</span> <span class="n">fWordStop</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> 
+  <span class="n">BYTE</span> <span class="n">fInvalid</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> 
+  <span class="n">BYTE</span> <span class="n">fReserved</span> <span class="o">:</span> <span class="mi">3</span><span class="p">;</span> 
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>SCRIPT_LOGATTR構造体の各フィールドには特定の目的がありますが、ScriptBreakが返すこの情報は一般的に、ワードラッピングとキーボードナビゲーションの2つの目的に役立ちます。
+
+</p>
+
+<ul>
+  <li><strong>fSoftBreak</strong>は、文字列の中でワードラッピングが可能な位置、つまり複数行に渡って表示できるように文字列を分割できる位置を示します。
+
+</li>
+  <li><strong>fWhiteSpace</strong>は、対応する文字をホワイトスペースとして処理することを示します。これは、タブやスペースだけでなく、もっと多くの文字に対して設定できる可能性があります。
+
+</li>
+  <li><strong>fCharStop</strong> and <strong>fWordStop</strong>は、文字列内の有効なキャレットの位置を特定します。これらの位置は、1文字ベースのナビゲーションや「ワード」ナビゲーションをサポートするために使用できます。
+
+</li>
+</ul>
+
+<p>ScriptBreakが私たちに代わってどれだけの仕事をしてくれているか、過小評価しないでください。文字や単語の位置を特定してくれるだけで、私たちは膨大な労力を節約できます。さらに、ScriptBreak は Unicode のすべてのスクリプトをサポートしているので、タイ語のように「ソフトブレーク」を識別するための辞書を必要とする言語では、すべてのハードワークがすでに完了しているのです。
+
+</p>
+
+<p>アイテムランごとに ScriptBreak を呼び出すタスクは、以前のチュートリアルで見た UspAnalyze 関数が担当します。SCRIPT_LOGATTR バッファは、USPDATA オブジェクトの breakList * メンバ内に割り当てられて保存されます。そして、単純なループを使用して各アイテムランを反復し、ScriptBreakの結果をUSPDATA::breakList配列に格納します。この配列は、すべてのアイテムランの結果を連結したものです。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;&lt;</span> <span class="n">UspLib</span><span class="p">.</span><span class="n">c</span> <span class="o">-</span> <span class="n">UspAnalyze</span><span class="p">(...)</span> <span class="o">&gt;&gt;</span>
+
+ <span class="c1">// allocate memory for SCRIPT_LOGATTR structures
+</span> <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">breakList</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">wlen</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">SCRIPT_LOGATTR</span><span class="p">));</span>
+
+ <span class="c1">// Generate the word-break information for each item-run
+</span> <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">itemRunCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+ <span class="p">{</span>
+     <span class="n">ITEM_RUN</span> <span class="o">*</span><span class="n">itemRun</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">uspData</span><span class="o">-&gt;</span><span class="n">itemRunList</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+
+     <span class="n">ScriptBreak</span><span class="p">(</span>
+          <span class="n">wstr</span> <span class="o">+</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">charPos</span><span class="p">,</span> 
+          <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">,</span> 
+         <span class="o">&amp;</span><span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">analysis</span><span class="p">,</span> 
+          <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">breakList</span> <span class="o">+</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">charPos</span>
+     <span class="p">);</span>
+ <span class="p">}</span>
+</code></pre></div></div>
+
+<p>UspAnalyzeで分析されたテキストの文字列(または段落)には、自動的にUSPDATAオブジェクト内に保存されたSCRIPT_LOGATTR情報があります。各ランの情報が同じバッファに連結されているため、文字列内の各文字の論理属性を検査する際に、個々のアイテムランを考慮する必要はありません。
+
+</p>
+
+<p>簡単な例を見て、"Hello يُساوِي World" という文字列が ScriptBreak によってどのように扱われるかを見てみましょう。この文字列には、アラビア語のフレーズの両側に2つのスペースがあることに注意してください。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>SCRIPT_LOGATTR</td>
+      <td>&nbsp;</td>
+      <td>H</td>
+      <td>E</td>
+      <td>L</td>
+      <td>L</td>
+      <td>O</td>
+      <td>&nbsp;</td>
+      <td>ي</td>
+      <td>ُ</td>
+      <td>س</td>
+      <td>ا</td>
+      <td>و</td>
+      <td>ِ</td>
+      <td>ي</td>
+      <td>&nbsp;</td>
+      <td>W</td>
+      <td>O</td>
+      <td>R</td>
+      <td>L</td>
+      <td>D</td>
+    </tr>
+    <tr>
+      <td>SoftBreak</td>
+      <td>&nbsp;</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>WhiteSpace</td>
+      <td>&nbsp;</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>SoftBreak</td>
+      <td>&nbsp;</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>CharStop</td>
+      <td>&nbsp;</td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>1</strong></td>
+    </tr>
+    <tr>
+      <td>WordStop</td>
+      <td>&nbsp;</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>Invalid</td>
+      <td>&nbsp;</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="tabs-and-whitespace">Tabs and Whitespace</h2>
+
+<p>ScriptBreak はデフォルトではタブ文字をホワイトスペースとして認識しません。これが問題になります。なぜなら世界中のテキストエディターは、タブは基本的にスペースと同じであると理解しているので、同じように扱うべきだからです。この問題を解決するには、Unicode 文字列を解析してタブ文字を探し、breakList の対応するエントリを変更する必要があります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">wlen</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">wstr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'\t'</span><span class="p">)</span>
+        <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">breakList</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">fWhiteSpace</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上記のループはUspAnalyzeの中にあり、ScriptBreakの情報を取得した後に実行されます。
+
+</p>
+
+<h2 id="uspgetlogattr">UspGetLogAttr</h2>
+
+<p>UspGetLogAttr という新しい UspLib 関数を導入しました。これは Script_pLogAttr 関数と似た概念の関数です。この関数は、各 USPDATA オブジェクト内の breakList バッファへのポインタを返します。この関数は、各 USPDATA オブジェクト内の breakList バッファへのポインタを返しますが、関数の呼び出し元が変更できる非constSCRIPT_LOGATTR 配列が返される点が異なります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SCRIPT_LOGATTR</span> <span class="o">*</span> <span class="nf">UspGetLogAttr</span><span class="p">(</span> <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">uspData</span><span class="o">-&gt;</span><span class="n">breakList</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ご覧のとおり、UspGetLogAttr 関数は非常にシンプルで、各 uspData オブジェクト内に保持されている breakList バッファへのポインタを返すだけです。もちろん、このバッファを構築するための実際の作業は、UspAnalyze関数によって行われました。
+
+</p>
+
+<p>この関数が存在する理由は、呼び出し側が各USPDATAオブジェクト内の内部SCRIPT_LOGATTR構造を変更できるようにするためです。これは重要なことで、シンタックスハイライトに関しては、各行のSCRIPT_LOGATTRバッファを微調整して、より具体的な言語シンタックスの詳細に対応する必要があると考えています。
+
+</p>
+
+<p>今のところ、UspGetLogAttr関数は、キーボードナビゲーション関数によって、テキストの各行内でのカーソルの配置を制御するためにのみ使用されています。
+
+</p>
+
+<h2 id="character-and-word-navigation">Character and Word navigation</h2>
+
+<p>文字ナビゲーションと単語ナビゲーションは互いに密接に関連しています。どちらも1行のテキストを操作するもので、ScriptBreakが返すSCRIPT_LOGATTRの情報を利用して、キャレットを有効な文字や単語の位置に配置します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">VOID</span> <span class="n">TextView</span><span class="o">::</span><span class="n">MoveCharPrev</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">USPCACHE</span> <span class="o">*</span> <span class="n">uspCache</span><span class="p">;</span>
+    <span class="n">CSCRIPT_LOGATTR</span> <span class="o">*</span> <span class="n">logAttr</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">lineOffset</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">charPos</span><span class="p">;</span>
+
+    <span class="c1">// get Uniscribe data for current line
+</span>    <span class="n">uspCache</span> <span class="o">=</span> <span class="n">GetUspCache</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">m_nCurrentLine</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lineOffset</span><span class="p">);</span>
+    <span class="n">logAttr</span> <span class="o">=</span> <span class="n">UspGetLogAttr</span><span class="p">(</span><span class="n">uspCache</span><span class="o">-&gt;</span><span class="n">uspData</span><span class="p">);</span>
+
+    <span class="c1">// get character-offset relative to start of line
+</span>    <span class="n">charPos</span> <span class="o">=</span> <span class="n">m_nCursorOffset</span> <span class="o">-</span> <span class="n">lineOffset</span><span class="p">;</span>
+
+    <span class="c1">// find the previous valid character-position
+</span>    <span class="k">for</span><span class="p">(</span> <span class="o">--</span><span class="n">charPos</span><span class="p">;</span> <span class="n">charPos</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">charPos</span><span class="o">--</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">logAttr</span><span class="p">[</span><span class="n">charPos</span><span class="p">].</span><span class="n">fCharStop</span><span class="p">)</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="o">&lt;&lt;</span> <span class="n">move</span> <span class="n">up</span> <span class="n">to</span> <span class="n">end</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">last</span> <span class="n">line</span> <span class="k">if</span> <span class="n">necessary</span> <span class="o">&gt;&gt;</span>
+
+    <span class="c1">// update cursor position
+</span>    <span class="n">m_nCursorOffset</span> <span class="o">=</span> <span class="n">lineOffset</span> <span class="o">+</span> <span class="n">charPos</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>MoveCharPrevは、まず、現在の行のキャッシュされたUspDataオブジェクトを取得し、UspGetLogAttrを呼び出すことにより、その行のSCRIPT_LOGATTR構造を取得します。その後、SCRIPT_LOGATTR配列が解析され、有効な文字停止位置が検出されます。UspDataオブジェクトは個々の行を表しているため、すべての処理は各行の開始点を基準としています。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// find the previous valid character-position
+</span><span class="k">for</span><span class="p">(</span> <span class="o">--</span><span class="n">charPos</span><span class="p">;</span> <span class="n">charPos</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">charPos</span><span class="o">--</span><span class="p">)</span>
+<span class="p">{</span>
+     <span class="k">if</span><span class="p">(</span><span class="n">logAttr</span><span class="p">[</span><span class="n">charPos</span><span class="p">].</span><span class="n">fCharStop</span><span class="p">)</span>
+         <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上のループはとてもシンプルです。文字の停止位置が見つかるまでループを続けているだけです。ループが終了すると、charPos変数が変更され、テキストキャレットの位置を変更することができます。
+
+</p>
+
+<p>Word-navigation は少し複雑です。MoveWordNextのロジックは以下のようになっています。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// if already on a word-break, go to next char
+</span><span class="k">if</span><span class="p">(</span><span class="n">logAttr</span><span class="p">[</span><span class="n">charPos</span><span class="p">].</span><span class="n">fWordStop</span><span class="p">)</span>
+    <span class="n">charPos</span><span class="o">++</span><span class="p">;</span>
+
+<span class="c1">// skip whole characters until we hit a word-break/more whitespace
+</span><span class="k">for</span><span class="p">(</span> <span class="p">;</span> <span class="n">charPos</span> <span class="o">&lt;</span> <span class="n">uspCache</span><span class="o">-&gt;</span><span class="n">length_CRLF</span><span class="p">;</span> <span class="n">charPos</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">logAttr</span><span class="p">[</span><span class="n">charPos</span><span class="p">].</span><span class="n">fWordStop</span> <span class="o">||</span> <span class="n">logAttr</span><span class="p">[</span><span class="n">charPos</span><span class="p">].</span><span class="n">fWhiteSpace</span><span class="p">)</span>
+        <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// skip trailing whitespace
+</span><span class="k">while</span><span class="p">(</span><span class="n">charPos</span> <span class="o">&lt;</span> <span class="n">uspCache</span><span class="o">-&gt;</span><span class="n">length_CRLF</span> <span class="o">&amp;&amp;</span> <span class="n">logAttr</span><span class="p">[</span><span class="n">charPos</span><span class="p">].</span><span class="n">fWhiteSpace</span><span class="p">)</span>
+    <span class="n">charPos</span><span class="o">++</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ここまででやっていることは、TextViewの論理的なカーソルオフセットを変更しているだけだということを覚えておいてください。実際のテキストカーソルは独立して配置されており、高度な処理を必要としません。これが、Uniscribeの素晴らしいところです。プログラマーとしては、論理的な文字単位を扱うだけでよく、複雑な表示関連のコードはすべて自動的に処理されます。
+
+</p>
+
+<h2 id="line-wrapping">Line Wrapping</h2>
+
+<p>Neatpadで使用しているリニア（オフセットベース）の座標系のため、この段階は必要ないと思っていました。しかし、NeatpadがCR/LFシーケンスを処理する方法のため、カーソルが行頭/行末を越えたことを検出するために、特定のチェックを行う必要があります。これが発生すると、カーソルは前の行または次の行に移動します。
+
+</p>
+
+<p>この問題は、テキストキャレットが各行末のCR/LFを越えて移動してはならないために起こります。事実上、CR/LFの配列は文字停止位置として使用できない「死」の文字です。下の画像は、行末にラインフィード文字があるにもかかわらず、カレットが到達できる最後の位置にあることを示しています。
+
+</p>
+
+<p><img src="assets/img/editor1602.gif" alt="<>"></p>
+
+<p>前/次の行に折り返す作業は、MoveLineEndおよびMoveLineStart関数に任されています。そのため、MoveXxxxPrev関数の多くで以下のようなコードが見られます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="p">(</span><span class="n">charPos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">charPos</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">m_nCurrentLine</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">MoveLineEnd</span><span class="p">(</span><span class="n">m_nCurrentLine</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>...そして、対応するMoveXxxxNext関数に以下のコードを記述します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="p">(</span><span class="n">charPos</span> <span class="o">==</span> <span class="n">uspCache</span><span class="o">-&gt;</span><span class="n">length_CRLF</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">m_nCurrentLine</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">m_nLineCount</span><span class="p">)</span>
+        <span class="n">MoveLineStart</span><span class="p">(</span><span class="n">m_nCurrentLine</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>SCRIPT_LOGATTR配列を使って、CR/LFシーケンスを「スキップ」することができればと思っていました。おそらく、ラインラッピングを処理するための最も良い方法を見つけたわけではないと思いますが、私は長い間これに取り組んできましたので、私が得たものを公開するつもりです。もし誰かが、追加の処理を必要としないラインラッピングの良い方法を提案してくれたら、ぜひ連絡してください...。
+
+</p>
+
+<h2 id="line-navigation-and-anchoring">Line navigation and Anchoring</h2>
+
+<p>概念的には、ラインベースのナビゲーションは非常にシンプルです。表面的には、カーソルが指定された行数を上下に移動するために、カーソルの行数を調整するだけで済みます。しかし、可変幅のフォントをサポートする必要があるため、残念ながら実装はそれよりも若干複雑になります。
+
+</p>
+
+<p>この問題は、ユーザーがカーソル（またはテキストカーソル）を行の上または下に移動させたときに発生します。ユーザーが上下の矢印を押したときに期待するのは、カーソルが垂直方向に前の行または次の行に移動することです。固定幅のフォントの場合、これは問題ではありません。カレットのY位置は自由に調整でき、通常はこれだけで十分です。しかし、可変幅フォントでは、キャレットが常に有効な文字位置に配置されるように、キャレットの x-position を潜在的に変更する必要があります。つまり、カレットは上下に移動する際に、常に最も近い文字停止位置の境界に「スナップ」しなければなりません。
+
+</p>
+
+<p><img src="assets/img/editor1601.gif" alt="<>"></p>
+
+<p>上の画像はこのアイデアを表しています。カーソルがファイルの下に移動すると、固定された垂直線を中心に、様々な番号のキャレットポジションが水平方向に移動しているのがわかります。この垂直線は、「アンカリング」とも呼ばれる次のコンセプトをもたらします。
+
+</p>
+
+<p>簡単に言えば、アンカーリングとは、ファイルを上下に移動する際に、テキストカーソルを各行の特定の水平座標にできるだけ近づける処理のことです。ユーザーがマウスを使って、テキストカーソルをある文字の位置に置くとします。この位置は、現在の行のx座標と、行番号で表されます。ユーザーは、矢印キーを使ってファイルを上下に移動するとき、カーソルが自分の選んだ垂直線にできるだけ沿って移動することを期待します。NeatpadのTextViewでは、この処理をアンカリングと呼んでいます。
+
+</p>
+
+<p>アンカーの位置は、m_nAnchorPosXという変数で表されます。アンカー位置は、ユーザーが線に沿って左右に移動したり、マウスでキャレットを置いたりするたびに設定されます。重要なのは、上下の矢印キーを使ったときには、アンカー位置が設定されないことです。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">UspXToOffset</span><span class="p">(</span><span class="n">uspData</span><span class="p">,</span> <span class="n">m_nAnchorPosX</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">charPos</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">trailing</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>これで、前の行や次の行に移動するときに、UniscribeのScriptXToCPを呼び出すことで、適切な文字位置を特定することができるようになりました。この関数は、UspLibのUspXToOffset関数によってカプセル化されており、上の図で見ることができます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">VOID</span> <span class="n">TextView</span><span class="o">::</span><span class="n">MoveLineUp</span><span class="p">(</span><span class="kt">int</span> <span class="n">numLines</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">lineOffset</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">charPos</span><span class="p">;</span>
+    <span class="n">BOOL</span> <span class="n">trailing</span><span class="p">;</span>
+
+    <span class="c1">// move 'up' the specified number of lines
+</span>    <span class="n">m_nCurrentLine</span> <span class="o">-=</span> <span class="n">min</span><span class="p">(</span><span class="n">m_nCurrentLine</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span><span class="p">)</span><span class="n">numLines</span><span class="p">);</span>
+
+    <span class="c1">// get Uniscribe data for that line
+</span>    <span class="n">uspData</span> <span class="o">=</span> <span class="n">GetUspData</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">m_nCurrentLine</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lineOffset</span><span class="p">);</span>
+
+    <span class="c1">// move to character position nearest the anchoring x-coordinate
+</span>    <span class="n">UspXToOffset</span><span class="p">(</span><span class="n">uspData</span><span class="p">,</span> <span class="n">m_nAnchorPosX</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">charPos</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">trailing</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="n">m_nCursorOffset</span> <span class="o">=</span> <span class="n">lineOffset</span> <span class="o">+</span> <span class="n">charPos</span> <span class="o">+</span> <span class="n">trailing</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>MoveLineUp関数（上）は、ファイルを上に移動するときにカーソルがどのように調整されるかを示しています。ここで重要なのは、UspXToOffsetの呼び出しです。このUspLib関数は、キャレットアンカーの位置を取得し、最も近いUnicode character-offsetを見つけます。
+
+</p>
+
+<h2 id="coming-up-in-part-17">Coming up in Part 17</h2>
+
+<p>キーボードナビゲーションは、ユニコードのために非常に複雑になる可能性があります。幸いなことに、Uniscribe APIは、ScriptBreak APIですべての複雑さを解決します。これは、Uniscribeに移行したことによるもう一つの大きな利点であり、私たちが書かずに済んだコードの量は非常に大きなものです。
+
+</p>
+
+<p>次の課題は、シンタックスハイライティングです。この点については、正規表現が間違いなく最良の方法であると判断していますが、先に解決しておかなければならない問題がたくさんあります。今後のテーマとしては、正規表現、構文解析技術、有限状態機械（FSM）などが考えられます。何かご意見がありましたら、ぜひお聞かせください。
+
+</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad16.zip">neatpad16.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2006-05-14T00:00:00+00:00">May 14, 2006</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="integrating-usplib.html" class="pagination--pager" title="Integrating UspLib
+">Previous</a>
+    
+    
+      <a href="../../tuts/win32/tips-and-tricks-part-2.html" class="pagination--pager" title="Win32 Tips &amp; Tricks - Part 2
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer" style="">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

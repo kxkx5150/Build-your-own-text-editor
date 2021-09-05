@@ -1,0 +1,644 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Transparent Text - Catch22</title>
+<meta name="description" content="It’s been almost three months since I posted the last Neatpad tutorial, and it’s also been over a year since I started this project. During this time I have been steadily working on the migration to the Uniscribe API. Alot of issues have become apparent with the way I am rendering text in Neatpad, so this tutorial will hopefully highlight these issues and offer a solution. There isn’t going to be any code-download this time as I will be incorporating the ideas presented here into subsequent tutorials (which will be about Uniscribe).">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Transparent Text">
+<meta property="og:url" content="transparent-text">
+
+
+  <meta property="og:description" content="It’s been almost three months since I posted the last Neatpad tutorial, and it’s also been over a year since I started this project. During this time I have been steadily working on the migration to the Uniscribe API. Alot of issues have become apparent with the way I am rendering text in Neatpad, so this tutorial will hopefully highlight these issues and offer a solution. There isn’t going to be any code-download this time as I will be incorporating the ideas presented here into subsequent tutorials (which will be about Uniscribe).">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2006-02-25T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="transparent-text.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></head>
+
+  <body class="layout--tutorial wide" style="margin-bottom: 171.375px;">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button" count="0" style="">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Transparent Text</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="active">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Transparent Text">
+    <meta itemprop="description" content="It’s been almost three months since I posted the last Neatpad tutorial, and it’s also been over a year since I started this project. During this time I have been steadily working on the migration to the Uniscribe API. Alot of issues have become apparent with the way I am rendering text in Neatpad, so this tutorial will hopefully highlight these issues and offer a solution. There isn’t going to be any code-download this time as I will be incorporating the ideas presented here into subsequent tutorials (which will be about Uniscribe).">
+    <meta itemprop="datePublished" content="February 25, 2006">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Transparent Text
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Transparent Text</h1-->
+<!--h3>Overview of the issues involved in rendering text selections</h3-->
+
+<p>前回のNeatpadチュートリアルを投稿してから約3ヶ月、このプロジェクトを開始してからも1年以上が経過しました。この間、Uniscribe APIへの移行を着実に進めてきました。このチュートリアルでは、これらの問題に焦点を当て、解決策を提案したいと思います。今回は、コードのダウンロードはありません。ここで紹介したアイデアは、次のチュートリアル（Uniscribeに関するもの）に取り入れる予定です。</p>
+
+<h2 id="rendering-text">Rendering text</h2>
+
+<p>そこで、Uniscribeをご紹介する前に、テキストレンダリングのプロセスを再確認してみたいと思います。ここでは、一般的なテキストレンダリングの概要を説明します。議論の基礎として、以下のように斜体の1文字「F」を使用します。</p>
+
+<p><img src="assets/img/editor1022.gif" alt="" class="align-center"></p>
+
+<p>この画像は、灰色の長方形の背景の上に描かれた、小文字のイタリック文字「f」を表す黒いグリフを示しています。灰色の背景は、文字の外接矩形を表しています。文字が長方形の左端と右端にはみ出していることに注目してください。これらの寸法をグリフの left-bearing と right-bearing と呼ぶ。
+
+</p>
+
+<p>Windowsでは、文字の幅の合計はABC幅と呼ばれる3つの値で表されます。A幅はグリフの左端のはみ出した部分の幅を表し、C幅は右端のはみ出した部分の幅を表す。B幅はグリフの範囲を表す。上記の小文字の「F」のような文字では、A幅とC幅が負の値になることが多く、文字列の一部として表示される際に、文字をより近くに配置することができます。もちろん、A幅やC幅が負の値の文字は、隣の文字が占めるスペースに重なってしまいます。この短いチュートリアルの目的は、負のA幅やC幅を持つグリフのレンダリングに関する問題を強調することです。
+
+</p>
+
+<p>すべてのアプリケーション（Neatpadを含む）は、Windowsのテキスト表示API（通常はDrawTextまたはTextOut）のいずれかを使用してテキストをレンダリングします。Windowsのテキストは、2つの方法のいずれかで描画されます。背景の塗りつぶしがあるテキストは不透明なテキストと呼ばれ、背景の塗りつぶしがないテキストは透明なテキストと呼ばれます。このテキスト描画機能は、SetBkMode API、またはExtTextOut呼び出し時のETO_OPAQUEオプションで制御されます。
+
+</p>
+
+<p>はみ出したグリフの問題は、文字列を小さなセグメントに分割して個別にレンダリングする場合にのみ発生します。この問題は、背景を塗りつぶす際に、グリフのはみ出した部分がオーバーペイントされ、その結果、文字が隣接する背景の矩形によって切り取られてしまうために発生します。下の画像は、テキストをペイントする2つの方法を示しています。このテキストは、個別にレンダリングされた6つの「F」で構成されており、それぞれが異なる色で表示されています。
+
+
+</p>
+
+<table class="table-figure-center">
+  <tbody>
+    <tr>
+      <td><img src="assets/img/editor1009.gif" alt=""></td>
+      <td><img src="assets/img/editor1008.gif" alt=""></td>
+    </tr>
+    <tr>
+      <td><em>Clipping (opaque text)</em></td>
+      <td><em>No clipping (transparent text)</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>左の画像は、不透明な背景塗り潰しモードでテキストを描いたものです。これは、テキストと背景が一度にレンダリングされるため、テキストを描画する最もシンプルな方法です。現在、Neatpadでは、この方法でテキストを描画しています。しかし、テキストがブロックに分割されていると問題が発生します。もちろん、この問題は、イタリック体のテキストによってさらに悪化します。ほとんどのローマン体のテキストでは、この問題は発生しません。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SetBkMode</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">OPAQUE</span><span class="p">);</span>
+<span class="n">TextOut</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">szText</span><span class="p">,</span> <span class="n">nTextLen</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>右の画像は、多色刷りのテキストを表示するための理想的な方法です。この方法でテキストを表示するためには、プロセスを2段階に分ける必要がありました。まず、背景を全体的に（左から右に）描きます。次に、背景の上にテキストを「透明に」描きます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">FillRect</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">backgroundRect</span><span class="p">);</span>
+
+<span class="n">SetBkMode</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">TRANSPARENT</span><span class="p">);</span>
+<span class="n">TextOut</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">szText</span><span class="p">,</span> <span class="n">nTextLen</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>テキストを2段階に分割するとちらつきが発生するため、この副作用を改善するために、テキストを描画する際には「ダブルバッファリング」を行う必要があります。つまり、テキストの各行を画面外のバッファに描画してから視覚的に表示するのです。このような方法でテキストを描くことは非常に必要であり、私はNeatpadでこのような方向性を目指しています。しかし、ダブルバッファリング方式に移行した結果、選択ハイライトの描画方法を見直すことができました。
+
+</p>
+
+<h2 id="drawing-selection-higlighting">Drawing Selection Higlighting</h2>
+
+<p>選択範囲のハイライトは、少なくとも私にとっては、常にとらえどころのないテーマのようです。問題は、テキスト選択をどのように表現すべきかについて、実際には厳密なガイドラインが存在しないということです。そして、Uniscribeと「低レベル」グリフレンダリングの世界に足を踏み入れて初めて、その問題を完全に理解することができました。
+
+</p>
+
+<p>以下の画像は、テキスト選択を表現する2つの主な方法を示しています。この例では、6つの「F」という同じ文字列を使用しています。しかし今回は、6つのグリフのうち2つが「選択された」と表示されており、Windowsシステムのデフォルトカラーを使用しています。
+
+
+</p>
+
+<table class="table-figure-center">
+  <tbody>
+    <tr>
+      <td><img src="assets/img/editor1025.gif" alt=""></td>
+      <td><img src="assets/img/editor1014.gif" alt=""></td>
+    </tr>
+    <tr>
+      <td><em>Background highlighting</em></td>
+      <td><em>Inversion highlighting</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>2つの基本的な戦略は、簡単に言えば、「背景の強調表示」と「反転の強調表示」です。
+
+</p>
+
+<ul>
+  <li>背景の強調表示は、テキスト選択を表現する最もシンプルな方法です。実際には、テキストの前景色と背景色を変更して、選択されたテキストの範囲を表現するだけでよいのです。テキストは背景の上に透過的に描かれているので、グリフが文字境界からはみ出しているのがわかります。WordpadやInternet Explorerはこの方法を採用していますし、Scintillaのような多くのテキストエディタも同様です。
+
+</li>
+  <li>反転ハイライトは、実現がより複雑ですが、より良い結果が得られます（私の意見ですが）。この効果は、矩形領域内のピクセルを文字通り反転させる旧来の方法に非常によく似ています。もちろん、Windows の標準的なカラースキームを維持するために、選択領域は実際に色を反転させるのではなく、普通に塗られます。また、選択ハイライトがテキストの後ろではなく、上にあるように見えます。メモ帳は、このタイプの選択ハイライトを示す非常に良い例です。
+</li>
+</ul>
+
+<p>私の好みは、「反転」方式です。テキストがハイライトされているとき、選択矩形がテキストの後ろにあるのではなく、テキストの上に重なっているように考えたいのです。個人的には、背景をハイライトする方法の見た目や雰囲気が好きではありません。Windowsの典型的なカラースキーム（白の背景、白の選択テキスト）のため、選択ハイライトが移動すると、一部の選択テキストが消えてしまうようです。この例をよく見ると、この効果がよくわかります。選択された2つの文字が白いので、白い背景に重なると、文字が切り捨てられたように見えます。私はNeatpadの「反転」方法に移行していますが、それは単にその方がプロフェッショナルに見えるからです。
+
+</p>
+
+<p><img src="assets/img/editor1023.gif" alt="" class="align-center"></p>
+
+<p>反転ハイライト」のプロセスは、思ったよりも複雑です。ここで問題となるのは、はみ出した文字の問題です。上の例では、文字が選択された状態で表示されていますが、前縁と後縁が非選択領域に入っているため、別の色で塗装する必要があります。このキャラクターを選択状態で表示するには、キャラクター本体と、左右に張り出した部分を別々にレンダリングする必要があります。この問題を解決するために、私は以下のような3段階のレンダリング戦略を採用しています。
+
+</p>
+
+<table class="table-figure-center">
+  <tbody>
+    <tr>
+      <td><img src="assets/img/editor1012.gif" alt=""></td>
+      <td><img src="assets/img/editor1020.gif" alt=""></td>
+    </tr>
+    <tr>
+      <td><em>1a. Background</em></td>
+      <td><em>1b. Mask selected areas</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>最初の段階では、シンプルなフラットフィルを使って背景を描きます。すべてのキャラクターは、この方法で通常の境界線を描き、通常のエリアと選択されたエリアの両方がレンダリングされます。ここで重要なのは、この初期段階でのクリッピングの使い方です。選択された領域は、ペイントされた直後にマスクされます。これは、ExcludeClipRect APIを使用して、現在のデバイスコンテキストのクリッピング領域から選択領域を取り除くことを意味します。この詳細が重要である理由は、すぐに明らかになります。
+
+</p>
+
+<table class="table-figure-center">
+  <tbody>
+    <tr>
+      <td><img src="assets/img/editor1021.gif" alt=""></td>
+      <td><img src="assets/img/editor1018.gif" alt=""></td>
+    </tr>
+    <tr>
+      <td><em>2a. Normal text</em></td>
+      <td><em>2b. Invert mask</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>背景の全体（すべての文字／グリフ）が描かれたら、第2段階として、その上にテキストをレンダリングします。テキストの描画には、透明な描画モードが使用されます（SetBkModeにTRANSPARENTを設定）。最初の処理でクリッピング領域が作成されているため、選択された（青い）領域は、テキストがその上に描画される際に保護されます。
+
+</p>
+
+<p>テキストが描画されると、デバイスコンテキストのクリッピング領域が反転され（ExtSelectClipRgn with RGN_XOR）、その結果、選択された領域がマスクされなくなります。レンダリングされたばかりのテキストは、その後の描画操作から保護されます。
+
+</p>
+
+<table class="table-figure-center">
+  <tbody>
+    <tr>
+      <td><img src="assets/img/editor1019.gif" alt=""></td>
+      <td><img src="assets/img/editor1014.gif" alt=""></td>
+    </tr>
+    <tr>
+      <td><em>3a. Selected text</em></td>
+      <td><em>3b. The result</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>最後の段階は、テキストの再描画です。全く同じテキストが、先ほど描いたテキストの上に直接描かれます。今回の違いは、テキストが単色で描かれていることです。システムハイライトの色（つまり白）を使っています。クリッピング領域を作成したため、今回は選択された領域（青）のみが変更されます。クリッピング領域を取り除くと、描画が完了します。結果として、ワープロソフトに適した高品質のテキスト出力が得られます。
+
+</p>
+
+<p>この方法を成立させるためには、クリッピングの使い方がポイントになります。テキストが引き伸ばされているように見えますが、クリッピング領域を慎重に使用しているため、実際には引き伸ばされていません。重要なのは、ClearTypeやその他のアンチエイリアシングが有効になっている場合、このようなクリッピングの使用が絶対に必要だということです。上記の方法でクリッピングを使用すると、テキストを2回描画しようとしても、この「オーバードロー」から保護されます。
+
+</p>
+
+<p>もちろん、この方法でテキストをレンダリングすることには常に問題があります。3回のパスを実行すると、かなりの量のフリッカーが発生し、基本的にすべてのテキストを描画する際にはダブルバッファリングを使用しなければなりません。また、テキストを2回描画することで、パフォーマンスが低下する可能性もあります。ほとんどの場合、テキストを2回描画することはありません（テキストに選択範囲がない場合や、すべてのテキストが選択されている場合など）。
+
+</p>
+
+<p>ここで説明した方法は、初めての人にはかなり奇妙に見えるかもしれませんが、それほど珍しいものではないことをお約束します。ScriptString API (そのために Notepad のようなアプリ) は、これとまったく同じ方法を使っていますし、「反転法」を使うテキスト編集パッケージは、これとよく似た方法を使っていると考えていいでしょう。要するに、私が選んだ方法に代わるものはないのです。高品質なテキスト表示を目指すのであれば、譲歩しなければなりません。
+
+</p>
+
+<h2 id="coming-up-in-part-11">Coming up in Part 11!</h2>
+
+<p>ここでは、極端な例を挙げています。ローマン書体のほとんどの英語テキストは、このような複雑なレンダリングを必要としないでしょう。しかし、私たちはあらゆる形式のテキスト（特に、よりエキゾチックなUnicodeスクリプト）をサポートしなければならないため、この時点から適切に処理しなければなりません。実際、Uniscribeでのレンダリングには反転法が完全に必要です。
+
+</p>
+
+<p>このチュートリアルは、今後の展開を予告するものです。反転ハイライトの技術は、Uniscribe APIへの移行に伴い、Neatpadのテキスト表示エンジンに組み込まれる予定です。
+
+</p>
+
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2006-02-25T00:00:00+00:00">February 25, 2006</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="unicode-text-processing.html" class="pagination--pager" title="Unicode Text Processing
+">Previous</a>
+    
+    
+      <a href="introduction-uniscribe.html" class="pagination--pager" title="Introduction to Uniscribe
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer" style="">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

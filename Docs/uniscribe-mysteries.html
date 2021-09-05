@@ -1,0 +1,929 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Uniscribe Mysteries - Catch22</title>
+<meta name="description" content="The last tutorial presented a very brief overview of the Uniscribe ScriptString API. Unfortunately ScriptString is insufficient for our purposes with Neatpad because of the limitations of a single font and colour. The aim of this tutorial is to therefore investigate the “low-level” Uniscribe API. Because we have very specific requirements for Neatpad’s text display our approach that of a multi-font, syntax-coloured text editor.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Uniscribe Mysteries">
+<meta property="og:url" content="uniscribe-mysteries">
+
+
+  <meta property="og:description" content="The last tutorial presented a very brief overview of the Uniscribe ScriptString API. Unfortunately ScriptString is insufficient for our purposes with Neatpad because of the limitations of a single font and colour. The aim of this tutorial is to therefore investigate the “low-level” Uniscribe API. Because we have very specific requirements for Neatpad’s text display our approach that of a multi-font, syntax-coloured text editor.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2006-03-01T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="uniscribe-mysteries.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></head>
+
+  <body class="layout--tutorial wide" style="margin-bottom: 171.375px;">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button" count="0" style="">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Uniscribe Mysteries</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="active">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Uniscribe Mysteries">
+    <meta itemprop="description" content="The last tutorial presented a very brief overview of the Uniscribe ScriptString API. Unfortunately ScriptString is insufficient for our purposes with Neatpad because of the limitations of a single font and colour. The aim of this tutorial is to therefore investigate the “low-level” Uniscribe API. Because we have very specific requirements for Neatpad’s text display our approach that of a multi-font, syntax-coloured text editor.">
+    <meta itemprop="datePublished" content="March 01, 2006">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Uniscribe Mysteries
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Uniscribe Mysteries</h1-->
+<!--h3>Looking at ScriptItemize and ScriptLayout</h3-->
+
+<p>前回のチュートリアルでは、Uniscribe ScriptString API のごく簡単な概要を紹介しました。残念ながら、ScriptStringは、単一のフォントと色という制限があるため、Neatpadを使った私たちの目的には不十分です。そこで、このチュートリアルの目的は、「低レベル」のUniscribe APIを調べることです。私たちはNeatpadのテキスト表示に非常に特殊な要求を持っているので、マルチフォント、シンタックスカラーのテキストエディタのアプローチをとります。
+
+</p>
+
+<p>以下に示すユニコードテキストの文字列が、今回の議論の多くのベースとして使用されます。真ん中のアラビア語のフレーズが選ばれたのは、ユニコードの特性が議論の文脈に適しているからであり、特別な意味があるわけではありません。
+
+</p>
+
+<p>HelloيُساوِيWorld</p>
+
+<p>上のアラビア語フレーズの「グリフ」のうち、2つの文字が他の文字列とは異なる色でハイライトされていることに気づくだろう。この2つの文字は「U+0633 ARABIC LETTER SEEN」と「U+0627 ARABIC LETTER ALEF」です。これらを単独で表示すると以下のようになります。
+
+</p>
+
+<table class="table-figure-center">
+  <tbody>
+    <tr>
+      <td>سا</td>
+      <td>س‌ا</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>左のボックスには、コンテクストシェーピングでレンダリングされた2つの文字が表示されています（Internet ExplorerなどのUnicode対応のWebブラウザを使用しており、適切なフォントがインストールされていることを前提としています）。これが私たちが目指している動作です。右側のボックスには、文字がそれぞれ別々にレンダリングされています。両方のボックスが同じに見える場合は、ブラウザがUnicodeを正しく表示していません。
+
+</p>
+
+<p>Unscribeが存在する大きな理由の一つは、上に示したような複雑な「シェーピング」動作を提供することです。私たち（プログラマー）が要求するのは、Unicode文字列を個々の文字に分割しないことです。これは、私たちが目指しているシェーピング動作を壊してしまうからです。したがって、このチュートリアルの主な目的は、文脈に沿ったシェーピングを維持しつつ、文字を個別に（異なる色で）描画する方法を説明することです。
+
+</p>
+
+<h2 id="basic-outline">Basic Outline</h2>
+
+<p>Uniscribe でテキストを描画するための基本的な手順を以下に示します。今のところ、ワードラッピング（および ScriptBreak API）は省略していることに注意してください。つまり、UTF-16 Unicodeの文字列があると仮定して、次のようにします。
+
+</p>
+
+<ol>
+  <li><code class="highlighter-rouge">ScriptItemize</code>ScriptItemize - 文字列を個別のスクリプトまたは「アイテムラン」に分割します。</li>
+  <li>アイテムのランと、アプリケーションで定義された「スタイル」のランをマージして、よりきめ細かいアイテムを作成。
+
+</li>
+  <li><code class="highlighter-rouge">ScriptLayout</code>ScriptLayout - アイテムの順番を変えることができます。</li>
+</ol>
+
+<p>次に、各アイテム/ランについて、（ScriptLayoutの結果に基づいた順序で
+
+</p>
+
+<ol>
+  <li>ScriptShape - 文脈に応じたシェーピング動作を適用し、各ランの文字を一連のグリフに変換します。</li>
+  <li>ScriptPlace - ランの各グリフの幅と位置を計算する。
+</li>
+  <li>個々のグリフにカラーリング／ハイライトを施す。
+</li>
+  <li>ScriptTextOut - グリフを表示します。
+</li>
+</ol>
+
+<p>このアウトラインは、Microsoft が推奨する Uniscribe API の使用方法に沿っています。ただし、MSDN で言及されていない追加のステップ#6 (テキストの色付け) を含んでいることに注意してください。この違いの理由は、チュートリアルを進めていく中で説明します。ワードラッピングについては、Uniscribe を使用するというよりも、ラインバッファの管理の問題なので、後のチュートリアルに譲ります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="n">UspAnalyze</span> <span class="p">(</span>
+  <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span>   
+  <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span>
+  <span class="n">WCHAR</span> <span class="o">*</span> <span class="n">wstr</span><span class="p">,</span>
+  <span class="kt">int</span> <span class="n">wlen</span><span class="p">,</span>
+  <span class="n">ATTR</span> <span class="o">*</span> <span class="n">attrRunList</span><span class="p">,</span>
+  <span class="n">UINT</span> <span class="n">flags</span><span class="p">,</span>
+  <span class="n">SCRIPT_TABDEF</span> <span class="o">*</span> <span class="n">tabDef</span><span class="p">,</span>
+  <span class="n">USPFONT</span> <span class="o">*</span> <span class="n">uspFont</span>                          
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>上記の関数プロトタイプは、UspAnalyzeという関数のものです。これは、私がNeatpadのために書いた新しいUspLibテキストレンダリングエンジンの一部です。UspAnalyzeはScriptStringAnalyzeと似ていますが、呼び出し側が文字列のフォントやスタイル情報を指定できるという機能が追加されています。
+
+</p>
+
+<p>このチュートリアルの残りの部分では、上記のようなUniscribe APIの各側面に焦点を当て、各ステージに関連する問題を議論していきます。しかし、見ていく各段階は、UspAnalyze機能を実装するための重要なステップとなります。
+
+</p>
+
+<h2 id="1-scriptitemize">1. ScriptItemize</h2>
+
+<p>ScriptItemizeは、通常、Unicodeテキストの文字列を表示する際に、最初に呼び出されるUniscribe関数です。この関数の目的は、文字列内のさまざまなスクリプトを識別し、この文字列をスクリプトに応じてアイテム（またはラン）に分割し、1つのスクリプトにつき1つのアイテムを作成することです。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>H</td>
+      <td>e</td>
+      <td>l</td>
+      <td>l</td>
+      <td>o</td>
+      <td>ي</td>
+      <td>ُ</td>
+      <td>س</td>
+      <td>ا</td>
+      <td>و</td>
+      <td>ِ</td>
+      <td>ي</td>
+      <td>W</td>
+      <td>o</td>
+      <td>r</td>
+      <td>l</td>
+      <td>d</td>
+    </tr>
+    <tr>
+      <td>0048</td>
+      <td>0065</td>
+      <td>006C</td>
+      <td>006C</td>
+      <td>006F</td>
+      <td>064A</td>
+      <td>064F</td>
+      <td>0633</td>
+      <td>0627</td>
+      <td>0648</td>
+      <td>0650</td>
+      <td>064A</td>
+      <td>0057</td>
+      <td>006F</td>
+      <td>0072</td>
+      <td>006C</td>
+      <td>0064</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
+      <td>13</td>
+      <td>14</td>
+      <td>15</td>
+      <td>16</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>上の表は、UTF-16の文字列「HelloيُساوِيWorld」がScriptItemizeでどのように扱われるかを示しています。文字は論理的な順序、つまりメモリに格納されたときに表示される順序で表示されています。文字列は3つのセグメントに分けられています。これらのアイテムは、純粋にそのスクリプトによって導き出されたものであり、文字列の中に存在するより細かいグリフや書記素クラスタによって導き出されたものではないことに注意してください。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRESULT</span> <span class="n">WINAPI</span> <span class="n">ScriptItemize</span><span class="p">(</span>
+  <span class="n">WCHAR</span> <span class="o">*</span> <span class="n">wszText</span><span class="p">,</span> <span class="c1">// pointer to unicode string
+</span>  <span class="kt">int</span> <span class="n">wszLength</span><span class="p">,</span> <span class="c1">// count of WCHARs         
+</span>  <span class="kt">int</span> <span class="n">cMaxItems</span><span class="p">,</span> <span class="c1">// length of pItems buffer
+</span>  <span class="n">SCRIPT_CONTROL</span> <span class="o">*</span> <span class="n">psControl</span><span class="p">,</span>    
+  <span class="n">SCRIPT_STATE</span> <span class="o">*</span> <span class="n">psState</span><span class="p">,</span> 
+  <span class="n">SCRIPT_ITEM</span> <span class="o">*</span> <span class="n">pItems</span><span class="p">,</span> <span class="c1">// out - array of SCRIPT_ITEM structures
+</span>  <span class="kt">int</span> <span class="o">*</span> <span class="n">pcItems</span> <span class="c1">// out - count of items
+</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>ScriptItemizeは、SCRIPT_ITEM構造体の配列を返し、テキストの段落内の「整形可能な」アイテム（スクリプト）ごとに1つずつ返します。構造体の数は、*pcItemsで返されます。上記の例では、*pcItemsには「3」という値が入ります。このSCRIPT_ITEM構造体は非常にシンプルで、以下のようになります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">SCRIPT_ITEM</span>
+<span class="p">{</span> 
+   <span class="kt">int</span> <span class="n">iCharPos</span><span class="p">;</span> 
+   <span class="n">SCRIPT_ANALYSIS</span> <span class="n">a</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>SCRIPT_ITEM::iCharPos変数は、文字列内のテキストの各「ラン」の開始位置を特定するために使用されます。SCRIPT_ANALYSIS子構造は、読み取り方向や、ランをグリフに変換するために使用すべきシェーピング・エンジンなど、ランに関するさまざまな追加情報を保持する。
+
+</p>
+
+<p>今回の画像は、Unicode文字列がSCRIPT_ITEM構造体の配列で表現されている様子を示しています。
+
+</p>
+
+<p><img src="assets/img/editor1007.gif" alt="" class="align-center"></p>
+
+<p>配列の最後には、文字列の終わりを示す「隠れた」SCRIPT_ITEMが常に存在することに注意してください。これにより、次のようにして各SCRIPT_ITEMの長さを計算することができます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itemLength</span> <span class="o">=</span> <span class="n">pItems</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">iCharPos</span> <span class="o">-</span> <span class="n">pItems</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">iCharPos</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ここでは、いくつかの一般的なポイントを紹介します。ScriptItemize の最初のパラメータは WCHAR * であることに注意してください。この関数にはANSIバージョンがありませんので、今後Neatpadは純粋なUnicodeアプリケーションとなります。Microsoft Layer for Unicode (MSLU)が使えなければ、Win9xのサポートをやめなければなりません。
+
+</p>
+
+<p>そのため、通常は何らかのループを使用し、ScriptItemizeの呼び出しが成功するまでSCRIPT_ITEMバッファのメモリをどんどん割り当てていく必要があります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SCRIPT_CONTROL</span> <span class="n">scriptControl</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+<span class="n">SCRIPT_STATE</span> <span class="n">scriptState</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+
+<span class="n">SCRIPT_ITEM</span> <span class="o">*</span><span class="n">itemList</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">itemCount</span><span class="p">;</span>
+
+<span class="k">do</span> <span class="p">{</span>
+    <span class="n">itemList</span> <span class="o">=</span> <span class="n">realloc</span><span class="p">(</span><span class="n">itemList</span><span class="p">,</span> <span class="p">...</span> <span class="p">);</span>
+
+    <span class="n">hr</span> <span class="o">=</span> <span class="n">ScriptItemize</span><span class="p">(</span>
+            <span class="n">wstr</span><span class="p">,</span>
+            <span class="n">wlen</span><span class="p">,</span>
+            <span class="n">allocLen</span><span class="p">,</span>
+            <span class="o">&amp;</span><span class="n">scriptControl</span><span class="p">,</span>
+            <span class="o">&amp;</span><span class="n">scriptState</span><span class="p">,</span>
+            <span class="n">itemList</span><span class="p">,</span>
+            <span class="o">&amp;</span><span class="n">itemCount</span><span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">hr</span> <span class="o">!=</span> <span class="n">S_OK</span> <span class="o">&amp;&amp;</span> <span class="n">hr</span> <span class="o">!=</span> <span class="n">E_OUTOFMEMORY</span><span class="p">)</span>
+        <span class="k">break</span><span class="p">;</span>
+
+<span class="p">}</span> <span class="k">while</span><span class="p">(</span><span class="n">hr</span> <span class="o">!=</span> <span class="n">S_OK</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>注意点としては、SCRIPT_CONTROLおよびSCRIPT_STATE構造体の内容がすべて「0」に初期化されている場合でも、常に完全に初期化されたSCRIPT_CONTROLおよびSCRIPT_STATE構造体をScriptItemizeに渡すようにしてください。これらの構造体が両方とも指定されていなければ、文字列を項目化する目的で、Unicode双方向アルゴリズムは使用されません。このため、状況によってはアイテムランの位置が正しく認識されないことがある（LTRとRTLのスクリプトが同じ文字列に現れるなど）。
+
+</p>
+
+<p>興味深いことに、MSDNによると、SCRIPT_CONTROLとSCRIPT_STATEがNULLの場合、項目の設定は純粋に文字コードに基づいて行われます。NULLでない場合は、上述のように完全な双方向アルゴリズムが適用される。後者の場合は、段落全体がメモリ内になければならない。この道に進むつもりはありませんが、これは、段落全体としてメモリに存在することができない任意の長いテキスト行を処理するための方法を示唆しています。
+
+</p>
+
+<h2 id="2-merging-style-runs">2. Merging Style Runs</h2>
+
+<p>ScriptString関数ではなくUniscribeを直接使用している理由は、テキストの色やフォントの選択をより細かく制御したいからです。そして、（ScriptItemizeを呼び出した後に）Microsoftのドキュメントでは、「アプリケーション定義」のスタイルランをScriptItemizeから返されるアイテム情報にマージするようにアドバイスされている点に到達しました。以下、MSDNからの引用です。
+
+</p>
+
+<blockquote>
+  <p><em>"Uniscribe を使用する前に、アプリケーションは段落をランに分割します。つまり、同じスタイルを持つ文字列です。スタイルはアプリケーションが実装したものに依存しますが、一般的にはフォント、サイズ、色などの属性を含みます.... アイテム情報とラン情報をマージして、単一のスタイル、スクリプト、方向性を持つランを生成します。"
+
+</em></p>
+</blockquote>
+
+<p>この言葉は、Uniscribeのドキュメント全体の中で、最も混乱し、不可解で、誤解を招くような記述のひとつです。問題は、スタイルランとアイテムランをどのようにマージすべきか、あるいは「スタイルラン」とは何かについて、MSDNには何のヒントもないことです。ランのマージ」の方法についてはもう少し後に説明しますが、まず「スタイルラン」という言葉の意味を理解しましょう。
+
+</p>
+
+<p>もちろん、スタイルランはアプリケーションが望むものであれば何でもあります。基本的には、特定の属性を割り当てられたテキストの範囲です。Neatpadの場合、色とフォントを表すためにATTR構造を使用しました。テキストの文字列と属性リストは次のようになっています。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">WCHAR</span> <span class="n">buff</span><span class="p">[</span><span class="n">MAXLINELEN</span><span class="p">];</span>
+<span class="n">ATTR</span> <span class="n">attr</span><span class="p">[</span><span class="n">MAXLINELEN</span><span class="p">];</span>
+</code></pre></div></div>
+
+<p>しかし、Uniscribeと「反転ハイライト」スキームに移行してからは、ATTR構造を多少拡張し、もはや「1文字に1つのATTR」ではなくなりました。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">ATTR</span>
+<span class="p">{</span>
+   <span class="n">COLORREF</span> <span class="n">fg</span><span class="p">;</span> <span class="c1">// foreground text colour
+</span>   <span class="n">COLORREF</span> <span class="n">bg</span><span class="p">;</span> <span class="c1">// background text colour
+</span>   <span class="kt">int</span> <span class="n">len</span> <span class="o">:</span> <span class="mi">16</span><span class="p">;</span> <span class="c1">// length of this run (in WCHARs)
+</span>   <span class="kt">int</span> <span class="n">font</span> <span class="o">:</span> <span class="mi">7</span><span class="p">;</span> <span class="c1">// font-index
+</span>   <span class="kt">int</span> <span class="n">sel</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// selection flag (yes/no)
+</span>   <span class="kt">int</span> <span class="n">ctrl</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// show as an isolated control-character
+</span><span class="p">};</span>
+</code></pre></div></div>
+
+<p>前景色と背景色に変更はありません。新しい構造メンバーの詳細は以下の通りです。
+
+</p>
+
+<ul>
+  <li>最初の変更点は、属性ランの長さ（文字数）を表す新しい長さフィールドです。これは、Uniscribeが1文字ではなく「ラン」を扱うことを好むためです。既存のNeatpadのコード（1文字につき1つのATTRを想定しています）にはまだ手を加えず、この追加フィールドは、Uniscribe APIを扱う際の「内部的なハウスキーピング」のためだけに使用します。
+</li>
+  <li>fontフィールドは以前と変わりません。フォントテーブルへのインデックスとして使用されます。
+</li>
+  <li>sel booleanは、テキストランの選択状態を示すために使用されます。言い換えれば、ランが選択ハイライトでレンダリングされるべきかどうかです。これは非常に重要な変更点で、もはや選択色を ::fg と ::bg に格納することはなく、文字（またはテキストの範囲）が選択されているかどうかを示すために別のフラグが使用されます。選択色を ::fg と ::bg に保存しなくなりました。
+</li>
+  <li>ctrlブーリアンは最後に追加されたもので、text-run内の文字を通常の文字としてレンダリングするか、あるいは個別のコントロール文字としてレンダリングするかを指定するために使用されます。
+</li>
+</ul>
+
+<p>現在直面している問題は、元の文字配列内のスクリプトの位置を特定するSCRIPT_ITEMリストと、元の文字列内のスタイルの範囲を特定するATTRリストという、関連性のない2つのリストがあることです。MSDNがこの2つの無関係なリストをマージするように指示している意味を理解する必要があります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SCRIPT_ITEM</span> <span class="o">*</span><span class="n">itemList</span><span class="p">;</span>
+<span class="n">ATTR</span> <span class="o">*</span><span class="n">attrList</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>基本的なプロセスは、style-runとitem-runを一緒に見て、文字列の中であるタイプのランが他のタイプと重なっている位置を特定することである。例えば、SCRIPT_ITEMのランが、2つのATTR構造間の境界位置と重なっているとする。このSCRIPT_ITEMは、それぞれが異なるATTRスタイル・ランを表す2つの新しい部分に分割しなければならない。
+
+</p>
+
+<p>SCRIPT_ITEM::iCharOffset変数は、元の文字列内の新しい位置を指すように変更され、ITEM_RUN構造体の配列は、これらの新しい文字位置を保持するように構築されます。SCRIPT_ITEMの他の内容（すなわち、SCRIPT_ANALYSIS構造体）は、結果として生じる2つの部分の間で複製されなければならない。これは次のように考えてください。ScriptItemize関数は、まず文字列をスクリプトに基づいて個別の単位に分割します。マージ処理では、さらに文字列をスタイルに基づいてより小さな単位に分割します（2つの間に重複がある場合）。
+
+</p>
+
+<p>次の図は、「スタイル・マージ」の意味を説明するためのものです。
+
+</p>
+
+<p><img src="assets/img/editor1006.gif" alt="" class="align-center"></p>
+
+<p>さて、ここで問題があります。SCRIPT_ITEMを分割すると、Uniscribeエンジンのコンテクストシェーピング動作に影響を与えないでしょうか？簡単に言うと、はい、文字列を分割することで、Uniscribeのシェーピング動作を壊してしまいます。そして、この問題を回避する魔法の方法はありません。
+
+</p>
+
+<p>上の図では、ATTRスタイルランの横に「フォントのみ」と書いてあるのに気づくかもしれません。これは意図的なもので、マイクロソフトはスタイルに基づいて文字列を分割するようにアドバイスしていますが、これは実際には正しくありません。実際、この段階で色の違いによって文字列を分割することは（選択／構文強調の目的で）間違っています。
+
+</p>
+
+<blockquote>
+  <p><em>スタイルランとアイテムランを統合する際には、フォントのみを考慮し、カラー情報は完全に無視しなければなりません。
+
+</em></p>
+</blockquote>
+
+<p>願わくば、私の言いたいことが十分に伝わっていることを願います。マイクロソフトのドキュメントのアドバイスに従って、文字列をカラーリングする方法を見つけ出そうと1週間ほど費やしましたが、その方法が間違っていることに気づきました。つまり、ScriptShape と ScriptPlace が呼び出された後、ScriptTextOut が呼び出される直前に適用しなければなりません。これは、ATTR構造体に色を保存できないということではなく、「マージ」の実行中にこの情報を使用しないということです。したがって、同じフォントを共有するATTR構造体は、「分割」を行う前に、マージ処理によって1つの実行ファイルにまとめなければなりません。
+
+</p>
+
+<p>さて、ATTR構造体とSCRIPT_ITEM構造体を分割したら、それらをどうすればいいのでしょうか？私は、SCRIPT_ITEM構造体とATTR構造体から必要なコンテンツを含むITEM_RUNという新しい構造体を定義しました。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">ITEM_RUN</span>
+<span class="p">{</span>
+   <span class="n">SCRIPT_ANALYSIS</span> <span class="n">analysis</span><span class="p">;</span> <span class="c1">// from the original SCRIPT_ITEM
+</span>   <span class="kt">int</span> <span class="n">charPos</span><span class="p">;</span> <span class="c1">// character-offset within the original string
+</span>   <span class="kt">int</span> <span class="n">len</span><span class="p">;</span> <span class="c1">// length of run in WCHARs
+</span>   <span class="kt">int</span> <span class="n">font</span><span class="p">;</span> <span class="c1">// only font is required, not colours
+</span>   <span class="p">...</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>ITEM_RUNは基本的に、アイテムランと一緒に「フォーマット」情報を保持することができる。文字列をアイテム化した後は、Uniscribeは各ランのSCRIPT_ANALYSIS構造体のみを気にする。ITEM_RUN構造体の他のメンバーは、我々自身の私的使用のためのものである。item-run-listは、文字列のUSPDATA構造体の中の、itemRunListフィールドに格納される。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">USPDATA</span>
+<span class="p">{</span>
+   <span class="n">ITEM_RUN</span> <span class="o">*</span> <span class="n">itemRunList</span><span class="p">;</span>
+   <span class="kt">int</span> <span class="n">itemRunCount</span><span class="p">;</span>
+   <span class="p">...</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>実際、これはUniscribeプログラミングの中でも最も厄介な点のひとつであり、1998年の記事「Supporting Multilanguage Text Layout and Complex Scripts with Windows NT 5.0」に掲載されている7年前のCSSampアプリケーション以外に、Microsoftがこれをどのように実行すべきか全くヒントを与えていないことも手伝って、このような状況になっています。
+
+</p>
+
+<p>この問題を解決するために、BuildMergedItemRunListという新しい関数を書きました。この関数は、与えられたUniscribe文字列のITEM_RUN構造体の配列を構築します。この関数は、ScriptItemize を呼び出し、その結果を attrList で指定されたスタイルランにマージするという 2 つのタスクを実行します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="n">BuildMergedItemRunList</span><span class="p">(</span>
+                 <span class="n">USPDATA</span> <span class="o">*</span> <span class="n">uspData</span><span class="p">,</span> <span class="c1">// in/out - holds results of merge
+</span>                 <span class="n">WCHAR</span> <span class="o">*</span> <span class="n">wstr</span><span class="p">,</span>          
+                 <span class="kt">int</span> <span class="n">wlen</span><span class="p">,</span> 
+                 <span class="n">ATTR</span> <span class="o">*</span> <span class="n">attrList</span><span class="p">,</span>      
+ <span class="p">);</span>
+</code></pre></div></div>
+
+<p>BuildMergedItemRunList は USPLib のプライベート関数であり、USPDATA オブジェクトを構築する際の最初のステップの 1 つとして UspAnalyze によって呼び出されます。単独では、この関数は次のように使用されます。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ATTR</span> <span class="n">attrList</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> 
+<span class="p">{</span>
+    <span class="p">{</span> <span class="n">RGB</span><span class="p">(</span><span class="mh">0xff</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0xff</span><span class="p">),</span> <span class="n">RGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">},</span> <span class="c1">// five characters using font#0
+</span>    <span class="p">{</span> <span class="n">RGB</span><span class="p">(</span><span class="mh">0xAA</span><span class="p">,</span> <span class="mh">0x22</span><span class="p">,</span> <span class="mh">0xAA</span><span class="p">),</span> <span class="n">RGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="p">}</span> <span class="c1">// six characters using font#1
+</span><span class="p">}</span>
+
+<span class="n">BuildMergedItemRunList</span><span class="p">(</span><span class="n">uspData</span><span class="p">,</span> <span class="s">L"Hello World"</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="n">attrList</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Uniscribe を使用する大きな利点は、contextual-shaping と complex-script のサポートであることを理解してください。SCRIPT_ITEM構造を分割してUnicode文字列をセクションに分けることは、私たちが求めるスクリプトシェーピングの動作を壊します。分割されたSCRIPT_ITEMの数を最小限に抑えるようにしなければなりませんが、この段階で色の違いに基づいて分割することは間違っています。Uniscribeでテキストを表示する前に、NeatpadはすでにATTRスタイルリストを構築していますが、これらのリストのカラー情報を使用するのは、シェーピングが行われた後でなければなりません。
+
+</p>
+
+<p>最後に、もしあなたが単一のフォントしか扱わないテキストエディタを作っているのであれば、この段階を完全にスキップして、多くの作業を省くことができます (シンタックスカラーリングが不要な場合は、ScriptString API を使用することもできます!)。
+
+</p>
+
+<h2 id="3-scriptlayout">3. ScriptLayout</h2>
+
+<p>Uniscribeの次のステージは、マージされたアイテムランを取得し、表示のための正しい視覚的順序を確立することです。ここでは、BuildMergedItemRunListによって生成されたITEM_RUN構造体の配列を使用する。これは重要なステップであり、双方向のテキストを正しく表示するための鍵となります。文字列に右から左へのスクリプトが含まれていない限り、並び替えは必要ないことに注意してください。しかし、どのようなスクリプトや言語が処理されるかは実行時にならないとわからないので、この作業を行う必要があります。
+
+</p>
+
+<p>Uniscribe ScriptLayout 関数が呼び出されて並び替えを行い、Unicode Bidirectional Algorithm を使用してこのタスクを達成します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRESULT</span> <span class="n">WINAPI</span> <span class="n">ScriptLayout</span><span class="p">(</span>
+   <span class="kt">int</span> <span class="n">cRuns</span><span class="p">,</span> 
+   <span class="n">BYTE</span> <span class="o">*</span> <span class="n">pbLevel</span><span class="p">,</span> <span class="c1">// in
+</span>   <span class="kt">int</span> <span class="o">*</span> <span class="n">piVisualToLogical</span><span class="p">,</span> <span class="c1">// out
+</span>   <span class="kt">int</span> <span class="o">*</span> <span class="n">piLogicalToVisual</span> <span class="c1">// out
+</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>ScriptLayoutは、文字列のbidiラン埋め込みレベルを表すBYTEの単純な配列を入力とする（アイテムランごとに1BYTE）。このbidi run-embeddingの値は、ITEM_RUNごとにSCRIPT_STATE::uBidiLevel変数に格納される。ScriptLayoutを呼び出す前に、このBYTE[]配列を構築するかどうかは我々次第である。
+
+</p>
+
+<p><img src="assets/img/editor1005.gif" alt="" class="align-center"></p>
+
+<p>uBidiLevelは、SCRIPT_STATE構造体のメンバーとして、各SCRIPT_ANALYSISの奥深くに埋められています。BYTE[]配列が構築されると、ScriptLayout APIを呼び出すことができます。整数のさらなる配列を返すためだけに、かなりの手間がかかっているように思えますが、これが現実なのです。おそらくUniscribeの開発者は、ユーザーが独自のITEM_RUN（または類似の）構造を作成してマージすることを想定して、このような方法をとったのでしょう。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">VOID</span> <span class="nf">BuildVisualMapping</span><span class="p">(</span> <span class="n">ITEM_RUN</span> <span class="o">*</span> <span class="n">itemRunList</span><span class="p">,</span> 
+                         <span class="kt">int</span> <span class="n">itemRunCount</span><span class="p">,</span> 
+                         <span class="kt">int</span> <span class="n">visualToLogicalList</span><span class="p">[]</span> <span class="c1">// out
+</span>  <span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="n">BYTE</span> <span class="o">*</span> <span class="n">bidiLevel</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">itemRunCount</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">BYTE</span><span class="p">));</span>
+
+    <span class="c1">// Manually extract bidi-embedding-levels ready for ScriptLayout
+</span>    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">itemRunCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">bidiLevel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">itemRunList</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">analysis</span><span class="p">.</span><span class="n">s</span><span class="p">.</span><span class="n">uBidiLevel</span><span class="p">;</span>
+
+    <span class="c1">// Build a visual-to-logical mapping order
+</span>    <span class="n">ScriptLayout</span><span class="p">(</span><span class="n">itemRunCount</span><span class="p">,</span> <span class="n">bidiLevel</span><span class="p">,</span> <span class="n">visualToLogicalList</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+
+    <span class="c1">// free the temporary BYTE[] buffer
+</span>    <span class="n">free</span><span class="p">(</span><span class="n">bidiLevel</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上記の関数は、ITEM_RUN構造体の配列を与えて、ビジュアルマッピングリストを取得する方法を示しています。このリストは、文字列を表示するときや、マウスやカレットのヒットテストなど、視覚的な順序の処理を必要とする作業を行うときに必要です。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">xpos</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ypos</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="k">for</span><span class="p">(</span><span class="n">visualIdx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">visualIdx</span> <span class="o">&lt;</span> <span class="n">itemRunCount</span><span class="p">;</span> <span class="n">visualIdx</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">logicalIdx</span> <span class="o">=</span> <span class="n">visualToLogicalList</span><span class="p">[</span><span class="n">visualIdx</span><span class="p">];</span>
+    <span class="n">ITEM_RUN</span> <span class="o">*</span><span class="n">itemRun</span> <span class="o">=</span> <span class="n">itemRunList</span><span class="p">[</span><span class="n">logicalIdx</span><span class="p">];</span>
+
+    <span class="n">ProcessRun</span><span class="p">(</span><span class="n">itemRun</span><span class="p">,</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">);</span>
+
+    <span class="n">xpos</span> <span class="o">+=</span> <span class="n">itemRun</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>このような処理ループが必要なのは、右から左に書かれたスクリプト（アラビア語やヘブライ語など）を扱っていても、テキスト表示の際には、「後ろ向き」のランを含めて、すべてを左から右に描いているからです。visual-to-logicalリストは、視覚的なインデックスから論理的なインデックスにマッピングする方法を提供し、常に適切な順序でランを処理することを保証します。
+
+</p>
+
+<h2 id="coming-up-in-part-13">Coming up in Part 13</h2>
+
+<p>このチュートリアルをお読みになればお分かりになると思いますが、Uniscribe は非常に複雑なビジネスです。残念ながら、これは必要悪です。今日書かれているすべてのソフトウェアは、ユニコードに完全に準拠している必要があるからです。Uniscribe を無視できるとは決して思わないでください。私たちは Unicode をサポートする必要があり、それがもたらす複雑さを受け入れなければなりません。ASCII/英語のテキスト表示の時代は終わりました。
+
+</p>
+
+<p>これまでに、Unicodeテキストの文字列を分割して、一連のアイテムランに並べ替えるプロセスを説明してきました。しかし、UspAnalyze関数の実装はまだ半分しかできていません。次のチュートリアルでは、作成したアイテムランをもとに、ScriptShape と ScriptPlace API を使ってグリフと幅の情報を生成する方法を説明します。
+
+</p>
+
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2006-03-01T00:00:00+00:00">March 01, 2006</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="introduction-uniscribe.html" class="pagination--pager" title="Introduction to Uniscribe
+">Previous</a>
+    
+    
+      <a href="more-uniscribe-mysteries.html" class="pagination--pager" title="More Uniscribe Mysteries
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer" style="">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

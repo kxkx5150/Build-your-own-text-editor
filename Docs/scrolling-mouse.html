@@ -1,0 +1,746 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Scrolling with the Mouse - Catch22</title>
+<meta name="description" content="Originally I had planned to keep all of the mouse-related concepts together in one tutorial. The problem is, does mouse-scrolling belong in the mouse tutorial (part#5) or the scrolling tutorial (part#3)_ In the end I’ve decided to make it a separate topic by itself. Actually it has worked quite well because it gives a good sense of progression between basic mouse selection (with no scrolling) and a fully working selectable, scrollable control.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Scrolling with the Mouse">
+<meta property="og:url" content="scrolling-mouse">
+
+
+  <meta property="og:description" content="Originally I had planned to keep all of the mouse-related concepts together in one tutorial. The problem is, does mouse-scrolling belong in the mouse tutorial (part#5) or the scrolling tutorial (part#3)_ In the end I’ve decided to make it a separate topic by itself. Actually it has worked quite well because it gives a good sense of progression between basic mouse selection (with no scrolling) and a fully working selectable, scrollable control.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2005-05-30T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="scrolling-mouse.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--tutorial wide">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Scrolling with the Mouse</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad6.zip">neatpad6.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="active">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Scrolling with the Mouse">
+    <meta itemprop="description" content="Originally I had planned to keep all of the mouse-related concepts together in one tutorial. The problem is, does mouse-scrolling belong in the mouse tutorial (part#5) or the scrolling tutorial (part#3)_ In the end I’ve decided to make it a separate topic by itself. Actually it has worked quite well because it gives a good sense of progression between basic mouse selection (with no scrolling) and a fully working selectable, scrollable control.">
+    <meta itemprop="datePublished" content="May 30, 2005">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Scrolling with the Mouse
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Scrolling with the Mouse</h1-->
+<!--h3>Mouse selection and scrolling</h3-->
+
+<p>元々、私はマウスに関連するすべての概念を1つのチュートリアルにまとめようと考えていました。問題は、マウススクロールが、マウスのチュートリアル（part#5）に属するのか、スクロールのチュートリアル（part#3）に属するのかということです。最終的には、マウススクロールを別のトピックにすることにしました。実際には、基本的なマウスの選択（スクロールなし）と、完全に動作する選択可能でスクロール可能なコントロールとの間の進行状況がよくわかるので、非常にうまくいっています。</p>
+
+<h2 id="scrolling-with-the-mouse">Scrolling with the mouse</h2>
+
+<p>マウススクロール」の基本的な考え方は、選択中にマウスがウィンドウの外にドラッグされたときに、ウィンドウをスクロールさせるというものです。スクロールバー付きのウィンドウを持つほとんどのアプリケーションは、何らかの形でマウススクロールをサポートしています。今お使いのブラウザで試してみてください。テキストを選択して、左ボタンを押したまま、ブラウザのウィンドウの外にマウスをドラッグします。自動的にコンテンツがスクロールして表示されます。</p>
+
+<p>私たちがしなければならない最初のステップは、マウスがウィンドウから離れたことを検知して、何らかの適切なスクロールアクションを開始することです。幸いなことに、すでにTextView::Scroll（part#3で書いた）があるので、このチュートリアルで使うことができます。</p>
+
+<p>さて、メモ帳を簡単に見てみると、マウススクロールをどのように処理しているかがわかります。メモ帳（というか、組み込まれているEDITコントロール）は、マウスがウィンドウの枠から出たことを検知して動作しますが、これはマウスが動いている間だけです。EDITコントロールがマウスの動きを受け取らなくなると、スクロールは止まります。そこで、この非常に基本的な機能を実現するために、まずWM_MOUSEMOVEハンドラに、マウスがTextViewの外に出たことを検出するコードを追加します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">RECT</span> <span class="n">rect</span><span class="p">;</span>
+<span class="n">POINT</span> <span class="n">pt</span> <span class="o">=</span> <span class="p">{</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span> <span class="p">};</span>
+
+<span class="c1">// get the non-scrolling area (an even no. of lines)
+</span><span class="n">GetClientRect</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rect</span><span class="p">);</span>
+
+<span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="o">-=</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="o">%</span> <span class="n">m_nLineHeight</span><span class="p">;</span>
+
+<span class="c1">// detect where mouse is
+</span><span class="k">if</span><span class="p">(</span><span class="n">PtInRect</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rect</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span> <span class="o">==</span> <span class="n">FALSE</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// mouse is outside window, scroll in that direction
+</span></code></pre></div></div>
+
+<p>この基本的な方法では、「大人の」エディターには不十分なので、もう一歩踏み込んだ方法をとる必要があります。タイマーを使って定期的にスクロールイベントを発生させます。しかし、それだけではなく、可変速度のスクロールをどうするかという問題にも注目します。例えば、多くのコントロールは、マウスがウィンドウのすぐ外にあるときはウィンドウのコンテンツをゆっくりとスクロールし、マウスがだんだん遠くに行くと徐々にスピードを上げていきます。以下の図は、このアイデアを説明するのに役立つでしょう。</p>
+
+<p><img src="assets/img/editor26.gif" alt="<>"></p>
+
+<p>内側の赤い四角は、ウィンドウのクライアント領域を表しています。マウスがこの領域内にあるときは、スクロールの必要はありません。マウスが遠くに移動すると（赤い矢印で表示）、ウィンドウは適切な速度でその方向にスクロールします。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// If mouse is within client area, we don't need to scroll
+</span><span class="k">if</span><span class="p">(</span><span class="n">PtInRect</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rect</span><span class="p">,</span> <span class="n">pt</span><span class="p">))</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">m_nScrollTimer</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">KillTimer</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="n">m_nScrollTimer</span><span class="p">);</span>
+        <span class="n">m_nScrollTimer</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// If mouse is outside window, start a timer in
+// order to generate regular scrolling intervals
+</span><span class="k">else</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">m_nScrollTimer</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">m_nScrollCounter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">m_nScrollTimer</span> <span class="o">=</span> <span class="n">SetTimer</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="variable-speed-scrolling">Variable speed scrolling</h2>
+
+<p>可変速度スクロールを実現するために、いくつかの方法がありますが、すべての方法はWM_TIMERとSetTimer APIに基づいています。第1の方法は、マウスがウィンドウに近づいたり遠ざかったりするたびに、 タイマーの間隔を再プログラムして、ウィンドウが受け取るWM_TIMERメッセージの 速度を速くしたり遅くしたりするものです。WM_TIMERを受信すると、マウスがどの方向にいても、+1/1のスクロールをします。これは、SetTimerが呼ばれるたびにタイマーがリセットされることになるので、ちょっと面倒です。SetTimerに関するMSDNの抜粋から以下をご覧ください。</p>
+
+<blockquote>
+  <p><em>"hWndパラメータがNULLではなく、hWndで指定されたウィンドウが値nIDEventを持つタイマーをすでに持っている場合、既存のタイマーは新しいタイマーで置き換えられます。SetTimerがタイマーを置き換えると、タイマーはリセットされます。したがって、メッセージは現在のタイムアウト値が経過した後に送信されますが、以前に設定されたタイムアウト値は無視されます。"</em></p>
+</blockquote>
+
+<p>この動作が問題（動きの乱れなど）を引き起こすかどうかはわかりません。しかし、私がこのテクニックを避けたい主な理由は、2次元スクロールをうまくサポートしていないからです。次のようなシナリオを想像してみてください：マウスはTextViewの上部からかなり離れたところに保持されていますが（垂直スクロール方向）、左側にはすぐに出てきます（水平方向）。スクロール速度はどの方向を基準にすればよいのでしょうか？答えは、この手法では、縦方向の高速スクロールと横方向の低速スクロールを同時に行うことはできません。</p>
+
+<p>次の方法は、ゆっくりとした速度で設定された一定のタイマー間隔を使用することです。マウスがウィンドウから離れていくと（どちらかの次元で）、スクロールが速くなる代わりに、スクロールする距離が長くなります。これは完全に合理的な方法であり、多くのコントロールがこの方法でスクロールを行っているのを見ることができます。</p>
+
+<p>最後の方法は、先ほどの方法と似ていますが、代わりにタイマーを高いリピート率（例：10ms）になるようにプログラムします。この速い間隔により、マウスがウィンドウから最も離れているときに、ウィンドウを素早くスクロールすることができます。そして、マウスを近づけると、選択したWM_TIMERメッセージの処理を単純に「スキップ」することができます。たとえば、全速力でスクロールするときはすべてのWM_TIMERを処理し、半速力では2回に1回、超低速では5回に1回の割合で処理します。これにより、スムーズなスクロールが可能になりますが（常に1行ずつスクロールします）、より多くの再描画が必要となるため、より多くのCPUを必要とします。この方法は、一度に1行しかスクロールしないので、コーディングやデバッグの観点からは少しシンプルになるという利点があります。</p>
+
+<p>Neatpadでは、単純に楽なので#3の方法を選択しました。</p>
+
+<h2 id="avoiding-flicker">Avoiding flicker</h2>
+
+<p>Perhaps the reason that many text-editors exhibit flickering artifacts when they are scrolled up and down is because mouse-scrolling (in general) is so hard to get right. I do hate any sign of flickering though so it is very important from my point to view to ensure that Neatpad suffers no such problems.</p>
+
+<p>おそらく、多くのテキストエディタが上下にスクロールしたときにフリッカー現象を起こすのは、マウススクロール（一般的に）が非常に難しいからだと思います。しかし、私はちらつきを嫌うので、Neatpadがそのような問題を起こさないようにすることは、私の観点からは非常に重要です。</p>
+
+<p><img src="assets/img/edanim01.gif" alt="<>"></p>
+
+<p>最初のちらつきの問題は、マウスがウィンドウの外に移動すると、選択範囲が再描画され、一時的にウィンドウの外に出てしまうために起こります。その後、ウィンドウがスクロールされ、選択範囲の端が再び表示されます。これにより、カーソルの左側の領域が、選択状態と非選択状態の間で切り替わるように見えるのです。私にとっては非常に不安な問題ですが、多くのWindows標準コントロールを含め、多くのコントロールでこの問題が発生します。この問題を防ぐには、選択範囲の終点を決める前に、マウスの座標をウィンドウの端に「クリップ」しておく必要があります。</p>
+
+<p><img src="assets/img/edanim02.gif" alt="<>"></p>
+
+<p>2つ目のケースは1つ目のケースとほぼ同じですが、今回はスクロールが先に発生し、ディスプレイ全体が下にスクロールしてしまいます。選択範囲はスクロールの後に上方向に拡張されますが、このときもかなり厄介なちらつきが発生します。今回は、1行目の非選択領域が（誤って）下方向にスクロールされ、一時的に非選択テキストとして表示されますが、その後正しくハイライトとして再描画されます。この問題を防ぐには、ウィンドウをスクロールするときにクリッピングを使用することもできます。この場合、スクロールする領域を、上下の線を含まない特定の領域に制限します。</p>
+
+<p>マウスの選択とスクロールを正しく同期させるのは簡単ではありません。基本的な問題は、この2つのアクションを別々のイベントとして扱うことができないということです。さらに、スクロールと選択の機能はすでに記述されているので、これらをできるだけ「別」にして、コードをすっきりさせることができればいいのですが、問題はそれだけではありません。それでは、これまでの流れを簡単に振り返ってみましょう。</p>
+
+<ul>
+  <li><strong><code class="highlighter-rouge">TextView::Scroll(int dx, int dy)</code></strong>このルーチンは、ディスプレイ全体を指定された方向にスクロールし、同時にスクロールバーの位置も更新します。</li>
+  <li><strong><code class="highlighter-rouge">TextView::MouseCoordToFilePos(...)</code></strong> <br>スクロールバーの位置を考慮して、マウス下のカーソル位置を取得します。</li>
+  <li><strong><code class="highlighter-rouge">TextView::InvalidateRange(...)</code></strong> <br>指定した範囲のテキストを、スクロールバーの位置も利用して再描画します。</li>
+</ul>
+
+<p>マウスの動きを同期させるための基本的な戦略は、以下の通りです。</p>
+
+<ol>
+  <li>スクロールする方向に応じて、正しいクリッピング領域を決定する。例えば、上にスクロールする場合は、一番上の行をスクロールから除外する。左にスクロールしている場合は、左端の列を除外します。これはすべて既存のTextView::Scrollルーチンの中で行われます。</li>
+  <li>ScrollWindowExを使ってウィンドウをスクロールしますが、その際、手順1で作成したクリッピング・レクタングルを使用します。</li>
+  <li>新しいカーソル位置と選択終了点を計算します。スクロールはスクロールバーの位置を変更する効果があります（TextView::Scrollを使用したため）ので、このスクロールが行われた後に新しいカーソル位置を計算しなければなりません。</li>
+  <li>スクロールされなかった領域（クリッピング矩形の外側の領域）を再描画する。</li>
+</ol>
+
+<p>つまり、実際に行っているのは、ウィンドウのサブ領域をスクロールし、カーソルや選択の終点が適切に配置された後に、スクロールしなかった領域を手動で再描画することです。これらをどのように組み合わせていくかで、成功するかどうかが決まります。</p>
+
+<h2 id="scrollwindowex">ScrollWindowEx</h2>
+
+<p>それでは、ScrollWindowExを見て、どのようなスクロール機能があるのかを知っておきましょう。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">ScrollWindowEx</span><span class="p">(</span>
+  <span class="n">HWND</span> <span class="n">hWnd</span><span class="p">,</span> <span class="c1">// handle to window
+</span>  <span class="kt">int</span> <span class="n">dx</span><span class="p">,</span> <span class="c1">// horizontal scrolling
+</span>  <span class="kt">int</span> <span class="n">dy</span><span class="p">,</span> <span class="c1">// vertical scrolling
+</span>  <span class="n">RECT</span> <span class="o">*</span> <span class="n">prcScroll</span><span class="p">,</span> <span class="c1">// client area [optional]
+</span>  <span class="n">RECT</span> <span class="o">*</span> <span class="n">prcClip</span><span class="p">,</span> <span class="c1">// clipping rectangle [optional]
+</span>  <span class="n">HRGN</span> <span class="n">hrgnUpdate</span><span class="p">,</span> <span class="c1">// handle to update region [optional]  
+</span>  <span class="n">RECT</span> <span class="o">*</span> <span class="n">prcUpdate</span><span class="p">,</span> <span class="c1">// invalidated region [optional]
+</span>  <span class="n">UINT</span> <span class="n">flags</span> <span class="c1">// scrolling options
+</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>ここでは、使用する2つのオプションパラメータを（太字で）強調していますが、まず、すべてのパラメータについて簡単に説明することが、この段階では適切でしょう。</p>
+
+<ul>
+  <li>hWndはスクロールさせたいウィンドウです。ここでは、m_hWnd（TextView）とします。</li>
+  <li>dxとdyは、ウィンドウをスクロールする方向（ピクセル単位）を指定します。これらの値は正負どちらでも構わないので、任意の方向へのスクロールに使用できます。</li>
+  <li>prcScrollは、スクロールする領域を定義するRECT構造体へのポインタです。このパラメータが NULL の場合、クライアントの全領域がスクロールされます。それ以外の場合は、....</li>
+  <li>prcClipは、「クリッピング用の矩形」を定義するRECT構造体へのポインタです。この矩形は、スクロールされる可能性のあるウィンドウ領域のクライアント座標です。この矩形の外側の領域がスクロールの影響を受けることはありません。</li>
+  <li>hrgnUpdateは、HRGN(handle-to-region)です。これはオプションですが、指定された場合は有効な領域として初期化されていなければなりません（何にするかは問題ではありません）。ScrollWindowExが戻るとき、hrgnUpdateは、スクロール後に無効になったウィンドウの領域を表します。これは、一度に2次元にスクロールしている場合、不規則な形になる可能性があります。</li>
+  <li>prcUpdateはもう一つのRECT構造体で、更新領域（上図）の境界矩形を受け取ります。hrgnUpdateはCOMPLEXREGIONである可能性があるため、単純なRECT構造ではこれらの領域を正確に表現できないので、これはあまり役に立ちません。</li>
+  <li>flagsは、単純な32ビットの値です。通常、この値はSW_INVALIDATEに設定され、ScrollWindowExにスクロール後に無効になった領域を自動的に無効にし、ウィンドウの更新領域に追加するように指示します。次にウィンドウがWM_PAINTを処理したとき、この無効な領域は再描画されます。これは、（このパラメータが指定されていれば）hrgnUpdateに格納されていた同一の領域です。しかし、ここで0を渡すと、hrgnUpdateは無効にならないので、後で必要に応じてこの領域を再描画する機会が得られます。</li>
+</ul>
+
+<p>スクロールの方法（保護している領域から常に遠ざかるようにスクロールします）により、prcScroll と prcClip のどちらの矩形を使っても問題ありません - どちらの矩形も同じ値を保持し、効果は同じになります。ソースコードでは、prcClipを使うことにしました。それは、何のために使われているのかが少しわかりやすいからです。</p>
+
+<h2 id="scrolling-example">Scrolling Example</h2>
+
+<p>この時点では、スクロールの例を見て、クリッピング・レクタングルや更新/無効領域で何が起こっているのかを正確に理解する必要があります。</p>
+
+<p><img src="assets/img/editor27.gif" alt="<>"></p>
+
+<p>上の写真は、スクロールする前のNeatpadのウィンドウです。ウインドウは、上と左に同時にスクロールされる予定です（つまり、テキスト文字単位で -1, -1）。ただし、これはコンテンツを下に 1 行、右に 1 文字分スクロールすることを意味します (上端/左端に新しいコンテンツを露出させるため)。つまり、ScrollWindowEx の dx および dy パラメータは正の値になります。</p>
+
+<p><img src="assets/img/editor28.gif" alt="<>"></p>
+
+<p>ScrollWindowEx関数が呼び出される前に、使用するクリッピング レクタングルを定義します。クロスハッチのシェーディング領域は、クリッピング レクタングルの外側にあるコンテンツを表します。この領域はスクロールによって無効になったり変更されたりすることはありませんが、基本的には「ダーティ」であり、手動で再描画する必要があります。ScrollWindowExに渡すクリッピング レクタングルは、シェーディングされていないコンテンツ/テキストのクライアント領域をカバーします。この例では、クライアント領域の左上隅を取り、それをオフセットしてクリッピング レクタングルを作成しています。</p>
+
+<p><img src="assets/img/editor29.gif" alt="<>"></p>
+
+<p>ScrollWindowExの後のウィンドウです。コンテンツが下に1行、右に1文字スクロールしているのがわかると思います。クロスハッチや網掛けの部分は、クリッピング レクタングルの外側にあるため、そのままの状態になっています。反転した領域は、スクロールした後に無効になった領域を表しています。実際には、これらのピクセルはScrollWindowExによって変更されることはなく、SW_INVALIDATEフラグが指定された場合にのみ更新されます。</p>
+
+<blockquote>
+  <p><em>注: hrgnUpdateパラメータを使用していた場合、このHRGNオブジェクトは、反転した色で表される領域にぴったり合うように変更されます。これは非常に奇妙な形（逆さまの「L」）で、この例ではhrgnUpdateを使用していないにもかかわらず、ScrollWindowExはCOMPLEXREGIONを返します。</em></p>
+</blockquote>
+
+<p>クロスハッチと反転した領域の両方を更新する必要があります。簡単にするために、ScrollWindowExを呼び出す際にSW_INVALIDATEを使用し、「反転」領域を無効にして（結果的に更新して）います。しかし、これではクロスハッチの領域が残ってしまいます。この領域を記述したHRGNを手動で作成し、後からInvalidateRgnを呼び出して再描画する必要があります。この方法については以下を参照してください。</p>
+
+<h2 id="synchronized-scrolling">Synchronized Scrolling</h2>
+
+<p>まず最初にしなければならないことは、この「切り取られた」スクロールのサポートを開発することです。私は既存のTextView::Scrollルーチンを書き直し、TextView::ScrollRgnと名付けました。これはスクロール後に無効な領域へのハンドルを返すかどうかを指定する追加のパラメータを持っています（そして間接的にクリッピング動作をコントロールします）。</p>
+
+<p>fReturnUpdateRgnがtrueの場合、適切なクリッピングでスクロールが実行され、HRGNが呼び出し元に返されます。fReturnUpdateRgnがfalseの場合、ウィンドウ全体が通常通りスクロールされます（つまり、クリッピング領域が定義されていません）。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HRGN</span> <span class="n">TextView</span><span class="o">::</span><span class="n">ScrollRgn</span><span class="p">(</span><span class="kt">int</span> <span class="n">dx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">dy</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">fReturnUpdateRgn</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">RECT</span> <span class="n">clip</span><span class="p">;</span>
+    <span class="n">GetClientRect</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">clip</span><span class="p">);</span>
+
+    <span class="c1">// adjust the clipping rectangle fReturnUpdateRgn is false
+</span>
+    <span class="c1">// do the scrolling
+</span>    <span class="n">ScrollWindowEx</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> 
+                   <span class="o">-</span><span class="n">dx</span> <span class="o">*</span> <span class="n">m_nFontWidth</span><span class="p">,</span> 
+                   <span class="o">-</span><span class="n">dy</span> <span class="o">*</span> <span class="n">m_nFontHeight</span><span class="p">,</span> 
+                   <span class="nb">NULL</span><span class="p">,</span> <span class="c1">// scroll the entire window
+</span>                   <span class="o">&amp;</span><span class="n">clip</span><span class="p">,</span> <span class="c1">// clip the non-scrolling part
+</span>                   <span class="nb">NULL</span><span class="p">,</span>
+                   <span class="nb">NULL</span><span class="p">,</span>
+                   <span class="n">SW_INVALIDATE</span>
+                   <span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">fReturnUpdateRgn</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">RECT</span> <span class="n">client</span><span class="p">;</span>
+        <span class="n">GetClientRect</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">client</span><span class="p">);</span>
+
+        <span class="n">HRGN</span> <span class="n">hrgnClient</span> <span class="o">=</span> <span class="n">CreateRectRgnIndirect</span><span class="p">(</span><span class="o">&amp;</span><span class="n">client</span><span class="p">);</span>
+        <span class="n">HRGN</span> <span class="n">hrgnUpdate</span> <span class="o">=</span> <span class="n">CreateRectRgnIndirect</span><span class="p">(</span><span class="o">&amp;</span><span class="n">clip</span><span class="p">);</span>
+
+        <span class="c1">// create a region that represents the area outside the
+</span>        <span class="c1">// clipping rectangle (i.e. the part that is never scrolled)
+</span>        <span class="n">CombineRgn</span><span class="p">(</span><span class="n">hrgnUpdate</span><span class="p">,</span> <span class="n">hrgnClient</span><span class="p">,</span> <span class="n">hrgnUpdate</span><span class="p">,</span> <span class="n">RGN_XOR</span><span class="p">);</span>
+
+        <span class="n">DeleteObject</span><span class="p">(</span><span class="n">hrgnClient</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">hrgnUpdate</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>既存のTextView::Scrollの機能を維持することが重要なので、これをTextView::ScrollRgnのラッパー関数とし、fReturnUpdateRgnにfalseを指定します（つまり、ScrollRgnは通常通りウィンドウ全体をスクロールします）。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">VOID</span> <span class="n">TextView</span><span class="o">::</span><span class="n">Scroll</span><span class="p">(</span><span class="kt">int</span> <span class="n">dx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">dy</span><span class="p">)</span>
+<span class="p">{</span>
+     <span class="n">ScrollRgn</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ここで一つ触れておきたいのは、ScrollとScrollRgnが使用する単位です。これらの単位は、ピクセル座標ではなく、常に「テキスト」単位(つまり、行/文字ベース)です。ScrollRgn関数は、スクロールするときにこれらをピクセル座標に変換します。また、Scroll(-1, -1)と記述すると、ドキュメントが上/左にスクロールされますが、これを実現するために画面のコンテンツが下/右にスクロールされることをご理解ください。</p>
+
+<p>以下の関数は、TextView::OnTimerルーチンの「ほぼ」完全な実装です。省略されているのは、dxとdyの値を計算するコードだけです。この部分がない方がわかりやすいので、ソースコードをダウンロードして、どのように行われているかを見てください。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnTimer</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// [omitted] work out scrolling increments
+</span>    <span class="kt">int</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">;</span>
+
+    <span class="c1">// do the scroll but return the region to be manually painted
+</span>    <span class="n">HRGN</span> <span class="n">hrgnUpdate</span> <span class="o">=</span> <span class="n">ScrollRgn</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">hrgnUpdate</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// do a "fake" WM_MOUSEMOVE to get the new cursor position
+</span>        <span class="n">OnMouseMove</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">mouse_x</span><span class="p">,</span> <span class="n">mouse_y</span><span class="p">);</span>
+
+        <span class="c1">// manually repaint the update region
+</span>        <span class="n">InvalidateRgn</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="n">hrgnUpdate</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">);</span>
+
+        <span class="n">DeleteObject</span><span class="p">(</span><span class="n">hrgnUpdate</span><span class="p">);</span>
+        <span class="n">UpdateWindow</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">);</span>
+    <span class="p">}</span> 
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>この関数は、スムーズで同期したスクロールのための基準をすべて満たしています。まず、ウィンドウのコンテンツがスクロールされますが、手動で再描画が必要な無効な領域を指定する HRGN が返されます。テキストキャレットと選択範囲のオフセットは、スクロールした後（m_nxScrollPos変数が有効になったとき）に計算されます。これは、手動でOnMouseMoveを呼び出し、すでにあったコードを再利用することで実現しています。タイマーが鳴っている間にマウスが動かされた場合に備えて、OnMouseMoveが選択変更の影響を受けた領域を無効にするという事実も利用しています。</p>
+
+<p>最後に行われるのは、ScrollRgnによって返された領域を手動で無効にすることです。無効になったウィンドウ領域は、UpdateWindowが呼ばれたときに、更新されたカーソルと選択範囲のオフセットを使って、最終的に再描画されます。</p>
+
+<h2 id="neatpad-additions">Neatpad additions</h2>
+
+<p>このチュートリアルシリーズのほとんどは、NeatpadのTextViewコンポーネントに焦点を当てています。私は、TextViewのサポートに直接関係しない限り、Neatpadの開発を詳細に説明するつもりはありません。その代わりに、何が追加されたかを簡単に説明し、読者が自由にソースコードを勉強できるようにします。</p>
+
+<p><img src="assets/img/editor22.gif" alt="<>"></p>
+
+<p>今回、オプションダイアログが実装され、Neatpadが使用するフォントと色を選択できるようになりました。このダイアログはかなり完成度が高く、Neatpadが終了するたびに設定がレジストリに保存されます。2番目のオプションペインはまだ何もしていませんが、将来のある時点で実装されるであろう「Todo」として残してあります。コードは、Neatpadディレクトリ内のOptions.cとOptionsFont.cファイルにあります。</p>
+
+<p>TextViewに新しいメッセージ（TXM_SETCOLOR）が追加され、色の設定をプログラムで制御できるようになりました。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define TXM_SETCOLOR (TXM_BASE + 5)
+</span><span class="c1">// wParam = TXC_xxx index value
+// lParam = RGB color#define TextView_SetColor(hwndTV, nIndex, rgbColor)
+</span></code></pre></div></div>
+
+<p>メッセージを送信するには、TextView_SetColorマクロを使います。nIndexは、TXC_xxxの数字の範囲から取られたゼロベースの値で、rgbColorは、COLORREFのRGBの色です。例えば、選択範囲の背景色を設定するには、次のようなコードを使用します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TextView_SetColor</span><span class="p">(</span><span class="n">hwndTV</span><span class="p">,</span> <span class="n">TXC_HIGHLIGHT</span><span class="p">,</span> <span class="n">RGB</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">240</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>このメッセージには、気に入ってもらえると嬉しい機能が1つあります。色を定義済みのシステムカラー（GetSysColorで使われるCOLOR_WINDOWTEXTなど）の一つに設定したい場合は、SYSCOLマクロ（TextView.hで定義）を使います。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TextView_SetColor</span><span class="p">(</span><span class="n">hwndTV</span><span class="p">,</span> <span class="n">TXC_HIGHLIGHT</span><span class="p">,</span> <span class="n">SYSCOL</span><span class="p">(</span><span class="n">COLOR_3DFACE</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>SYSCOLマクロは、TextViewが単なるRGB値ではなく、システムカラーとして認識する「特別な」RGB値を作成します。この方法で色を設定するのは一度だけで、その後のシステムカラースキームの変更は自動的にTextViewに反映されます。</p>
+
+<h2 id="coming-up-in-part-7">Coming up in Part 7</h2>
+
+<p>ここまでで、マウスの選択範囲を使ったスクロール方法の概要と説明ができたと思います。特に技術的なテーマではありませんが、マウスとタイマーのインタラクションの微妙な違いを解明し、これらのインタラクションを視覚化しながらこのようなデザインをする（そしてそれを記事にする！）ことはかなり難しいことです。</p>
+
+<p>では、次のチュートリアルに入ります。第7回は、もう少しシンプルに、ボーダーとマージンのサポートを実装してみます。マージンは、行番号やカスタムアイコンを「選択」領域に表示する機能を提供します（Visual Studioがブレイクポイントを置くときに使うような機能です）。また、テキスト文書の印刷可能な領域が、印刷によって切り取られる可能性のあるテキストと区別できるように、右側に「プリンタマージン」を提供したいと考えています。</p>
+
+<p>これまでのチュートリアルでは、Neatpadのグラフィックやユーザーインターフェースに焦点を当ててきたことにお気づきでしょうか。これは、複雑なメモリやファイル管理のテクニックに飛び込む前に、しっかりとした基礎を身につけることが重要だと考えているため、意図的に行っているものです。経験上、GUIが中途半端だと気が散ってしまうので、GUIの詳細をすべて完成させたいのです。</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad6.zip">neatpad6.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2005-05-30T00:00:00+00:00">May 30, 2005</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="mouse-selection-highlighting.html" class="pagination--pager" title="Mouse Selection &amp; Highlighting
+">Previous</a>
+    
+    
+      <a href="margins-and-long-lines.html" class="pagination--pager" title="Margins and Long Lines
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

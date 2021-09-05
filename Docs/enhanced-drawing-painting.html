@@ -1,0 +1,732 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Enhanced Drawing &amp; Painting - Catch22</title>
+<meta name="description" content="Welcome to the fourth installment of the “Design and Implementation of a Win32 Text Editor” article series! I realise that you were probably expecting a different tutorial this time around. However, it was only after starting to implement mouse selection and highlighting that I realised there wasn’t proper support in the drawing “engine”. I’ve decided to implement all of my text-output requirements in this one tutorial. So we will be covering tabbed-output, multi-coloured text (i.e. for syntax highlighting and selection highlighting) and the problem of ASCII control characters.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Enhanced Drawing &amp; Painting">
+<meta property="og:url" content="enhanced-drawing-painting">
+
+
+  <meta property="og:description" content="Welcome to the fourth installment of the “Design and Implementation of a Win32 Text Editor” article series! I realise that you were probably expecting a different tutorial this time around. However, it was only after starting to implement mouse selection and highlighting that I realised there wasn’t proper support in the drawing “engine”. I’ve decided to implement all of my text-output requirements in this one tutorial. So we will be covering tabbed-output, multi-coloured text (i.e. for syntax highlighting and selection highlighting) and the problem of ASCII control characters.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2005-04-19T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="enhanced-drawing-painting.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--tutorial wide">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Enhanced Drawing &amp; Painting</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad4.zip">neatpad4.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="active">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Enhanced Drawing &amp; Painting">
+    <meta itemprop="description" content="Welcome to the fourth installment of the “Design and Implementation of a Win32 Text Editor” article series! I realise that you were probably expecting a different tutorial this time around. However, it was only after starting to implement mouse selection and highlighting that I realised there wasn’t proper support in the drawing “engine”. I’ve decided to implement all of my text-output requirements in this one tutorial. So we will be covering tabbed-output, multi-coloured text (i.e. for syntax highlighting and selection highlighting) and the problem of ASCII control characters.">
+    <meta itemprop="datePublished" content="April 19, 2005">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Enhanced Drawing &amp; Painting
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Enhanced Drawing & Painting</h1-->
+<!--h3>Improving the text display of TextView</h3-->
+
+<p>Win32テキストエディタの設計と実装」シリーズの第4回目にようこそ。今回は、今までとは違ったチュートリアルを期待されていたのではないかと思います。しかし、マウスによる選択やハイライトを実装し始めてから、描画の「エンジン」に適切なサポートがないことに気がつきました。そこで、このチュートリアルでは、テキスト出力に関するすべての要求を満たすことにしました。そのため、タブ出力、マルチカラーのテキスト（シンタックスハイライトや選択ハイライトなど）、ASCII制御文字の問題などを取り上げます。</p>
+
+<p><img src="assets/img/editor14.gif" alt="<>"></p>
+
+<p>Example of coloured text with ASCII control characters.</p>
+
+<h2 id="multi-coloured-text">Multi-coloured text</h2>
+
+<p>描画コードを修正する必要がある最初の理由は、複数色のテキストをサポートすることです。これは単にシンタックスの色付けのことではありません。選択範囲の強調表示は、選択されたテキストと選択されていないテキストを区別するために、テキストを異なる色で描画しなければならない主な理由です。下の画像は、デフォルトのシステムカラーを使用して、中央部分が選択されたテキストの行を示しています。</p>
+
+<p><img src="assets/img/editor17.gif" alt="<>"></p>
+
+<p>テキストは実際には選択されておらず、単に2つの異なる配色で描かれていることに注意してください。使用しているブラウザで、このテキストの段落を選択してみてください。そして、あなたが行っている「選択」は、実際には異なる色で描かれたテキストのセグメントに過ぎないことを理解してください。したがって、TextViewに必要なことは、テキストを適切なセグメントに分割し、ExtTextOutを呼び出す前にSetTextColorとSetBkColorを呼び出して色を設定することだけです - ここには本当に何の魔法もありません。</p>
+
+<p>このようなコントロールを最初に起動したときのよくある間違いは、複雑な塗りつぶしモード、反転した長方形、透明なテキストを使って、選択されたテキストをWM_MOUSEMOVEハンドラで描画しようとすることです。これは本当に最悪の方法です。次のチュートリアルでは、マウスを使って選択範囲を更新する方法を示しますが、すべての描画はWM_PAINTハンドラで行われます。</p>
+
+<p>そのため、描画ロジックでは、あらゆる色の組み合わせに対応できなければなりません。構文やブロックの強調表示については、事前に考えておく必要があるからです。また、テキストファイルには色やスタイルの情報が保存されていないため、文字の色は別途計算し、実行時に表示されるテキストに適用する必要があります。</p>
+
+<p>1つの文字の属性は、以下のようなATTR構造で表されます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span><span class="p">{</span>
+    <span class="n">COLORREF</span> <span class="n">fg</span><span class="p">;</span> <span class="c1">// foreground colour
+</span>    <span class="n">COLORREF</span> <span class="n">bg</span><span class="p">;</span> <span class="c1">// background colour
+</span>    <span class="n">ULONG</span> <span class="n">style</span><span class="p">;</span> <span class="c1">// font and style information
+</span><span class="p">}</span> <span class="n">ATTR</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>TextDocumentからテキストの行が取得されると、このテキストは表示する前に「カラー化」されなければなりません。フォント、スタイル、カラーの属性は、ApplyTextAttributesという別のルーチンで計算されます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">TextView</span><span class="o">::</span><span class="n">ApplyTextAttributes</span><span class="p">(</span> <span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">,</span> 
+                                    <span class="n">ULONG</span> <span class="n">nOffset</span><span class="p">,</span> 
+                                    <span class="n">TCHAR</span> <span class="o">*</span><span class="n">szText</span><span class="p">,</span> 
+                                    <span class="kt">int</span> <span class="n">nTextLen</span><span class="p">,</span> 
+                                    <span class="n">ATTR</span> <span class="o">*</span><span class="n">attr</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="c1">// loop over each character in the text-buffer
+</span>   <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nTextLen</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+   <span class="p">{</span>
+        <span class="c1">// apply highlight colours 
+</span>        <span class="k">if</span><span class="p">(</span><span class="n">nOffset</span> <span class="o">+</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">m_nSelectionStart</span> <span class="o">&amp;&amp;</span> <span class="n">nOffset</span> <span class="o">+</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_nSelectionEnd</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">fg</span> <span class="o">=</span> <span class="n">GetColour</span><span class="p">(</span><span class="n">TXC_HIGHLIGHTTEXT</span><span class="p">);</span>
+            <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">bg</span> <span class="o">=</span> <span class="n">GetColour</span><span class="p">(</span><span class="n">TXC_HIGHLIGHT</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="c1">// normal text colours
+</span>        <span class="k">else</span>
+        <span class="p">{</span>
+           <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">fg</span> <span class="o">=</span> <span class="n">GetColour</span><span class="p">(</span><span class="n">TXC_FOREGROUND</span><span class="p">);</span>
+           <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">bg</span> <span class="o">=</span> <span class="n">GetColour</span><span class="p">(</span><span class="n">TXC_BACKGROUND</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">style</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>この関数は、テキストが描画されようとするときに呼び出されます。nLineNoとnOffsetという2つのパラメータが渡され、ファイル内でのテキストの位置を示します。ApplyTextAttribrutesは、この2つのパラメータを使って、テキストの「フォーマット」を決定します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TCHAR</span> <span class="n">buff</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
+<span class="n">ATTR</span> <span class="n">attr</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
+<span class="n">ULONG</span> <span class="n">fileoff</span><span class="p">;</span>
+
+<span class="c1">// get some text from the TextDocument
+</span><span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">m_pTextDoc</span><span class="o">-&gt;</span><span class="n">getline</span><span class="p">(</span><span class="n">nLineNo</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">buff</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fileoff</span><span class="p">);</span>
+
+<span class="c1">// calculate colour and font information
+</span><span class="n">ApplyTextAttributes</span><span class="p">(</span><span class="n">nLineNo</span><span class="p">,</span> <span class="n">fileoff</span><span class="p">,</span> <span class="n">buff</span><span class="p">,</span> <span class="n">len</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">attr</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>書式情報は、テキストを格納する szText バッファと同じサイズの ATTR 配列を通じて返されます。今のところ、この関数は「通常」と「ハイライト」のテキストを記述するのに十分ですが、いかなる形式のシンタックスハイライトも行いません。シンタックスハイライトには追加の要件があるので、関数のプロトタイプを少し変更する必要があると思います。</p>
+
+<h2 id="multi-font-display">Multi-font display</h2>
+
+<p>このシリーズのパート1では、TextViewを単一の固定幅のフォントに制限したいと書きました。固定幅のフォントを使う理由は、TextViewのコードをできるだけシンプルにするためで、特にマウスカーソルの配置ロジックにあります。しかし、固定幅のテキスト表示であっても、本当の意味での固定幅ではありません。というのも、TAB文字があると、テキストの行間にさまざまなサイズのギャップが生じるからです。TAB文字を処理しなければならないということは、マウスが行のどこに置かれたかを判断するために、テキストの各行を解析する追加のコードを書くことになります。私が可変幅フォントをサポートする理由は、「やるべきことが増えるなら、きちんとやって、すべての種類のフォントを扱えるようにしたほうがいい」ということです。</p>
+
+<p>複数のフォントを管理するためには、これらのフォントをどうにかして管理するための工夫が必要です。FONT構造体（以下に定義）は、フォント（通常のHFONT）へのハンドルを保持し、さらにフォントの寸法に関する重要な情報をTEXTMETRIC構造体に格納しています。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">FONT</span>
+<span class="p">{</span>
+    <span class="n">HFONT</span> <span class="n">hFont</span><span class="p">;</span>
+    <span class="n">TEXTMETRIC</span> <span class="n">tm</span><span class="p">;</span>
+
+    <span class="kt">int</span> <span class="n">nInternalLeading</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">nDescent</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>これらのフォントの配列は、TextViewクラスのメンバとして格納されています。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">FONT</span> <span class="n">m_FontAttr</span><span class="p">[</span><span class="n">MAX_FONTS</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">m_nNumFonts</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>この配列の最初の要素（要素ゼロ）は、常にデフォルトの表示フォントです。この配列にフォントを追加することができますが、何らかのシンタックスハイライト機能が開発されない限り使用されません。コントロールの中では、完全に異なるスタイルではなく、フォントのバリエーション（例えば、ノーマルフォントとボールドフォント）が使われると想像していますが、TextViewはあなたが決めたどんなフォントにも対応します。</p>
+
+<p><img src="assets/img/editor16.gif" alt="<>"></p>
+
+<p>複数のフォントを使用すると、上の図のように複雑な問題が発生します。この問題は3つのケースに分けられます。</p>
+
+<ul>
+  <li>フォントには幅と高さがあります。幅はそれほど問題ではありませんが、高さの異なるフォントは、ベースが同じ水平線上に来るように配置する必要があります。</li>
+  <li>テキストの行の高さは、もはや単一のフォントに基づくものではなく、現在使用されている最も背の高いフォントを保持するのに十分な大きさでなければなりません。</li>
+  <li>小さいフォントは、塗装しても線の垂直方向の延長線上を埋められません（上の写真でわかるように）。そのため、この余分な「デッドスペース」を自分たちで埋める必要があります。</li>
+</ul>
+
+<p>これらの問題を解決するためには、まず、フォントの構造がGDIによってどのように記述されるかを理解する必要があります。下の図は、TEXTMETRIC構造で記述されたフォントの寸法を示しています。</p>
+
+<p><img src="assets/img/editor10.gif" alt="<>"></p>
+
+<p>フォントのベースラインは、Ascent 寸法で測定されます。したがって、使用しているすべてのフォントのうち最大の上昇値を記録しておけば、個々の上昇値に基づいて、短いフォントを垂直方向にオフセットする量を計算することができます。例えば、上昇値が21の「Courier New」と上昇値が18の「Lucida」の2つのフォントを使用しているとします。Lucidaフォントを使用してテキストを描く場合、ベースラインを正しく揃えるためには、このテキストを3ピクセル分オフセットする必要があります。</p>
+
+<p>2つ目の問題は、簡単に解決できます。Neatpadの以前のバージョンでは、各行の高さを記録するためにm_nFontHeight変数を使っていました。この変数は、今では消えてしまい、より意味のある値であるm_nLineHeightに置き換えられています。TextViewのコードは、この値がOnSetFontメンバ関数でどのように計算されるかを示しています。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnSetFont</span><span class="p">(</span><span class="n">HFONT</span> <span class="n">hFont</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">m_nLineHeight</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_nNumFonts</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">m_nLineHeight</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="n">m_nLineHeight</span><span class="p">,</span> <span class="n">m_FontAttr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">tm</span><span class="p">.</span><span class="n">tmHeight</span><span class="p">);</span>
+    <span class="p">}</span>  
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>最後のペイントの問題は、便利なAPIが用意されているので簡単に解決できます。ExtTextOutでは、テキストを描画する際に、ペイントする矩形領域を指定することができます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ExtTextOut</span><span class="p">(</span><span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="n">UINT</span> <span class="n">flags</span><span class="p">,</span> <span class="n">RECT</span> <span class="o">*</span><span class="n">rect</span><span class="p">,</span> <span class="n">TCHAR</span> <span class="n">szText</span><span class="p">,</span> <span class="p">...);</span>
+</code></pre></div></div>
+
+<p>xおよびyパラメータは、テキストを描画する位置を指定します。rectパラメータは、背景の矩形を指定します。この矩形領域が線の高さ全体を満たしていれば、背景が適切に描かれていることが確認できます。</p>
+
+<p><img src="assets/img/editor30.gif" alt="<>"></p>
+
+<p>注意しなければならないのは、ExtTextOutに背景を塗りつぶすように指示する方法です。ETO_OPAQUEフラグを使用してこの効果を得ることができます。しかし、ETO_CLIPPEDも指定しなければ、ClearTypeフォントを使用した場合に、奇妙な効果が得られます。上の図はこの問題を示しています。GetTextExtentPoint32を使用して文字列の長さを計算し、背景の長方形をこのサイズに設定しても、ExtTextOutを呼び出すと、文字列が両側に1ピクセルずつ「にじみ」ます。これは、ClearTypeテキストの表示方法に特有の現象です。ETO_CLIPPEDを指定すると、この問題を防ぐことができます。</p>
+
+<h2 id="line-spacing">Line Spacing</h2>
+
+<p>ここで、ちょっと触れておきたいことがあります。多くの人は、フォント（またはテキストの行）の高さをどのように計算しなければならないのか、混乱してしまうことがあります。フォントの高さを求める方法として、私は以下の4つの方法を見ています。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TEXTMETRIC</span> <span class="n">tm</span><span class="p">;</span>
+<span class="n">GetTextMetrics</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">tm</span><span class="p">);</span>
+
+<span class="n">height1</span> <span class="o">=</span> <span class="n">tm</span><span class="p">.</span><span class="n">tmHeight</span><span class="p">;</span>
+<span class="n">height2</span> <span class="o">=</span> <span class="n">tm</span><span class="p">.</span><span class="n">tmHeight</span> <span class="o">+</span> <span class="n">tm</span><span class="p">.</span><span class="n">tmExternalLeading</span><span class="p">;</span>
+<span class="n">height3</span> <span class="o">=</span> <span class="n">tm</span><span class="p">.</span><span class="n">tmHeight</span> <span class="o">+</span> <span class="n">tm</span><span class="p">.</span><span class="n">tmInternalLeading</span><span class="p">;</span>
+<span class="n">height4</span> <span class="o">=</span> <span class="n">tm</span><span class="p">.</span><span class="n">tmHeight</span> <span class="o">+</span> <span class="n">tm</span><span class="p">.</span><span class="n">tmInternalLeading</span> <span class="o">+</span> <span class="n">tm</span><span class="p">.</span><span class="n">tmExternalLeading</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>フォントの高さはtmHeightの値で正確に決まるので、方法#1は正しく、多くのエディタが利用しています。しかし、テキストエディタの場合は、#2の方法の方が正しいと言えます。フォントのExternal Leadingは、パラグラフ表示の際にテキストの行間に追加されるべき値（フォントのデザイナーが割り当てたもの）です。</p>
+
+<p>つまり、複数行のディスプレイでは、テキストの行を表示する際にこの値を使用する必要があります。問題は、Windowsの標準的なテキストルーチン（TextOut/DrawText）を使ってテキストを描画した場合に、外部プレディングが考慮されないことです。TextOutを使用してテキストの行が描画されると、背景はフォントのtmHeightをカバーするように塗りつぶされ、tmExternalLeadingの値は含まれません。そのため、テキストの行と行の間に隙間ができてしまい、何か間違ったことをしているのではないかと思われてしまいます。正しい結果を得るためには、行間の隙間を手動で埋める必要があります。当社のマルチフォントディスプレイでは、ExtTextOutを使用し、背景の矩形を適切に拡大することで、この余分な行間を正しく処理しています。</p>
+
+<p>最後に、3番目と4番目の方法は間違っており、フォントの高さやテキストの行の高さを計算するために使用すべきではありません。上の図を見て、さまざまな寸法が互いにどのように関連しているかを確認してください。</p>
+
+<p>追加機能として、TextViewにTXM_SETLINESPACINGという新しいメッセージを追加しました。このメッセージは、フォントの外部リーディング値に加えて、テキストの各行の上下に余分なスペースを設定するために使用されます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TextView_SetLineSpacing</span><span class="p">(</span><span class="n">hwndTextView</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>上の例では、各行の上に3ピクセル、下に2ピクセルを追加するようにテキストビューに指示しています（その結果、各行の高さが5ピクセルになります）。多くのフォントでは、行間を空けないと見栄えが悪くなることがあるので、この機能は非常に便利だと思います。</p>
+
+<p><img src="assets/img/editor31.gif" alt=""></p>
+
+<p>上の図は、Neatpadでテキストの行を構成するさまざまな要素を示しています。</p>
+
+<h2 id="ascii-control-characters">ASCII Control characters</h2>
+
+<p>もうひとつの理由は、制御文字（ASCIIの制御文字0〜31）を考慮して、描画コードを修正しようと思ったことです。多くのシンプルなテキストエディター（通常のメモ帳など）は、コントロール文字をまったく扱いません。例えば、NUL文字（ASCII値「ゼロ」）は決して表示されませんが、この文字には視覚的な表現がありません。他の制御文字も同様に、見た目よりも機能を重視して設計されているため、問題があります。バックスペースやラインフィード文字も、この理由で表示できません。解決策としては、Scintillaのエディットコンポーネントが制御文字を表示するために行っていることを再現することです。</p>
+
+<p><img src="assets/img/editor13.gif" alt="<>"></p>
+
+<p>上のテキストの行には、NUL文字（値0）とSYN文字（値24）の2つの制御文字が埋め込まれています。Scintillaを見るまでは、このような制御文字の表示方法を見たことがありませんでしたが、この問題を解決するための良い方法だと思います。0から31までのすべての文字は、反転した色で表示され、テキストを囲むように長方形の境界線があります。これらのASCII制御文字の「グラフィック/テキスト」表現は、周囲のテキストから際立っており、私の意見では素晴らしい視覚支援となっています。</p>
+
+<p>テキスト出力を強化したことで、さらに複雑さが増しました。新スタイル」の制御文字は固定幅ではなく、境界線に4ピクセルのオーバーラップが生じるため、固定幅のみの表示はできなくなってしまうのです。実は、この制御文字の「ビットマップ」を導入したことが、完全な可変幅のフォント表示に切り替えるきっかけとなりました。</p>
+
+<p>コントロールキャラクターを構成する画像は、単純な「TextOut」を行うよりも、かなり複雑な描画になります。理想的には、ビットマップをあらかじめ計算して画面外のバッファに保存しておき、必要に応じて画面に「BitBlt」することで、効率的にキャラクターを描画することができます。</p>
+
+<p><img src="assets/img/editor11.gif" alt="<>"></p>
+
+<p>残念ながら、そんな簡単なものではありません。制御文字を複数の色で扱うことができなければなりません（例：選択/ハイライトされている場合や、構文文字列の一部である場合など）。また、TextViewが扱うフォント、高さ、スタイルの違いも考慮しなければなりません。つまり、私たちの描画コードは、ASCII制御コードの発生に対応し、特別なルーチンDrawCtrlCharで適切に処理するように変更する必要があります。</p>
+
+<p>描画操作の基本的な内訳は以下の通りです（黒地に白の文字の場合）。</p>
+
+<ol>
+  <li>背景を白く塗りつぶします。</li>
+  <li>文字の幅と同じ高さの長方形を作る。</li>
+  <li>この長方形を黒く描きます。</li>
+  <li>この長方形を上下に1ピクセルずつ拡大し、左右に1ピクセルずつ縮小します。(つまり、それぞれの次元で1ピクセルずつ縦横にしていくのです。)</li>
+  <li>5.2つ目の黒い長方形を描きます。これにより、丸みを帯びた長方形のように見えます。6.文字を白で描きます。</li>
+</ol>
+
+<p>もちろん、TextViewは、コントロールキャラクタをこのように表示しないオプションをサポートしていますが、これが役に立つシナリオもいくつか考えられます。この場合、コントロール文字は一文字「...」に置き換えることができますし、可能な限り描くこともできます。</p>
+
+<h2 id="neattextout">NeatTextOut</h2>
+
+<p>この時点で、任意のテキストセグメント（制御文字を含む場合もある）を特定のフォントと色で描画することができる新しいテキスト出力ルーチンを開発する必要があります。NeatTextOut（下図のプロトタイプ）はTabbedTextOutに似ていますが、色とスタイルの情報がATTR構造体で提供される点が異なります。この関数は、表示されたテキストの幅（ピクセル単位）も返すので、呼び出した関数がどこを描画するか（テキストがウィンドウの外に出たときにいつ描画を止めるか）を把握することができます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">NeatTextOut</span><span class="p">(</span> <span class="n">HDC</span> <span class="n">hdc</span><span class="p">,</span> 
+                 <span class="kt">int</span> <span class="n">xpos</span><span class="p">,</span> 
+                 <span class="kt">int</span> <span class="n">ypos</span><span class="p">,</span> 
+                 <span class="n">TCHAR</span> <span class="o">*</span><span class="n">szText</span><span class="p">,</span> 
+                 <span class="kt">int</span> <span class="n">nLen</span><span class="p">,</span> 
+                 <span class="kt">int</span> <span class="n">nTabOrigin</span><span class="p">,</span> 
+                 <span class="n">ATTR</span> <span class="o">*</span><span class="n">attr</span>
+               <span class="p">);</span>
+</code></pre></div></div>
+
+<p>なぜなら、この機能は明らかにTextViewクラスに含まれており、そこに完全にドキュメントがあるからです。もし、コントロール文字をサポートしたくないのであれば、この関数を通常のTabbedTextOutで簡単に置き換えることができると言えばいいでしょう。</p>
+
+<h2 id="improved-drawing-engine">Improved drawing engine</h2>
+
+<p>このチュートリアルの目的は、ATTR構造を利用してテキストをTextViewウィンドウに表示することです。描画ロジックは以下の関数で共有されています。</p>
+
+<p><img src="assets/img/editor15.gif" alt="<>"></p>
+
+<p>最初の関数であるOnPaintは全く変わっていませんが、PaintLine関数は実際には機能が削減されています。この関数が行うことは、どこに線を引くかということだけで、実際の作業を行うために、次の関数であるPaintTextに制御を渡します。私がこのような決定をした理由は、将来的にPaintLineが選択マージンやラインナンバーを扱えるようにするためであり、PaintTextはテキストを描くだけで他には何もしないようにするためです。</p>
+
+<p>したがって、PaintText 関数は、テキストの行全体を描画する役割を果たします。この関数は、TextDocument からテキストを取得し、ApplyTextAttributes を呼び出してテキストにカラーフォーマットを適用した後、NeatTextOut を呼び出してテキストを表示します。</p>
+
+<p>このデザインの利点は、描画コードがTextViewの他の部分から完全に独立していることです。私がこの方法を気に入っているのは、テキストの描画が1つの場所に隔離されているということです。将来、シンタックスハイライト、マウス選択、ブックマークなどが変更されても、描画コードには影響がありません。なぜなら、描画コードは完全にダムであり、特定のスタイルでテキストを描画する方法しか知らないからです。これらのスタイルを作成するのはシンタックスハイライター次第ですが、これは独立した、よくまとまった問題です。</p>
+
+<p>テキストを描画する際には、テキストを保持する配列と、各文字の色属性を保持する配列の2つが並行して存在することを理解してください。これらの配列を繰り返して一文字ずつテキストを描画するのは非常に時間がかかるので、代わりにPaintTextはテキストを描画する前に可能な限り多くのテキストを集めます。これは、同じ色とフォントを持つ連続した文字を特定し、それぞれの「スパン」のテキストを一度に出力するというものです。この結果は非常に高速で、実際には1つのTextOutを行うよりも遅くはありません。PaintTextルーチンの重要な部分を以下に示します。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// current character position
+</span><span class="kt">int</span> <span class="n">lasti</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// last character position
+</span><span class="kt">int</span> <span class="n">xtab</span> <span class="o">=</span> <span class="n">xpos</span><span class="p">;</span>
+
+<span class="kt">char</span> <span class="n">buff</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
+<span class="n">ATTR</span> <span class="n">attr</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
+
+<span class="c1">//
+// Display the text by breaking it into spans of colour/style
+//
+</span><span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">len</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// if the colour or font changes, then need to output 
+</span>    <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">len</span> <span class="o">||</span> 
+       <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">fg</span> <span class="o">!=</span> <span class="n">attr</span><span class="p">[</span><span class="n">lasti</span><span class="p">].</span><span class="n">fg</span> <span class="o">||</span> 
+       <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">bg</span> <span class="o">!=</span> <span class="n">attr</span><span class="p">[</span><span class="n">lasti</span><span class="p">].</span><span class="n">bg</span> <span class="o">||</span> 
+       <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">style</span> <span class="o">!=</span> <span class="n">attr</span><span class="p">[</span><span class="n">lasti</span><span class="p">].</span><span class="n">style</span><span class="p">)</span>   
+    <span class="p">{</span>
+        <span class="n">xpos</span> <span class="o">+=</span> <span class="n">NeatTextOut</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">buff</span> <span class="o">+</span> <span class="n">lasti</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="n">lasti</span><span class="p">,</span> <span class="n">xtab</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">attr</span><span class="p">[</span><span class="n">lasti</span><span class="p">]);</span>
+        <span class="n">lasti</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>このチュートリアルでは、これ以上のコードを掲載するつもりはありません。というのも、ダウンロードしたソースコードは、いつものようにきちんとドキュメント化されていて、何が起こっているのかを非常に簡単に確認できるからです。</p>
+
+<h2 id="coming-up-in-part-5">Coming up in Part 5</h2>
+
+<p>マウス入力と選択については、次のチュートリアルで説明します。このテーマを延期する必要があったのは、適切な描画サポートがなければ、選択の強調表示が現実的には不可能だったからです。また、「マウススクロール」も実装します。これは、テキストの選択範囲がウィンドウからはみ出してしまい、内容をスクロールして表示しなければならない場合のことです。これまでに行ったスクロール作業により、この作業は非常に簡単になります。</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad4.zip">neatpad4.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2005-04-19T00:00:00+00:00">April 19, 2005</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="../../tuts/win32/2005-03-28-remote-debugging-using-vmware/index.html" class="pagination--pager" title="Remote Debugging using VMWare
+">Previous</a>
+    
+    
+      <a href="mouse-selection-highlighting.html" class="pagination--pager" title="Mouse Selection &amp; Highlighting
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

@@ -1,0 +1,758 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Mouse Selection &amp; Highlighting - Catch22</title>
+<meta name="description" content="Mouse input has proven to be the most intricate and difficult to write part of Neatpad to date. It hasn’t been helped by the fact that Neatpad now supports variable-width fonts, so in some ways I am still unsure if this extra complexity is a good thing or not (from a tutorial / learning point of view). However, if I had stuck with fixed-width fonts it would be quite a task for anyone to move from that limited capability to a fully variable-width display, so from that perspective I think I made the right decision…">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Mouse Selection &amp; Highlighting">
+<meta property="og:url" content="mouse-selection-highlighting">
+
+
+  <meta property="og:description" content="Mouse input has proven to be the most intricate and difficult to write part of Neatpad to date. It hasn’t been helped by the fact that Neatpad now supports variable-width fonts, so in some ways I am still unsure if this extra complexity is a good thing or not (from a tutorial / learning point of view). However, if I had stuck with fixed-width fonts it would be quite a task for anyone to move from that limited capability to a fully variable-width display, so from that perspective I think I made the right decision…">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2005-05-29T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="mouse-selection-highlighting.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--tutorial wide">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Mouse Selection &amp; Highlighting</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad5.zip">neatpad5.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="active">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Mouse Selection &amp; Highlighting">
+    <meta itemprop="description" content="Mouse input has proven to be the most intricate and difficult to write part of Neatpad to date. It hasn’t been helped by the fact that Neatpad now supports variable-width fonts, so in some ways I am still unsure if this extra complexity is a good thing or not (from a tutorial / learning point of view). However, if I had stuck with fixed-width fonts it would be quite a task for anyone to move from that limited capability to a fully variable-width display, so from that perspective I think I made the right decision…">
+    <meta itemprop="datePublished" content="May 29, 2005">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Mouse Selection &amp; Highlighting
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Mouse Selection & Highlighting</h1-->
+<!--h3>Mouse input, window focus and selection highlighting</h3-->
+
+<p>マウス入力は、これまでのNeatpadの中で最も複雑で書きにくい部分であることがわかりました。これは、Neatpadが可変幅フォントをサポートするようになったという事実によっても助けられませんでした。ある意味では、この余分な複雑さが良いことなのかどうかはまだわかりません（チュートリアル／学習の観点から）。しかし、もし私が固定幅フォントにこだわっていたら、その限られた機能から完全な可変幅ディスプレイに移行するのは誰にとっても大変な作業になっていたでしょうから、その意味では私の決断は正しかったと思います。</p>
+
+<p>複雑さのほとんどは、TextViewクラスとTextDocumentクラスを意図的に分離したことが原因です。もし、TextViewが基礎となるファイルに直接メモリアクセスできるのであれば、コードのいくつかはもう少しシンプルになるでしょう。しかし、もし私たちが4GBのファイルエディタに移行しようとするならば、メモリ管理をTextDocumentクラスの後ろに隠し、GUIとファイル管理の間に厳格なインターフェイスを持たせ、一度に小さなチャンクでファイルの内容にアクセスしなければなりません。これでコードはすっきりしますが、少し難しくなります。さて、早速ですが、人がNeatpadのウィンドウ内でマウスポインタをクリックしたときに何が起こるかを見てみましょう。</p>
+
+<h2 id="carets-focus-and-activation">Carets, Focus and Activation</h2>
+
+<p>Windowsでは、コントロール内でマウスがクリックされると、ウィンドウが入力フォーカスを受け取り、フォーカスの変化を示す何らかのグラフィカルなフィードバックが表示されることが期待される動作です。これは、Windows全体で一貫して見られるユーザーインターフェースの詳細です。</p>
+
+<p>Windowsのデフォルトの動作は、この最初のウィンドウ起動時にWM_MOUSEACTIVATEメッセージを送信することです。しかし、このマウスクリックによって対象となるウィンドウが実際に入力フォーカスを受けることはありません-これは多くの人に知られていないし、理解もされていません。このWM_MOUSEACTIVATEメッセージを手動で処理して、自分でフォーカスを設定する必要があります。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="n">WM_MOUSEACTIVATE</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ptv</span><span class="o">-&gt;</span><span class="n">OnMouseActivate</span><span class="p">();</span>
+</code></pre></div></div>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnMouseActivate</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">SetFocus</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">MA_ACTIVATE</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>これで、TextViewの中でマウスがクリックされると、入力フォーカスを受け取れるようになりました。さらに重要なのは、TextViewがWM_SETFOCUSという追加メッセージを受け取ることです。このメッセージの処理中に、キャレットを作って表示することができます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="n">WM_SETFOCUS</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ptv</span><span class="o">-&gt;</span><span class="n">OnSetFocus</span><span class="p">();</span>
+</code></pre></div></div>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnSetFocus</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">DWORD</span> <span class="n">nWidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+    <span class="n">SystemParametersInfo</span><span class="p">(</span><span class="n">SPI_GETCARETWIDTH</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nWidth</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">CreateCaret</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">,</span> <span class="p">(</span><span class="n">HBITMAP</span><span class="p">)</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">nWidth</span><span class="p">,</span> <span class="n">m_nLineHeight</span><span class="p">);</span>
+
+    <span class="n">ShowCaret</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">);</span>
+    <span class="n">RefreshWindow</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>テキストキャレットは、メモ帳やVisual Studioと同じようになります。NULLビットマップハンドルを指定して、しっかりと点滅するキャレットを作成します。Windows 2000以降では、SystemParametersInfoのSPI_GETCARETWIDTHのリクエストが成功し、その設定を代わりに使用する場合を除き、キャレットの幅はちょうど2ピクセルになります。また、キャレットの高さはテキストの行数と同じになります。これは、Windowsでテキストキャレットを表示するためのごく標準的な方法です。</p>
+
+<p>TextViewがinput-focusを失うたびに、WM_KILLFOCUSメッセージを受け取り、text-caretを隠したり、削除したりすることができます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="n">WM_KILLFOCUS</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ptv</span><span class="o">-&gt;</span><span class="n">OnKillFocus</span><span class="p">();</span>
+</code></pre></div></div>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnKillFocus</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">HideCaret</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">);</span>
+    <span class="n">DestroyCaret</span><span class="p">();</span>
+
+    <span class="n">RefreshWindow</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>TextViewがフォーカスを受けたり失ったりするたびに、ウィンドウ全体が再描画されることに注意してください。これにより、ウィンドウにフォーカスがあるかどうかに応じて、テキスト選択部分を異なる色で描画することができます。次に、ウィンドウ内でマウスがクリックされたときに、キャレットを正しい位置に配置するという問題に移ります。しかし、ここまで来る前に決断しなければならないことがあります。</p>
+
+<h2 id="textview-coordinates---offset-or-coordinate-based">TextView Coordinates - offset or coordinate based?</h2>
+
+<p>先に進む前に決定しなければならないことがあります。現在のカーソル位置と選択開始/終了位置をどのように記録するかを決めなければなりません。以下に示す2つの選択肢があります。</p>
+
+<p>1つ目の方法は、すべての「座標」を格納するために1つの32ビットのファイル・オフセットを使用することです。つまり、HexEditorや既存のEDITコントロールのようなものです。この方法の利点は、ファイルオフセットの保存、管理、および「操作」が非常に簡単であることです。デメリットとしては、ファイルオフセットがGUIに直接反映されないことです。ラインバッファの管理に余分な依存性が発生し、パフォーマンスの問題を引き起こす可能性があります。</p>
+
+<p>2つ目の方法は、「テキスト座標」システムを使用することです。これには2つの値を使います。1つは行番号、もう1つはその行の中の文字オフセット（または列番号）です。この方法の利点は、画面に表示されているものに直接変換できることです。マウスやキーボードを使ってキャレットを動かすこと（ユーザーのGUI操作）は、より自然な座標系を使っているので、最初の方法よりもずっと簡単になる可能性があります。一方、デメリットは2つあります。まず、データアクセスがより困難になります。すべてのデータアクセスは、真のファイルオフセットを見つけるためにラインバッファを通過する必要がありますが、これもパフォーマンス上の問題となります。2つ目の欠点は、テキストペインティングです。x,y」の座標で比較を行うのは、単一の値で比較を行うよりもはるかに面倒です。例えば、x,y座標に基づいて文字を強調するかどうかを決定することは、単純な整数比較を行うよりもはるかに複雑です。
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ULONG</span> <span class="n">m_nCursorOffset</span><span class="p">;</span>
+<span class="n">ULONG</span> <span class="n">m_nSelectionStart</span><span class="p">;</span>
+<span class="n">ULONG</span> <span class="n">m_nSelectionEnd</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>過去に2つの方法で実験したことがありますが、正直なところ、「純粋な」ファイルオフセット法と同じくらい複雑でした。このため、TextViewでは、テキスト座標の保存に、よりシンプルな「ファイルオフセット」方式を採用しています。これにより、マウス入力の処理の中にある難しい問題が切り離され、残りのコードが書きやすくなることを期待しています。</p>
+
+<h2 id="placing-the-text-caret">Placing the Text Caret</h2>
+
+<p>通常のエディットコントロールでユーザーがマウスをクリックすると、マウスの位置に最も近い文字の先頭にテキストキャレットが置かれます。一見、当たり前のことのように思えますが、この単純な操作が、これまでに取り組んできた中で最も複雑な作業になりそうです。</p>
+
+<p>ユーザがマウスをクリックしたときに受け取る最初の有用なメッセージはWM_LBUTTONDOWNです。このメッセージのハンドラを以下に示しますが、実はとても簡単です。オフセットベースの座標を使っているか、テキストベースの座標を使っているかは関係ないように構成しています。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnLButtonDown</span><span class="p">(</span><span class="n">UINT</span> <span class="n">nFlags</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">my</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">nCharOff</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">nFileOff</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">xpos</span><span class="p">;</span>
+
+    <span class="c1">// map the mouse-coordinates to a real file-offset-coordinate
+</span>    <span class="n">MouseCoordToFilePos</span><span class="p">(</span><span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nLineNo</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nCharOff</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nFileOff</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">xpos</span><span class="p">);</span>
+
+    <span class="n">SetCaretPos</span><span class="p">(</span><span class="n">xpos</span><span class="p">,</span> <span class="p">(</span><span class="n">nLineNo</span> <span class="o">-</span> <span class="n">m_nVScrollPos</span><span class="p">)</span> <span class="o">*</span> <span class="n">m_nLineHeight</span><span class="p">);</span>
+
+    <span class="c1">// erase any existing selection
+</span>    <span class="n">InvalidateRange</span><span class="p">(</span><span class="n">m_nSelectionStart</span><span class="p">,</span> <span class="n">m_nSelectionEnd</span><span class="p">);</span>
+
+    <span class="c1">// reset cursor and selection offsets to the same location
+</span>    <span class="n">m_nCursorOffset</span> <span class="o">=</span> <span class="n">nFileOff</span><span class="p">;</span>
+    <span class="n">m_nSelectionStart</span> <span class="o">=</span> <span class="n">nFileOff</span><span class="p">;</span>
+    <span class="n">m_nSelectionEnd</span> <span class="o">=</span> <span class="n">nFileOff</span><span class="p">;</span>
+
+    <span class="c1">// set capture for mouse-move selection 
+</span>    <span class="n">m_fMouseDown</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+
+    <span class="n">SetCapture</span><span class="p">(</span><span class="n">m_hWnd</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>実行しなければならない基本的な作業は2つあります。1つ目は、ファイル内のどのテキスト文字がクリックされたかを特定することです。この選択された文字のゼロベースのファイルオフセットを取得する必要があります（これにより、現在のカーソル位置を追跡することができます）。2つ目のタスクは、ステップ#1で選択した文字の隣にテキストキャレットを配置することです。</p>
+
+<p>これらの複雑な操作は、MouseCoordToFilePosという1つのTextViewメンバー関数の中に隔離されています。この関数の目的は、行番号、その行内の文字のオフセット（つまり列番号）、物理的なファイルのオフセット、そして最後に画面に表示される文字のx座標を返すことです。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="n">MouseCoordToFilePos</span> <span class="p">(</span><span class="kt">int</span> <span class="n">mx</span><span class="p">,</span> <span class="c1">// mouse x-coordinate
+</span>                          <span class="kt">int</span> <span class="n">my</span><span class="p">,</span> <span class="c1">// mouse y-coordinate
+</span>                          <span class="n">ULONG</span> <span class="o">*</span><span class="n">pnLineNo</span><span class="p">,</span> <span class="c1">// [out] line number
+</span>                          <span class="n">ULONG</span> <span class="o">*</span><span class="n">pnCharOffset</span><span class="p">,</span> <span class="c1">// [out] column number 
+</span>                          <span class="n">ULONG</span> <span class="o">*</span><span class="n">pnFileOffset</span><span class="p">,</span> <span class="c1">// [out] file-offset
+</span>                          <span class="kt">int</span> <span class="o">*</span><span class="n">px</span><span class="p">);</span> <span class="c1">// [out] adjusted x coordinate
+</span></code></pre></div></div>
+
+<p>この機能の完全なコードをここに掲載するかどうかはわかりません。というのも、できるだけわかりやすく、シンプルにするために、これからも手を加えていく可能性があるからです。しかし、基本的な操作を説明することで、この操作で何が行われているかを正確に理解してもらいたいと思います。</p>
+
+<h2 id="find-the-line-number">Find the line-number</h2>
+
+<p>まず最初にやるべきことは、マウスの下にあるテキストの行を見つけることです。ここでは、高さが固定されたテキスト行を使用しているので（つまり、すべてのテキスト行が同じである）、これは非常に簡単です。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ULONG</span> <span class="n">lineno</span> <span class="o">=</span> <span class="p">(</span><span class="n">my</span> <span class="o">/</span> <span class="n">m_nLineHeight</span><span class="p">)</span> <span class="o">+</span> <span class="n">m_nVScrollPos</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ワードプロセッサやHTMLビューアを書いていたら、上記の操作はもっと複雑になるでしょうが、私たちのシンプルなテキストエディタでは、マウスのY座標をラインハイトで割るだけで十分です。後述するように、現在どの行を見ているかを知ることは非常に重要です。なぜならば、カーソルのX位置を計算するためには、テキストの各行を解析する必要があるからです。</p>
+
+<h2 id="the-gettextextent-problem">The GetTextExtent problem</h2>
+
+<p>扱っているテキストの行がわかったら、その行の中でどの文字が選択されているかを調べる必要があります。行の中にタブやコントロール文字が含まれている可能性があるため（あるいは可変幅のフォントを使用している場合）、どの文字がマウスに該当するかを調べるためには、行全体（最初から）を解析する必要があります。</p>
+
+<p>Windowsには、文字列の大きさを（ピクセル単位で）指示するAPIがたくさんあります。しかし、逆の変換を行うAPIはありません。つまり、指定されたスペース内に何文字が収まるかということです。Windows 2000からは、この問題を解決するために、GetTextExtentPointIとGetTextExtentExPointIという2つの新しいルーチンが導入されました。</p>
+
+<p>しかし、Windows 2000だけに頼るわけにはいきません。TextView/TextDocumentのGUIとファイルの分離（つまり、コンテンツにチャンクでアクセスする）のために、どの文字が選択されたかを知るためには、独自の戦略を立てなければなりません。</p>
+
+<p>まず、固定サイズのブロックでテキストの行にアクセスすることから始めます。このようにして、各テキストブロックの幅は、関数 NeatTextWidth（基本的には GetTextExtentPoint32 のラッパーですが、タブやコントロール文字も考慮に入れます）を使って計算されます。そして、マウスのX座標がこのテキストブロックの中に入っているかどうかをチェックします。</p>
+
+<p><img src="assets/img/editor19.gif" alt="<>"></p>
+
+<p>上の写真は、このプロセスをかなり明確に示していると思います。これは全く正確ではありません（意図したものでもありません）。この段階で必要なのは、マウスがどこに置かれたかについての大まかな推測です。以下のコードスニペットは、基本的にここで起こっていることです。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">curx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">charoff</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="k">for</span><span class="p">(;;)</span>
+<span class="p">{</span>
+    <span class="c1">// grab some text
+</span>    <span class="k">if</span><span class="p">((</span><span class="n">len</span> <span class="o">=</span> <span class="n">m_pTextDoc</span><span class="o">-&gt;</span><span class="n">getline</span><span class="p">(</span><span class="n">nLineNo</span><span class="p">,</span> <span class="n">charoff</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">TEXTBUFSIZE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fileoff</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="c1">// find it's width
+</span>    <span class="kt">int</span> <span class="n">width</span> <span class="o">=</span> <span class="n">NeatTextWidth</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">len</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">curx</span> <span class="o">%</span> <span class="n">TABWIDTHPIXELS</span><span class="p">));</span>
+
+    <span class="c1">// does the cursor fall within this segment?
+</span>    <span class="k">if</span><span class="p">(</span><span class="n">mx</span> <span class="o">&gt;=</span> <span class="n">curx</span> <span class="o">&amp;&amp;</span> <span class="n">mx</span> <span class="o">&lt;</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">width</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// narrow down the search
+</span>    <span class="p">}</span>
+
+    <span class="c1">// move onto the next block
+</span>    <span class="n">curx</span> <span class="o">+=</span> <span class="n">width</span><span class="p">;</span>
+    <span class="n">charoff</span> <span class="o">+=</span> <span class="n">len</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>正しいテキストブロックが特定されたら、「バイナリチョップ」と呼ばれるアルゴリズムを使って検索を絞る必要があります。</p>
+
+<h2 id="binary-chop">Binary-Chop</h2>
+
+<p>これで1文字レベルでの作業になりました。効率的な理由から、各文字に対してNeatTextWidthを順番に呼び出したくないので、バイナリチョップ（またはバイナリサーチ）はこのような状況に最適です。下図は、このアルゴリズムの動作を示しています。</p>
+
+<p>検索を追跡するには、lowとhighという2つの変数を使います。これらの変数は、検索する文字バッファのオフセットを指定します。これらのオフセットは、バッファの両端から始まり、内側に向かって移動していき、インターチェンジごとに検索を狭めていきます。</p>
+
+<p><img src="assets/img/editor23.gif" alt="<>"></p>
+
+<p>各反復において、低値と高値の中間点を取ります。そして、マウスの座標を比較して、カーソルがこの中間点のどちら側にあるかを確認します。カーソルが左にある場合は、このセグメントの中央に配置し、右にある場合は同様にします。最終的には、この小さなピクセル範囲のどこかにマウスを置いて、1つの文字（低が高よりちょうど1つ少ない）にクローズインするところまでたどり着きます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">low</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">high</span> <span class="o">=</span> <span class="n">len</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">lowx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">highx</span> <span class="o">=</span> <span class="n">width</span><span class="p">;</span>
+
+<span class="k">while</span><span class="p">(</span><span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">newlen</span> <span class="o">=</span> <span class="p">(</span><span class="n">high</span> <span class="o">-</span> <span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+
+    <span class="n">width</span> <span class="o">=</span> <span class="n">NeatTextWidth</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="n">buf</span> <span class="o">+</span> <span class="n">low</span><span class="p">,</span> <span class="n">newlen</span><span class="p">,</span> <span class="o">-</span><span class="n">lowx</span><span class="o">-</span><span class="n">curx</span><span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">mx</span> <span class="o">-</span> <span class="n">curx</span> <span class="o">&lt;</span> <span class="n">width</span> <span class="o">+</span> <span class="n">lowx</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">high</span> <span class="o">=</span> <span class="n">low</span> <span class="o">+</span> <span class="n">newlen</span><span class="p">;</span>
+        <span class="n">highx</span> <span class="o">=</span> <span class="n">lowx</span> <span class="o">+</span> <span class="n">width</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="n">low</span> <span class="o">+</span> <span class="n">newlen</span><span class="p">;</span>
+        <span class="n">lowx</span> <span class="o">=</span> <span class="n">lowx</span> <span class="o">+</span> <span class="n">width</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>コンピュータサイエンスの用語では、この方法はO(log~2~n)の効率を持っています。実際、バイナリサーチは非常に効率的なアルゴリズムであり、非常に長いテキスト行であっても、かなり高速に処理できるはずです。可変幅のフォントの場合、このような処理を行うには他に方法がありません。もちろん、固定幅のフォント表示の場合は、一度に行全体をスキャンすることもできますが、コードが乱雑になるだけなので、まだ「過剰な最適化」は行いません。</p>
+
+<h2 id="snap-to-middle-of-character">Snap to middle of character</h2>
+
+<p>この時点で、どのキャラクターがマウスでクリック／選択されたのかがわかり、そのキャラクターの開始位置と終了位置のx座標が変数lowxとhighxに入っています。</p>
+
+<p><img src="assets/img/editor20.gif" alt="<>"></p>
+
+<p>最後に実装すべきことは、テキストカーソル（キャレット）を文字のどちら側に置くかということです。杜撰なテキストエディタでは、単純に各文字の先頭に「切り捨て」てしまいます（つまり、lowx座標を選択することで、カーソルを文字の先頭に配置してしまうのです）。しかし、各文字の中心を使ってキャレットをどちら側に置くかを決めることで、より自然な「感じ」を得ることができます。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="p">(</span><span class="n">mousepos</span> <span class="o">&gt;</span> <span class="n">highx</span> <span class="o">-</span> <span class="n">FontWidth</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">caret</span> <span class="o">=</span> <span class="n">highx</span><span class="p">;</span>
+<span class="k">else</span>
+    <span class="n">caret</span> <span class="o">=</span> <span class="n">lowx</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>上図の「TAB」文字では、選択線が中央ではなく右側に配置されていることに注目してください。これは、Visual StudioがTAB（または1文字以上のコントロール文字）の上にカーソルを置いたときの動作を再現するために、意図的に行っているものです。</p>
+
+<h2 id="selecting-with-the-mouse">Selecting with the mouse</h2>
+
+<p>これでTextView内の任意の文字の下にテキストキャレットを配置できるようになったので、マウス選択に移る準備ができました。WM_LBUTTONDOWNを処理したときのことを思い出してください。m_nCursorOffset、m_nSelectionStart、m_nSelectionEnd変数はすべて同じ場所を指すように設定されています。</p>
+
+<p>マウスをドラッグして選択範囲を広げるには、WM_MOUSEMOVEメッセージを処理します。ここでも、MouseCoordToFilePosを使って、マウスの下のファイルオフセットを取得します。ここで、m_nSelectionStartをそのままにして、m_nSelectionEnd変数だけを変更して、この新しいオフセットを「指し示す」ようにします。これは、選択範囲を広げる効果があります。これを画面に反映させるためには、当然ながらディスプレイを再描画する必要がありますが、ここからが厄介なところです。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">OnMouseMove</span><span class="p">(</span><span class="n">UINT</span> <span class="n">nFlags</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">m_fMouseDown</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">ULONG</span> <span class="n">nLineNo</span><span class="p">,</span> <span class="n">nCharOff</span><span class="p">,</span> <span class="n">nFileOff</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">px</span><span class="p">;</span>
+
+        <span class="n">MouseCoordToFilePos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nLineNo</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nCharOff</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nFileOff</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">px</span><span class="p">);</span>
+
+        <span class="c1">// update the area that has changed
+</span>        <span class="k">if</span><span class="p">(</span><span class="n">m_nSelectionEnd</span> <span class="o">!=</span> <span class="n">nFileOff</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">InvalidateRange</span><span class="p">(</span><span class="n">m_nSelectionEnd</span><span class="p">,</span> <span class="n">nFileOff</span><span class="p">);</span>
+
+            <span class="n">SetCaretPos</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="p">(</span><span class="n">nLineNo</span> <span class="o">-</span> <span class="n">m_nVScrollPos</span><span class="p">)</span> <span class="o">*</span> <span class="n">m_nLineHeight</span><span class="p">);</span>
+
+            <span class="n">m_nSelectionEnd</span> <span class="o">=</span> <span class="n">nFileOff</span><span class="p">;</span>
+            <span class="n">RefreshWindow</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>WM_MOUSEMOVEハンドラ(上)は、WM_LBUTTONDOWNハンドラとよく似ています。まず、マウスのx,y座標をファイルオフセットに変換します。このオフセットが現在のカーソルオフセットと異なると仮定すると、テキストキャレットを再配置し、古い選択終了点と新しいカーソル位置の間のテキストの領域を再描画することができます。</p>
+
+<h2 id="invalidate-a-range-of-text">Invalidate a range of text</h2>
+
+<p>優れた選択/ハイライト戦略の鍵となるのは、一度に最低限の再描画しか行わないことです。パフォーマンスのためではなく、単純にちらつきを避けるために、変化のある場所だけを描き、それ以外の場所は描かないようにしなければなりません。InvalidateRangeメンバ関数はまさにこれを行います。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LONG</span> <span class="n">TextView</span><span class="o">::</span><span class="n">InvalidateRange</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">nStart</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">nFinish</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>2つのパラメータ（nStartとnFinish）は、ファイルオフセットとして範囲を指定します。InvalidateRangeは、この2つのパラメータをスクリーン座標に変換して、指定した範囲だけを再描画させるのが仕事です。これはMouseCoordToFilePosとは全くの「逆」で、ファイルオフセットからスクリーン座標に戻しています。ファイルオフセットやテキスト座標など、どのような座標系を使用しても構いませんが、実際には重要ではありません。ここで重要なのは、再描画を選択範囲の変更に限定するというコンセプトです。</p>
+
+<p>指定された領域は無効化され（一連のInvalidateRectの呼び出しを使用）、実際の描画を行うタスクはすでに実装したWM_PAINTハンドラに任されます。</p>
+
+<p>WM_PAINTハンドラが一度に全行を再描画しても、特定の領域を無効にしているため、ウィンドウの更新領域が出力をクリップし、変更されていない領域に描画することができません。</p>
+
+<p><img src="assets/img/editor25.gif" alt="<>"></p>
+
+<p>上の写真は、「選択中」の状態を表しています。選択は 4 つのステップで行われ、最も明るい青色のセグメントから始まっています。基本的なアイデアは、タスクを行ごとに分割し、テキストのスパンごとに InvalidateRect を呼び出すことです。私が示したいのは、選択範囲の変更は、1つの線上の小さなセグメントである場合もあれば、複数の線を同時に含む変更である場合もあるということです。</p>
+
+<p>InvalidateRange関数（どのように実装するかは別として）は、これらの異なるシナリオを正しく処理できなければなりません。ここで関数本体を説明してもあまり意味がないので、そろそろチュートリアルのこの部分を終了します。</p>
+
+<h2 id="coming-up-in-part-6">Coming up in Part 6</h2>
+
+<p>マウスの選択は非常に難しい問題ですが、このような作業に何が必要かを理解していただくために、十分な説明をしたつもりです。また、これはシンプルなテキストエディタであることを覚えておいてください。様々な種類のテキストやグラフィックを扱わなければならない本物のワープロやウェブブラウザを書くのがどれほど難しいか想像してみてください。</p>
+
+<p>第6回は、今回実装したものに「マウススクロール」を加えたものです。</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad5.zip">neatpad5.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2005-05-29T00:00:00+00:00">May 29, 2005</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="enhanced-drawing-painting.html" class="pagination--pager" title="Enhanced Drawing &amp; Painting
+">Previous</a>
+    
+    
+      <a href="scrolling-mouse.html" class="pagination--pager" title="Scrolling with the Mouse
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>

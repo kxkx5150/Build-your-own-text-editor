@@ -1,0 +1,907 @@
+<html><head>
+    <meta charset="utf-8">
+
+<title>Unicode Text Processing - Catch22</title>
+<meta name="description" content="The last tutorial presented an overview of the various encoding formats that are used to store Unicode text. It is now time to take this theory and apply it to Neatpad. Therefore the subject of this article will be Unicode text processing.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Catch22">
+<meta property="og:title" content="Unicode Text Processing">
+<meta property="og:url" content="unicode-text-processing">
+
+
+  <meta property="og:description" content="The last tutorial presented an overview of the various encoding formats that are used to store Unicode text. It is now time to take this theory and apply it to Neatpad. Therefore the subject of this article will be Unicode text processing.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2005-12-05T00:00:00+00:00">
+
+
+
+
+
+
+<style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}</style><link rel="canonical" href="unicode-text-processing.html">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="../../feed.xml" type="application/atom+xml" rel="alternate" title="Catch22 Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<!--[if IE ]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  <style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></head>
+
+  <body class="layout--tutorial wide" style="margin-bottom: 171.375px;">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="../../index.html">Catch22</a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="../../blog/index.html">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../software/index.html">Software</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../tuts/index.html">Tutorials</a>
+            </li><li class="masthead__menu-item">
+              <a href="../../about/index.html">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button" count="0" style="">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope="" itemtype="../../../schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../index.html" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts.html" itemprop="item"><span itemprop="name">Tuts</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope="" itemtype="../../../schema.org/ListItem">
+          <a href="../../tuts/neatpad.html" itemprop="item"><span itemprop="name">Neatpad</span></a>
+          <meta itemprop="position" content="3">
+        </li>
+        <span class="sep">/</span>
+                
+      
+    
+      
+      
+        <li class="current">Unicode Text Processing</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad9.zip">neatpad9.zip</a>      
+    
+  </div>
+
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox">
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Neatpad</span>
+        
+
+        
+        <ul>
+          
+            
+            
+
+            
+            
+
+            <li><a href="" class=""></a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="index.html" class="">Neatpad Overview</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="loading-text-file.html" class="">Loading a text file</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrollbars-scrolling.html" class="">Scrollbars &amp; Scrolling</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="enhanced-drawing-painting.html" class="">Enhanced Drawing &amp; Painting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="mouse-selection-highlighting.html" class="">Mouse Selection &amp; Highlighting</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="scrolling-mouse.html" class="">Scrolling with the Mouse</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="margins-and-long-lines.html" class="">Margins and Long Lines</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-unicode.html" class="">Introduction to Unicode</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-processing.html" class="active">Unicode Text Processing</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="transparent-text.html" class="">Transparent Text</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="introduction-uniscribe.html" class="">Introduction to Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="uniscribe-mysteries.html" class="">Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="more-uniscribe-mysteries.html" class="">More Uniscribe Mysteries</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="drawing-styled-text-uniscribe.html" class="">Drawing styled text with Uniscribe</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="integrating-usplib.html" class="">Integrating UspLib</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="keyboard-navigation.html" class="">Keyboard Navigation</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="piece-chains.html" class="">Piece Chains</a></li>
+          
+            
+            
+
+            
+            
+
+            <li><a href="unicode-text-editing.html" class="">Unicode Text Editing</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+    
+
+  
+  </div>
+
+
+  <article class="page" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Unicode Text Processing">
+    <meta itemprop="description" content="The last tutorial presented an overview of the various encoding formats that are used to store Unicode text. It is now time to take this theory and apply it to Neatpad. Therefore the subject of this article will be Unicode text processing.">
+    <meta itemprop="datePublished" content="December 05, 2005">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Unicode Text Processing
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <!--h1>Unicode Text Processing</h1-->
+<!--h3>Unicode file support in Neatpad</h3-->
+
+<p>前回のチュートリアルでは、Unicodeテキストの保存に使用されるさまざまなエンコーディングフォーマットの概要を説明しました。今回は、この理論をNeatpadに応用してみましょう。そこで今回は、Unicodeテキストの処理をテーマにします。
+
+</p>
+
+<p><img src="assets/img/editor805.gif" alt="" class="align-center"></p>
+
+<p>上の画像は、Neatpadの新しい「エンコード」メニューオプションで、UTF-8ファイルを表示したものです。このチュートリアルの上部には、NeatpadのUnicode機能をテストするために使用できるUnicodeファイルのコレクションがあります。
+
+</p>
+
+<h2 id="loading-text-files">Loading text files</h2>
+
+<p>Neatpadの以前のバージョンでは、単一のテキストエンコーディング、つまりプレーンASCIIテキストをサポートしていました。Unicode対応のテキストエディタは、当然ながら様々なUnicodeファイルフォーマットに対応していなければなりません。そこで、最初のステップとして、TextDocumentのinit()関数を変更して、どのような種類のファイルを開こうとしているのかを検出することにします。
+
+</p>
+
+<p>もちろん、実際にファイルを開いて最初の数バイトを読むまでは、テキストファイルがどのようなエンコーディングを使用しているかを検出することはできません。ここでは、Unicodeでいうところの「バイト・オーダー・マーク」を利用します。これは、Unicodeテキストファイルの先頭にしか存在しない特定のバイト列で、これがあれば、ファイルの保存に使われた正確なエンコーディング方式がわかります。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Byte Signature</td>
+      <td>Unicode Format</td>
+      <td>Neatpad Format</td>
+    </tr>
+    <tr>
+      <td><em>none</em></td>
+      <td>Plain ASCII/ANSI</td>
+      <td>NCP_ASCII</td>
+    </tr>
+    <tr>
+      <td><strong>EF BB BF</strong></td>
+      <td>UTF-8</td>
+      <td>NCP_UTF8</td>
+    </tr>
+    <tr>
+      <td><strong>FF FE</strong></td>
+      <td>UTF-16, little-endian</td>
+      <td>NCP_UTF16</td>
+    </tr>
+    <tr>
+      <td><strong>FE FF</strong></td>
+      <td>UTF-16, big-endian</td>
+      <td>NCP_UTF16BE</td>
+    </tr>
+    <tr>
+      <td><strong>FF FE 00 00</strong></td>
+      <td>UTF-32, little-endian</td>
+      <td>NCP_UTF32</td>
+    </tr>
+    <tr>
+      <td><strong>00 00 FE FF</strong></td>
+      <td>UTF-32, big-endian</td>
+      <td>NCP_UTF32BE</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>この関数の目的は、TextDocument::initの間に読み込まれるテキストファイルの フォーマットを検出することです。この関数の目的は、TextDocument::initの間に読み込まれるテキストファイルの形式を検出することです。ファイルの署名がない場合、ファイルの内容はプレーンなASCII/ANSIテキストであると仮定します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">TextDocument</span><span class="o">::</span><span class="n">detect_file_format</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">headersize</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>この関数の唯一の仕事は、ファイルの最初のxバイトを分析して、上の表で定義されている様々なByte-Order-Markの値と比較することです。これは文字通り、フォーマットにマッチするまで一連のmemcmpを実行するタスクです。detect_file_format関数は、処理中のファイルの種類を示す適切なNCP_xxx値(Neatpad Codepage)を返します。
+
+</p>
+
+<p><img src="assets/img/editor0908.gif" alt="" class="align-center"></p>
+
+<p>ファイルのテキストフォーマットは、TextDocument によって内部的に保存されています (メンバ変数 fileformat に)。Byte-Order-Markヘッダーの長さも、 headersizeメンバ変数に保存されています。これにより、どのような種類のファイルを読み込んでも、実際のコンテンツの始まりを常に特定することができます。
+
+</p>
+
+<h2 id="internal-text-representations">Internal text representations</h2>
+
+<p>ほとんどのテキストエディター（メモ帳など）は、テキストファイル全体をメモリに読み込みます。基本的なファイル形式（ASCII、UTF-8、UTF-16など）に関わらず、内容は作業しやすいように内部形式に変換されます。Windowsプログラムの場合、これは通常（常にではありませんが）、Windows NTのネイティブなUTF-16形式です。テキストベースのWindows APIは、すべてUTF-16/UCS2を扱うように設計されているので、これは理にかなっています。
+
+</p>
+
+<p>というのも、メインのエディタ（OSのテキストルーチンと直接インタフェースをとる）のソースコードを1セット維持し、サポートする各フォーマットをロードおよびセーブするシンプルなファイルI/O変換ルーチンのセットを書くからです。エディタは、処理するテキストが常に一つのフォーマットであるため、非常にシンプルに保たれています。ファイルを元のフォーマットで保存しようとすると、テキスト全体が再び変換されて戻ってきます。
+
+</p>
+
+<p>もちろん、この方法では、一度にファイル全体を読み込む必要があるため、大量のメモリを必要とします。数ギガバイト規模のテキストエディタという目標を達成するためには、ファイルを「生」の状態のままにしておき、必要に応じてファイルの特定の部分だけをメモリにマッピングする必要があります（このサイトのHexEditプログラムのように）。
+
+</p>
+
+<p>しかし、これには問題があります。一つのプログラムで様々な形式のテキストを扱いながら、処理しなければならない様々なエンコーディングによって複雑にならないように、単一のコードベースを維持するにはどうすればよいのでしょうか？ここでは、2つの基本的な戦略を紹介します。
+
+</p>
+
+<ol>
+  <li>特定のファイル形式ごとに、TextView/TextDocumentの別バージョンを書きます。そして、遭遇するファイルの種類に応じて、TextViewの特定のインスタンス（例えば、TextViewUtf8 / TextViewUtf16）を作成します。マクロやC++のテンプレートを使って作業を楽にすることもできますが、この方法はコードメンテナンスの悪夢になると思います。絶対に避けてください。
+!</li>
+  <li>常に「ネイティブ」フォーマット（Windowsの場合はUTF-16）のテキストを扱う汎用のTextViewを書きます。TextViewは基本的なファイルフォーマットを知らず、TextDocumentがTextViewの要求に応じて基本的なファイルフォーマットをUTF-16に変換することになるでしょう。</li>
+</ol>
+
+<p>私は、#2の方法が最も自由度が高く、慎重に設計することでNeatpadに適したものになると考えています。
+
+</p>
+
+<h2 id="generic-text-processing">Generic text processing</h2>
+
+<p>一般的な」デザインの背景にある考え方は、TextViewは常にUTF-16テキスト（つまり標準的なワイド文字のUnicode文字列）を見て処理するということです。TextDocumentが読んでいる基礎的なファイルが、UTF-16テキスト以外のものであることは、まったく認識していません。つまり、TextViewが表示するためのテキストを要求するときはいつでも、基礎となるファイルの内容をUTF-16に（必要であれば）変換するのはTextDocumentに任されています（つまり、オンザフライでリアルタイムに）。
+
+</p>
+
+<p><img src="assets/img/editor0904.gif" alt="" class="align-center"></p>
+
+<p>一方、TextDocument は「すべての」タイプのファイルフォーマットを理解します。私たちがサポートしているさまざまなエンコーディング（ASCII、UTF-8、UTF-16）の読み方を知っています。
+
+</p>
+
+<p>このようなデザインは、Neatpadにとてもよく似合うと思います。ユーザーインターフェース（TextView）が非常に複雑になる可能性があるため、テキスト変換の問題をすべて一箇所に隔離して、一度だけ心配すればよいようにすることが非常に重要です。また、TextDocumentにさらなるテキストフォーマット（UTF-32など）を追加しても、TextViewを変更する必要がないという利点もあります。TextViewはUTF-16だけを気にすればいいのです。
+
+</p>
+
+<h2 id="two-coordinate-systems">Two coordinate systems</h2>
+
+<p>この「汎用」テキストモデルへの移行を決めたことで、大きな問題が発生しました。というのも、TextViewとTextDocumentの2つの座標系を考慮しなければならないからです。現時点では、「とりあえずUTF-16をサポートして、後からUTF-8を追加する」ということも可能ですが、それは間違いです。単一フォーマット」のエディタの設計は、任意のファイルフォーマットを扱わなければならないエディタとは非常に異なっており、より一般的な設計に移行しなければ、後になってさらに大きな問題を引き起こすことになります。
+
+</p>
+
+<p>そこで、TextViewはUTF-16単位でのみ動作することにしました。これは良いことだと思います。これは基本的に、TextViewコントロールの「ユーザーインターフェース」全体が、WindowsのNative Unicodeフォーマットであることを意味します。このことがどれほど重要か、過小評価しないでください。まだ、ここまでは進んでいませんが、C++プロジェクトでTextViewコントロールを使う「ユーザー」（つまりプログラマー）を想像してみてください。
+
+</p>
+
+<p>このプログラマーのプロジェクトは当然Unicodeであり、すべてのテキスト操作もUTF-16になります。カーソルの位置や選択範囲の管理、特定のオフセットでのテキストの取得や設定、テキストの検索など、TextViewの操作もUTF-16でなければなりません。ユーザーやプログラマーは、テキストファイルの基本フォーマットが何であるかを気にせず、彼らが見る世界はすべてUTF-16であり、すべての操作はこの世界観に一致しなければなりません。したがって、カーソルオフセットや選択オフセット、つまりコントロールの座標「フロントエンド」全体が、UTF-16ベースでなければなりません。しかし、ここで問題が発生します。
+
+</p>
+
+<p>TextDocumentは、物事に対する考え方が異なります。TextDocumentは任意のファイルフォーマットを扱う必要があり、テキストファイルがどのようなフォーマットであるかは、読み込むまでわかりません。シングルバイト形式（ASCII）、マルチバイト形式（UTF-8）、ワイドキャラク タ形式（UTF-16）のいずれかを扱うことができます。TextDocumentは、これらのフォーマットに共通する座標系を使用しなければなりません。もちろん、これはバイト指向のシステムですから、すべてのラインオフセットとテキストアクセスはバイトベースでなければなりません。
+
+</p>
+
+<p>このTextViewとTextDocumentの違いを説明するために、いくつかのUnicodeテキストの簡単な例を見てみましょう。
+
+</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><img src="assets/img/editor0906.gif" alt=""></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">U</span><span class="o">+</span><span class="mo">0041</span> <span class="n">LATIN</span> <span class="n">CAPITAL</span> <span class="n">LETTER</span>
+<span class="n">U</span><span class="o">+</span><span class="mo">06</span><span class="n">AF</span> <span class="n">ARABIC</span> <span class="n">LETTER</span> <span class="n">GAF</span>
+<span class="n">U</span><span class="o">+</span><span class="mi">16</span><span class="n">D4</span> <span class="n">RUNIC</span> <span class="n">LETTER</span> <span class="n">DOTTED</span><span class="o">-</span><span class="n">P</span>
+<span class="n">U</span><span class="o">+</span><span class="mi">10416</span> <span class="n">DESERAT</span> <span class="n">CAPITAL</span> <span class="n">LETTER</span> <span class="n">JEE</span>
+</code></pre></div></div>
+
+<table>
+  <tbody>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+
+<p>上のテキストは、4つのユニコード文字をランダムに集めたもので、ユニコードのコードポイントの値が横に記載されています。これらの文字が Neatpad とどのように関連しているかを見るために、上のテキストが UTF-8 としてエンコードされ、Neatpad に読み込まれたと想像してみましょう。したがって、TextDocumentは、UTF-8のマルチバイト単位で動作することになります。
+
+</p>
+
+<p><img src="assets/img/editor0907.gif" alt="" class="align-center"></p>
+
+<p>もちろん、TextViewはファイルをUTF-16として見ています。この図では、TextViewが基礎となるファイルからどれだけ分離されているかを説明しています。最初の文字（'A'）を除いて、TextViewが見る生のデータは、実際にディスク上に表示されるものとは全く異なります。覚えておいてほしいのは、これらのことはすべて、ファイル読み込みプロセス中ではなく、リアルタイムで行われるべきだということです。
+
+</p>
+
+<p>しかし、まだ問題は解決していません。TextViewはUTF-16を話し、TextDocumentはバイトオフセットを話します。私たちは、UTF-16のオフセット（すなわちコードユニットのオフセット）と、基礎となるファイルコンテンツ（それが何であれ）との間のマッピングを実行するために、何らかのメカニズムを考案する必要があります。この作業はTextDocumentに任されており、すべてのハードワークを行うのはラインオフセッ トバッファである。
+
+</p>
+
+<h2 id="reading-unicode-data">Reading Unicode data</h2>
+
+<p>The decision to make the TextView UTF-16 only means that our <code class="highlighter-rouge">TextDocument::getline</code> routine must change. Remember that this is the main “gateway” between the TextView and the TextDocument. Let’s look at what we had before:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ULONG</span> <span class="n">TextDocument</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">offset</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">,</span> <span class="n">ULONG</span> <span class="o">*</span><span class="n">fileoff</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>TextViewをUTF-16にすることは、TextDocument::getlineルーチンを変更しなければならないことを意味します。これは、TextViewとTextDocumentの間の主要な「ゲートウェイ」であることを覚えておいてください。それでは、以前の状態を見てみましょう。
+
+</p>
+
+<p>2つ目の変更点は、行指向のテキスト検索モデルからの脱却です。現在私たちが持っているのは、getline の代わりとなるもので、TextDocument::gettext と呼ばれています。この新しいルーチンの目的は、現在のファイル内の指定されたバイトオ フセットから UTF-16 テキストを返すことです。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">TextDocument</span><span class="o">::</span><span class="n">gettext</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">offset</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">maxbytes</span><span class="p">,</span> <span class="n">TCHAR</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">buflen</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>基礎となるテキストフォーマットに関係なく、このルーチンは常に UTF-16 データを返します (Unicode ビルドの場合)。テキストは buf パラメータに格納され、buf に格納された「文字」の数が *buflen パラメータに返される。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TCHAR</span> <span class="n">buf</span><span class="p">[</span><span class="mi">200</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">buflen</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+
+<span class="c1">// read a block of text as UTF-16 from the specified position
+</span><span class="n">len_bytes</span> <span class="o">=</span> <span class="n">textDoc</span><span class="o">-&gt;</span><span class="n">gettext</span><span class="p">(</span><span class="n">byte_offset</span><span class="p">,</span> <span class="n">max_bytes</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buflen</span><span class="p">);</span>
+
+<span class="c1">// adjust offsets ready for next read
+</span><span class="n">off_bytes</span> <span class="o">+=</span> <span class="n">len_bytes</span><span class="p">;</span>
+<span class="n">max_bytes</span> <span class="o">-=</span> <span class="n">len_bytes</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>つまり、戻り値は、UTF-16への変換時に処理されたASCII/UTF-8/UTF-16のバイト数を表しています。これは、基礎となるファイルの「バイト位置」を把握するために必要です。
+
+</p>
+
+<p>TextViewがUTF-16のデータを読んでいても（カーソルの位置などにUTF-16ベースのオフセットを使っていても）、バイトオフセットを使って基礎となるファイルにアクセスしなければなりません。これは、テキストの検索を、基礎となるファイルへの直接的なアクセスにするためで、バイトオフセットにあるデータを何でもUTF-16に変換します。もし、UTF-16の座標を使ってファイルの内容にアクセスすると、長い処理を行ってこの文字オフセットをバイトオフセットに変換する必要があります。
+
+</p>
+
+<p>新しい TextDocument::gettext 関数は、以前のものより少し複雑になっています。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">TextDocument</span><span class="o">::</span><span class="n">gettext</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">offset</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">lenbytes</span><span class="p">,</span> <span class="n">WCHAR</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">buflen</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">BYTE</span> <span class="o">*</span><span class="n">rawdata</span> <span class="o">=</span> <span class="n">buffer</span> <span class="o">+</span> <span class="n">headersize</span> <span class="o">+</span> <span class="n">offset</span><span class="p">;</span>
+
+    <span class="k">switch</span><span class="p">(</span><span class="n">fileformat</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="k">case</span> <span class="n">NCP_ASCII</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ascii_to_utf16</span><span class="p">(</span><span class="n">rawdata</span><span class="p">,</span> <span class="n">lenbytes</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+
+    <span class="k">case</span> <span class="n">NCP_UTF8</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">utf8_to_utf16</span><span class="p">(</span><span class="n">rawdata</span><span class="p">,</span> <span class="n">lenbytes</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+
+    <span class="k">case</span> <span class="n">NCP_UTF16</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">copy_utf16</span><span class="p">(</span><span class="n">rawdata</span><span class="p">,</span> <span class="n">lenbytes</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="n">WCHAR</span><span class="p">),</span> <span class="n">buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+
+    <span class="k">case</span> <span class="n">NCP_UTF16BE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">swap_utf16</span><span class="p">(</span><span class="n">rawdata</span><span class="p">,</span> <span class="n">lenbytes</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="n">WCHAR</span><span class="p">),</span> <span class="n">buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+
+    <span class="k">default</span><span class="o">:</span>
+        <span class="o">*</span><span class="n">len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>TextDocument::fileformat のメンバー変数を使って、基礎となるテキストをどのように UTF-16 に変換するかを決めなければなりません。サポートするテキストの種類ごとに1つの変換ルーチンがあることに注意してください。
+
+</p>
+
+<p>ここでは詳しく説明していませんが、一つだけ触れておきたいのは、実際のUTF-16への変換処理です。UTF-16に変換する際には、UTF-16のサロゲートペアを誤って「分割」しないように細心の注意を払う必要があります。これは、UTF-8から変換するときに、サロゲート文字の両方を格納するためのバッファスペースが足りなくなってしまう可能性があるからです。変換ルーチンはすべて、サロゲートペアが一緒に保たれるようにしています。
+
+</p>
+
+<h2 id="problems-with-multibytetowidechar">Problems with MultiByteToWideChar</h2>
+
+<p>お気づきかもしれませんが、TextDocument::gettext 関数の中に私自身の Unicode 変換ルーチンを書いています。私は本当は MultiByteToWideChar API を使って UTF-16 への変換をすべて行いたかったのです。残念ながら、そんなに簡単なことはありません。MultiByteToWideChar は有効な UTF-8 データの変換には優れていますが、不正なテキストシーケンス（不正なシーケンスやオーバーロングのシーケンスなど）に関してはあまり得意ではありません。
+
+</p>
+
+<p>この種のデータを処理する場合、テキスト エディターにとって望ましい動作は、UTF-8/UTF-16 の無効なシーケンスを特殊な Unicode 文字、「U+FFFD Unicode Replacement Character」を使用して示すことです。MultiByteToWideCharの問題点は、無効なシーケンスに対してこの変換を行わないことです。つまり、失敗したと返すだけで、何文字が無効だったのかわからないのです。これでは、どこで変換を再開すればいいのかわからないので、変換処理を再開することができません。
+
+</p>
+
+<p>独自のルーチンを書くことで、有効なデータと無効なデータの両方を、テキストストリーム処理に適した方法、つまりテキストエディタに適した方法で処理することができました。
+
+</p>
+
+<h2 id="line-buffer-management">Line Buffer Management</h2>
+
+<p>Unicodeと「二重座標系」に変更するということは、これまでのシリーズで開発してきたラインバッファ方式を見直す必要があります。このシリーズの後半で「ギガバイトファイルのサポート」を追加する際には、またこの方式を変更することになるのは十分承知しているので、ここではあまり詳しく説明しないことにする。しかし、これは今すぐにでも議論する必要があるので、ここで説明します。
+
+</p>
+
+<p>Neatpadのラインバッファには2つの目的があります。第一に、ファイル内でテキストの行の物理的な位置をすばやく特定する方法を提供します。これは、ファイルの内容への「ランダムアクセス」のようなものです。ラインバッファの2つ目の目的は、逆の操作を行うことです。つまり、物理的な「カーソルのオフセット」が与えられると、どの行にこのオフセットが含まれているかを調べるのです。
+
+</p>
+
+<p>TextViewの座標系がUTF-16になったので、line-bufferのデザインを見直す必要があります。問題は、テキストの行がファイル内のどこにあるのかを知る必要があるため、ラインバッファをUTF-16座標に変更するだけでは済まないことです。もちろん、メモ帳のような「単一フォーマット」のエディタではこのルートを使いますが、複数のファイルフォーマットをサポートしなければならないため、real__physical locationを扱う必要があります。
+
+</p>
+
+<p>私が行ったことは、TextDocumentに2つ目のラインバッファを追加したことです。つまり、元のラインバッファは、ファイル内の各行の開始位置の実際の物理的なバイトオフセットを保持しています。新しいラインバッファは各行の開始位置を記録しますが、今回は情報をバイトオフセットではなくUTF-16オフセット（文字位置）として保存します。基礎となるファイルがUTF-8であっても、この2つ目のラインバッファは、各行のオフセットがUTF-16としてエンコードされているかのように格納します。
+
+</p>
+
+<p>下の図は、私が説明しようとしていることをうまく説明してくれるはずです。
+
+</p>
+
+<p><img src="assets/img/editor0905.gif" alt="" class="align-center"></p>
+
+<p>Unicodeに移行したことで、さらに別の問題が発生しました。それは、これらの余分なフォーマットを持つ「行頭」オフセットで、どのようにラインバッファを初期化するかということです。これまでは、CR/LFの組み合わせを検索する方法として、単純なバイト検索を行っていました。残念ながら、この方法はマルチフォーマットのテキストエディタではもはや十分ではありません。
+
+</p>
+
+<p>これ以上、「\r」や「\n」のバイトサーチをしても、うまくいかないでしょう。ASCIIやUTF-8では問題ありませんが（バイトベースであることに変わりはなく、CL/LFも同様です）、UTF-16では問題があります。ASCIIのCR-LFの配列（0x0Dの後に0x0Aが続く）は、Unicodeでは実際には「U+0D0A MALAYALAM LETTER UU」となります。UTF-16のテキストファイルを処理する際には、U+0x000DとU+0x000Aを特別に検索しなければなりません。
+
+</p>
+
+<p>また、Unicodeでは、独自の改行コードポイントと改段落コードポイントが定義されています。U+2028 LINE SEPARATOR」と「U+2029 PARAGRAPH SEPARATOR」です。しかし、テキストファイルではいまだにCR/LF配列が使われているので、これらの規則をすべてサポートする必要があります。
+
+</p>
+
+<p>テキストの行を解析してラインバッファを構築するには2つの方法があります。1つ目は、サポートするフォーマットごとに別々のルーチンを書くことです。これは、処理速度の点では最も効率的なアプローチかもしれませんが、コードのメンテナンス性の点では、間違いなく最も効率的ではありません。Neatpadが完成したら、この方法を検討するかもしれませんが、今は次の方法がいいと思います。
+
+</p>
+
+<p>簡単に言えば、当面は汎用のラインパーシングルーチンを使うのが良い方法です。TextDocument::init_linebufferはそのままで、CR/LFシーケンスを検索しながら、1文字ごとにファイルを処理します。違いは、ファイルがUTF-32文字のストリームに変換されることで、あらゆる形式のテキストを扱えるようになります。
+
+</p>
+
+<h2 id="text-iteration">Text Iteration</h2>
+
+<p>これはかなり複雑になっていると思われるかもしれませんが、その通りです。主な複雑さは、TextViewがUTF-16の文字オフセットを扱うのに対し、TextDocumentがバイトオフセットを扱うことに起因します（既にご存知の通りです）。TextViewは常にTextDocumentからUTF-16のテキストを取得しますが、それでもバイトオフセットを使って行わなければなりません。これは非常にすっきりした解決策ではありません。</p>
+
+<p>この問題を解決するために、私は TextIterator という 3 番目の C++ クラスを導入しました。このクラスの目的は、TextViewの座標系と、TextDocumentが理解する基本的なファイルフォーマットとの間に「橋渡し」をすることです。つまり、TextViewがDocumentに直接テキストを要求することはなくなり、テキストの取得はすべてIteratorを経由することになります。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">TextIterator</span>
+<span class="p">{</span>
+    <span class="k">friend</span> <span class="k">class</span> <span class="nc">TextDocument</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+    <span class="kt">int</span> <span class="n">gettext</span><span class="p">(</span><span class="n">WCHAR</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">);</span>
+
+<span class="k">private</span><span class="o">:</span>
+    <span class="c1">// only "friends" of the TextIterator can create them
+</span>    <span class="n">TextIterator</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">off</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">len</span><span class="p">,</span> <span class="n">TextDocument</span> <span class="o">*</span><span class="n">doc</span><span class="p">);</span>
+
+    <span class="c1">// keep track of position within the specified TextDocument
+</span>    <span class="n">TextDocument</span> <span class="o">*</span> <span class="n">text_doc</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">off_bytes</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">len_bytes</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>ご覧のとおり、TextIteratorのクラス定義はとてもシンプルです。これは、使用するTextDocumentと、そのドキュメント内のバイトオフセットを記録するものです。これらの値は、TextIteratorが構築されるときに設定されます。実際に有用なことをする唯一のコードは、以下の TextIterator::gettext 関数です。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">TextIterator</span><span class="o">::</span><span class="n">gettext</span><span class="p">(</span><span class="n">WCHAR</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">buflen</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// get text from the TextDocument at the specified byte-position
+</span>    <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">text_doc</span><span class="o">-&gt;</span><span class="n">gettext</span><span class="p">(</span><span class="n">off_bytes</span><span class="p">,</span> <span class="n">len_bytes</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buflen</span><span class="p">);</span>
+
+    <span class="c1">// adjust the iterator's internal position
+</span>    <span class="n">off_bytes</span> <span class="o">+=</span> <span class="n">len</span><span class="p">;</span>
+    <span class="n">len_bytes</span> <span class="o">-=</span> <span class="n">len</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">buflen</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>TextIterator は基本的に、バイトベースのファイルオフセットの詳細をカプセル化し、TextView から隠します。また、TextDocument には、行反復を開始するための関数がひとつ追加されています。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TextIterator</span> <span class="n">TextDocument</span><span class="o">::</span><span class="n">iterate_line</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">ULONG</span> <span class="o">*</span><span class="n">linestart</span><span class="p">,</span> <span class="n">ULONG</span> <span class="o">*</span><span class="n">linelen</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ULONG</span> <span class="n">offset_bytes</span><span class="p">;</span>
+    <span class="n">ULONG</span> <span class="n">length_bytes</span><span class="p">;</span>
+
+    <span class="n">lineinfo_from_lineno</span><span class="p">(</span><span class="n">lineno</span><span class="p">,</span> <span class="n">linestart</span><span class="p">,</span> <span class="n">linelen</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">offset_bytes</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">length_bytes</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">TextIterator</span><span class="p">(</span><span class="n">offset_bytes</span><span class="p">,</span> <span class="n">length_bytes</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>interate_line 関数は、独立した TextIterator オブジェクトを返し、これを使ってファイルのテキストに透過的にアクセスすることができます。この新しいクラスを使ったテキストイテレータの例を以下に示します。
+
+</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TextIterator</span> <span class="n">itor</span> <span class="o">=</span> <span class="n">m_pTextDoc</span><span class="o">-&gt;</span><span class="n">iterate_line</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+<span class="n">WCHAR</span> <span class="n">buf</span><span class="p">[</span><span class="mi">200</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">len</span><span class="p">;</span>
+
+<span class="n">len</span> <span class="o">=</span> <span class="n">itor</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>プロセスがいかにシンプルになったかがわかると思います。TextView は TextIterator を通してファイルの内容にアクセスします。TextViewに関する限り、すべてはライン/キャラクタオフセットに基づいています。厄介なバイトオフセットや変換の詳細は Iterator と TextDocument に隠されており、まさに私たちが望む方法です。
+
+</p>
+
+<p>おそらく、他の問題が発生したときにはまたデザインを変更することになると思いますが（双方向テキストや複雑なスクリプトで頭痛の種になることが予想されます）、今のところ、ここで説明したTextView/TextIterator/TextDocumentのデザインはうまく機能しているようです。
+
+</p>
+
+<h2 id="additions-to-neatpad">Additions to Neatpad</h2>
+
+<p>実際のNeatpadアプリケーションの変更点について簡単に触れておきます。3つのことを追加しました。一つ目は、コマンドラインのサポートです。コマンドラインでテキストファイルを指定することができるようになりました（メモ帳のように）。
+
+</p>
+
+<p>2つ目の追加機能は、シェルメニューのサポートです。Neatpadのオプションには、すべてのファイルタイプについて、エクスプローラのシェルコンテキストメニューにエントリを追加するための新しい設定があり、任意のファイルを右クリックして「Neatpadで開く」を選択することができます。私は、新しいシステムを構築するときには、いつもメモ帳にこのエントリを追加していますが、Neatpadにも同じ（自動的な）機能があれば、私の意見では非常に便利です。
+
+</p>
+
+<p>最後の追加機能は、ウィンドウ位置の永続性です。メモ帳では、終了するたびにウィンドウの位置が保存され、次回起動時には保存された位置に復元されることにお気づきでしょう。Neatpadは、アプリケーション全体ではなく、個々のファイルのウィンドウ位置を保存します。つまり、Neatpadで別のファイルを開いたり閉じたりしても、それぞれが画面上の自分の位置を覚えているということです。
+
+</p>
+
+<p>その方法は、「NTFS代替データストリーム」を使用することでした。NTFSストリーム」がWindows NTで初めて登場して以来、私はその使い道を探し続けてきましたが、私は完璧な使い道を見つけたと思っています。ファイルを開くたびに、そのファイルに添付されたNTFSスチーム(Neatpad.WinPosと呼ばれる)も開かれる。WINDOWPLACEMENT構造体はこのストリームに保存されているので、ファイルが開かれると、保存された構造体を使ってSetWindowPlacement APIが呼び出されます。そして、ファイルが閉じられると、Neatpadの現在のウィンドウ位置が取得され、メインファイルのNeatpad.WinPosストリームに保存されます。
+
+</p>
+
+<h2 id="coming-up-in-part-10">Coming up in Part 10</h2>
+
+<p>Unicodeの問題は、なかなか難しいことがわかりました。実際、ここで紹介する解決策にたどり着くまでに、TextView/TextDocumentクラスを何度も書き直しました。これは、解決に時間がかかった理由の1つであり、もう1つの理由は、開始する前に、Unicodeにまつわるすべての問題を理解するために、多くの背景資料を読まなければならなかったことです。
+
+</p>
+
+<p>この本は一読の価値があり、ここでは紹介しきれないほど多くのUnicodeのトピックを扱っています。Unicode 3.0と4.0の間の変更点は非常に少なく、基本的には文字レパートリーの追加などに限られています。
+
+</p>
+
+<p>第10回に続きます。次のチュートリアルでは、Unicodeテキストの適切な表示について説明します。今のところ、私が実際に行っているのは、NeatpadをUTF-8とUTF-16のエンコーディングフォーマットをサポートする「ワイドキャラクタ」テキストビューアにすることだけですので、ご了承ください。現在、私たちは「ユニコード」Windows API（特にTextOutW）を使用していますが、本当のユニコードエディタになるにはまだ遠い道のりです。複雑なスクリプト、結合文字、双方向テキストはまだサポートされていません。Unicodeテキストを表示するには、単にTextOutWを呼べばいいと思っていた方、考え直してください。Unicodeテキストの表示は非常に複雑な問題で、TextOutだけでは解決できません。
+
+</p>
+
+<p>そこで、次のチュートリアルでは、Uniscribe APIに焦点を当てます。この API（Windows 2000 から利用可能）は、複雑なスクリプトや双方向テキストの表示をサポートします。Uniscribeの動作方法のために、Neatpadのテキスト表示エンジンを少し設計し直さなければならず、また、マウス入力と選択のルーチンも修正しなければなりませんが、次のチュートリアルの後には、Unicodeのサポートという点で、非常に良い状態になっていることを期待しています。
+
+</p>
+
+
+
+  <div class="file-attachments">
+    <h4>DOWNLOADS</h4>
+    
+      
+       <a href="assets/files/neatpad9.zip">neatpad9.zip</a>      
+    
+  </div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><svg class="svg-inline--fa fa-calendar-alt fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="calendar-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg><!-- <i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> --> Updated:</strong> <time datetime="2005-12-05T00:00:00+00:00">December 05, 2005</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="introduction-unicode.html" class="pagination--pager" title="Introduction to Unicode
+">Previous</a>
+    
+    
+      <a href="transparent-text.html" class="pagination--pager" title="Transparent Text
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div class="page__footer" style="">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    <li><a href="../../feed.xml"><svg class="svg-inline--fa fa-rss-square fa-w-14 fa-fw" aria-hidden="true" data-prefix="fas" data-icon="rss-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM112 416c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48zm157.533 0h-34.335c-6.011 0-11.051-4.636-11.442-10.634-5.214-80.05-69.243-143.92-149.123-149.123-5.997-.39-10.633-5.431-10.633-11.441v-34.335c0-6.535 5.468-11.777 11.994-11.425 110.546 5.974 198.997 94.536 204.964 204.964.352 6.526-4.89 11.994-11.425 11.994zm103.027 0h-34.334c-6.161 0-11.175-4.882-11.427-11.038-5.598-136.535-115.204-246.161-251.76-251.76C68.882 152.949 64 147.935 64 141.774V107.44c0-6.454 5.338-11.664 11.787-11.432 167.83 6.025 302.21 141.191 308.205 308.205.232 6.449-4.978 11.787-11.432 11.787z"></path></svg><!-- <i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> --> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2019 Catch22. Powered by <a href="https://jekyllrb.com/index.html" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/index.html" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="assets/js/main.min.js"></script>
+  <script defer="" src="https://use.fontawesome.com/releases/v5.6.0/js/all.js" integrity="sha384-z9ZOvGHHo21RqN5De4rfJMoAxYpaVoiYhuJXPyVmSs8yn20IE3PmBM534CffwSJI" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+  
+
+</body></html>
